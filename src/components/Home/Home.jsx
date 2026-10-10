@@ -1,0 +1,189 @@
+import React from "react";
+import MicroSlats from "./MicroSlats";
+import TechText from "./TechText";
+import Dock from "./Dock";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  AtSignIcon ,
+  User02Icon ,
+  MountainSnowIcon ,
+  MusicNote03Icon,
+  CodeFolderIcon ,
+} from "@hugeicons/core-free-icons";
+
+const glyph = (icon) => (
+  <HugeiconsIcon icon={icon} size='1em' strokeWidth={1.8} />
+);
+
+const items = [
+  {
+    icon: glyph(User02Icon),
+    label: "Profile",
+    active: true,
+    onClick: () => console.log("profile"),
+    menu: [
+      { label: "New Window", onClick: () => console.log("New Window") },
+      { separator: true },
+      {
+        label: "Options",
+        items: [
+          { label: "Open at Login", checked: true },
+          { label: "Show in Finder" },
+        ],
+      },
+      { separator: true },
+      { label: "Quit", onClick: () => console.log("Quit") },
+    ],
+  },
+  {
+    icon: glyph(MountainSnowIcon ),
+    label: "Interests",
+    onClick: () => console.log("Interests"),
+  },
+  {
+    icon: glyph(MusicNote03Icon),
+    label: "Music",
+    active: true,
+    onClick: () => console.log("Music"),
+  },
+  {
+    icon: glyph(CodeFolderIcon ),
+    label: "Projects",
+    onClick: () => console.log("Projects"),
+  },
+  {
+    icon: glyph(AtSignIcon ),
+    label: "Contact",
+    onClick: () => console.log("Contact"),
+  },
+];
+
+export default function Home() {
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+      {/* Background Animation */}
+      <MicroSlats
+        color='#0094ff'
+        glintColor='#ffffff'
+        backgroundColor='#00012a'
+        slatWidth={9}
+        slatHeight={9}
+        gap={2}
+        roundness={0.7}
+        speed={0.6}
+        scale={1.1}
+        direction={250}
+        chop={0.9}
+        stretch={0.4}
+        glint={0.9}
+        contrast={1.5}
+        perspective={0.65}
+        fog={0.5}
+        interactive
+        cursorStrength={1.3}
+        cursorSize={50}
+        swirl={0}
+        trail={2.4}
+        lean={0.35}
+        intro
+        introDuration={1.2}
+        paused={false}
+      />
+
+      {/* Top Left TechText */}
+      <div
+        style={{
+          position: "absolute",
+          top: "32px",
+          left: "32px",
+          width: "min(90vw, 560px)",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 10,
+          pointerEvents: "auto",
+        }}>
+        <div style={{ width: "100%", height: "150px", position: "relative" }}>
+          <TechText
+            text='Shubham'
+            align='left'
+            fontWeight={800}
+            fontSize={240}
+            reveal='area'
+            dashLength={4}
+            dashGap={2}
+            specks={15}
+            fontFamily='monospace'
+            color='#ffffff'
+            accentColor='#ffffff'
+            letterSpacing={-0.05}
+            reach={80}
+            softness={0.7}
+            strokeWidth={1.5}
+            speed={1.2}
+            lineStyle='solid'
+            selection
+            labels
+            sweep
+          />
+        </div>
+        <div
+          style={{
+            width: "100%",
+            height: "150px",
+            position: "relative",
+            marginTop: "-35px",
+          }}>
+          <TechText
+            text='Idnani'
+            align='left'
+            fontWeight={800}
+            fontSize={240}
+            reveal='area'
+            dashLength={4}
+            dashGap={2}
+            specks={15}
+            fontFamily='monospace'
+            color='#ffffff'
+            accentColor='#ffffff'
+            letterSpacing={-0.05}
+            reach={80}
+            softness={0.7}
+            strokeWidth={1.5}
+            speed={1.2}
+            lineStyle='solid'
+            selection
+            labels
+            sweep
+          />
+        </div>
+      </div>
+
+      {/* Mid Bottom Dock */}
+      <Dock
+        items={items}
+        theme="light"
+        baseItemSize={46}
+        magnification={70}
+        panelHeight={62}
+        accentColor="#0a84ff"
+        badgeColor="#5e5e5e"
+        position="bottom"
+        distance={230}
+        gap={14}
+        roundness={0.7}
+        bounce
+        autoHide={false}
+        tiles
+        showLabels
+        showIndicators={false}
+        showBadges
+      />
+    </div>
+  );
+}
