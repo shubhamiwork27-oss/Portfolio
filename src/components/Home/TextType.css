@@ -1,0 +1,28 @@
+.text-type {
+  display: inline-block;
+  white-space: pre-wrap;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.text-type__content {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.text-type__cursor {
+  margin-left: 0.25rem;
+  display: inline-block;
+  opacity: 1;
+  color: #7dd3fc;
+  text-shadow: 0 0 12px rgba(125, 211, 252, 0.7);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.text-type__cursor--hidden {
+  display: none;
+}
+

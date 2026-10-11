@@ -18,26 +18,7 @@ const MARGIN = 8;
 const POP = 'cubic-bezier(0.2, 1.25, 0.4, 1)';
 
 const THEMES = {
-  dark: {
-    '--dock-panel': 'rgba(38, 35, 46, 0.66)',
-    '--dock-panel-edge': 'rgba(255, 255, 255, 0.08)',
-    '--dock-panel-highlight': 'rgba(255, 255, 255, 0.07)',
-    '--dock-panel-shadow': '0 22px 44px -20px rgba(0, 0, 0, 0.8), 0 6px 16px -8px rgba(0, 0, 0, 0.5)',
-    '--dock-tile': 'linear-gradient(180deg, #3a3644 0%, #27242f 100%)',
-    '--dock-tile-edge': 'rgba(255, 255, 255, 0.07)',
-    '--dock-tile-highlight': 'rgba(255, 255, 255, 0.12)',
-    '--dock-tile-shadow': '0 4px 10px -4px rgba(0, 0, 0, 0.7)',
-    '--dock-ink': '#f4f4f5',
-    '--dock-label-ink': '#f4f4f5',
-    '--dock-press': 'brightness(0.75)',
-    '--dock-menu': 'rgba(40, 37, 47, 0.8)',
-    '--dock-menu-edge': 'rgba(255, 255, 255, 0.13)',
-    '--dock-menu-ink': '#f4f4f5',
-    '--dock-menu-muted': 'rgba(244, 244, 245, 0.42)',
-    '--dock-menu-separator': 'rgba(255, 255, 255, 0.1)',
-    '--dock-menu-shadow': '0 18px 40px -12px rgba(0, 0, 0, 0.65), 0 3px 10px rgba(0, 0, 0, 0.3)'
-  },
-  light: {
+    light: {
     '--dock-panel': '#ffffff45',
     '--dock-panel-edge': '#ffffff8c',
     '--dock-panel-highlight': 'rgba(255, 255, 255, 0.95)',

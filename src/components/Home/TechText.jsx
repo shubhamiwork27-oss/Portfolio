@@ -41,7 +41,7 @@ const TechText = ({
   align = 'left',
   fontFamily = '',
   fontWeight = 600,
-  fontSize = 150,
+  fontSize = 250,
   letterSpacing = -0.05,
   color = '#ffffff',
   accentColor = '#ffffff',
@@ -200,8 +200,8 @@ const TechText = ({
       let m = probe.measureText(s.text);
       const fit = Math.min(
         1,
-        (width * 0.9) / Math.max(m.actualBoundingBoxLeft + m.actualBoundingBoxRight, 1),
-        (height * 0.66) / Math.max(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, 1)
+        (width * 0.95) / Math.max(m.actualBoundingBoxLeft + m.actualBoundingBoxRight, 1),
+        (height * 0.76) / Math.max(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, 1)
       );
       const size = s.fontSize * fit;
       setFont(probe, s, size);

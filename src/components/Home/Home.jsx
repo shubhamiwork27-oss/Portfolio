@@ -1,7 +1,9 @@
 import React from "react";
 import MicroSlats from "./MicroSlats";
 import TechText from "./TechText";
+import TextType from "./TextType";
 import Dock from "./Dock";
+import OverlappingCards from "./OverlappingCards";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon ,
@@ -102,13 +104,13 @@ export default function Home() {
           position: "absolute",
           top: "32px",
           left: "32px",
-          width: "min(90vw, 560px)",
+          width: "min(90vw, 620px)",
           display: "flex",
           flexDirection: "column",
           zIndex: 10,
           pointerEvents: "auto",
         }}>
-        <div style={{ width: "100%", height: "150px", position: "relative" }}>
+        <div style={{ width: "100%", height: "175px", position: "relative" }}>
           <TechText
             text='Shubham'
             align='left'
@@ -129,15 +131,16 @@ export default function Home() {
             lineStyle='solid'
             selection
             labels
+            draggable={false}
             sweep
           />
         </div>
         <div
           style={{
             width: "100%",
-            height: "150px",
+            height: "175px",
             position: "relative",
-            marginTop: "-35px",
+            marginTop: "-38px",
           }}>
           <TechText
             text='Idnani'
@@ -159,9 +162,55 @@ export default function Home() {
             lineStyle='solid'
             selection
             labels
+            draggable={false}
             sweep
           />
         </div>
+
+        {/* TextType typing effect */}
+        <div
+          style={{
+            width: "fit-content",
+            padding: "8px 28px",
+            fontSize:70,
+            fontWeight: 700,
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+            color: "#f8fafc",
+            letterSpacing: "-0.04em",
+            minHeight: "46px",
+            display: "inline-flex",
+            alignItems: "center",
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            MozUserSelect: "none",
+            msUserSelect: "none",
+          }}
+        >
+          <TextType 
+            text={["Developer", "Designer", "Adventurer"]}
+            typingSpeed={75}
+            pauseDuration={1500}
+            showCursor
+            cursorCharacter="|"
+            deletingSpeed={50}
+            variableSpeedEnabled={false}
+            cursorBlinkDuration={0.5}
+          />
+        </div>
+      </div>
+
+      {/* Right Side Overlapping White Cards */}
+      <div
+        className="hidden md:flex items-center justify-center pointer-events-auto"
+        style={{
+          position: "absolute",
+          top: "50%",
+          right: "clamp(40px, 8vw, 130px)",
+          transform: "translateY(-50%)",
+          zIndex: 10,
+        }}
+      >
+        <OverlappingCards />
       </div>
 
       {/* Mid Bottom Dock */}
