@@ -1,5 +1,6 @@
 import React from "react";
 import MicroSlats from "./MicroSlats";
+import Grainient from "./tempbg/Grainient";
 import TechText from "./TechText";
 import TextType from "./TextType";
 import Dock from "./Dock";
@@ -69,7 +70,8 @@ export default function Home() {
         position: "relative",
         overflow: "hidden",
       }}>
-      {/* Background Animation */}
+      {/* Background Animation (Temporarily disconnected MicroSlats) */}
+      {/*
       <MicroSlats
         color='#0094ff'
         glintColor='#ffffff'
@@ -97,6 +99,33 @@ export default function Home() {
         introDuration={1.2}
         paused={false}
       />
+      */}
+
+      {/* Temporary Background (Grainient) */}
+      <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}>
+        <Grainient
+          colors={["#00010b","#000443","#12429a","#169af9","#00daff","#91f9ff"]}
+          type="linear"
+          angle={47}
+          bands={1}
+          softness={1}
+          flow={0.45}
+          scale={1}
+          speed={1}
+          silk={0.63}
+          grainAmount={0.08}
+          grainSize={0.9}
+          contrast={0.85}
+          saturation={1.03}
+          variation={0}
+          stir={1.35}
+          grainAnimated
+          interactive
+          clickSwirl
+          intro
+          lightMode={false}
+        />
+      </div>
 
       {/* Top Left TechText */}
       <div
