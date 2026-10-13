@@ -1,5 +1,4 @@
 import React from "react";
-import MicroSlats from "./MicroSlats";
 import Grainient from "./tempbg/Grainient";
 import TechText from "./TechText";
 import TextType from "./TextType";
@@ -67,51 +66,36 @@ export default function Home() {
       style={{
         width: "100vw",
         height: "100vh",
+        padding: "clamp(10px, 1.5vw, 20px)",
+        boxSizing: "border-box",
         position: "relative",
         overflow: "hidden",
+        backgroundColor: "Black",
+        display: "flex",
       }}>
-      {/* Background Animation (Temporarily disconnected MicroSlats) */}
-      {/*
-      <MicroSlats
-        color='#0094ff'
-        glintColor='#ffffff'
-        backgroundColor='#00012a'
-        slatWidth={9}
-        slatHeight={9}
-        gap={2}
-        roundness={0.7}
-        speed={0.6}
-        scale={1.1}
-        direction={250}
-        chop={0.9}
-        stretch={0.4}
-        glint={0.9}
-        contrast={1.5}
-        perspective={0.65}
-        fog={0.5}
-        interactive
-        cursorStrength={1.3}
-        cursorSize={50}
-        swirl={0}
-        trail={2.4}
-        lean={0.35}
-        intro
-        introDuration={1.2}
-        paused={false}
-      />
-      */}
+      {/* Inner container with border-radius and outer white border structure */}
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          borderRadius: "clamp(20px, 4.5vw, 45px)",
+          overflow: "hidden",
+          isolation: "isolate",
+          transform: "translateZ(0)",
+        }}>
 
       {/* Temporary Background (Grainient) */}
       <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Grainient
-          colors={["#00010b","#000443","#12429a","#169af9","#00daff","#91f9ff"]}
+          colors={["#12429a","#00daff","#91f9ff","#001694"]}
           type="linear"
-          angle={47}
+          angle={180}
           bands={1}
-          softness={1}
-          flow={0.45}
+          softness={8}
+          flow={0.5}
           scale={1}
-          speed={1}
+          speed={2}
           silk={0.63}
           grainAmount={0.08}
           grainSize={0.9}
@@ -127,7 +111,11 @@ export default function Home() {
         />
       </div>
 
-      {/* Top Left TechText */}
+      
+
+
+      {/* Top Left TechText & TextType (Temporarily disconnected) */}
+      {/*
       <div
         style={{
           position: "absolute",
@@ -196,7 +184,6 @@ export default function Home() {
           />
         </div>
 
-        {/* TextType typing effect */}
         <div
           style={{
             width: "fit-content",
@@ -227,8 +214,10 @@ export default function Home() {
           />
         </div>
       </div>
+      */}
 
-      {/* Right Side Overlapping White Cards */}
+      {/* Right Side Overlapping White Cards (Temporarily disconnected) */}
+      {/*
       <div
         className="hidden md:flex items-center justify-center pointer-events-auto"
         style={{
@@ -241,6 +230,7 @@ export default function Home() {
       >
         <OverlappingCards />
       </div>
+      */}
 
       {/* Mid Bottom Dock */}
       <Dock
@@ -262,6 +252,7 @@ export default function Home() {
         showIndicators={false}
         showBadges
       />
+      </div>
     </div>
   );
 }
