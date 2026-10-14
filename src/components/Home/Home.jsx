@@ -42,40 +42,40 @@ const GRADIENTS = {
 };
 
 const MUSIC_GRADIENT_PALETTES = [
+  // 1. Signature Violet & Fuchsia (The iconic music palette)
   {
-    // Deep Violet & Hot Pink (original music palette)
     colors: ["#1e0836", "#3b0764", "#7c3aed", "#d946ef", "#f472b6"],
     angle: 180,
   },
+  // 2. Electric Orchid & Magenta
   {
-    // Midnight Blue & Electric Cyan
-    colors: ["#030b2e", "#0f2b69", "#0284c7", "#06b6d4", "#67e8f9"],
-    angle: 215,
+    colors: ["#220638", "#581c87", "#9333ea", "#e879f9", "#fbcfe8"],
+    angle: 180,
   },
+  // 3. Velvet Twilight & Rose Coral
   {
-    // Sunset Waves / Magenta & Radiant Orange
-    colors: ["#2d063a", "#701a75", "#be185d", "#f43f5e", "#fb923c"],
-    angle: 145,
+    colors: ["#200524", "#6b21a8", "#a21caf", "#f43f5e", "#fda4af"],
+    angle: 180,
   },
+  // 4. Sunset Rose & Warm Glow
   {
-    // Cyber Emerald & Mint
-    colors: ["#022c22", "#0f766e", "#0d9488", "#10b981", "#86efac"],
-    angle: 200,
+    colors: ["#1f0528", "#5b0e45", "#be185d", "#fb7185", "#fde68a"],
+    angle: 180,
   },
+  // 5. Deep Nebula & Electric Iris
   {
-    // Velvet Rose & Crimson Glow
-    colors: ["#1f0210", "#4c0519", "#9f1239", "#e11d48", "#fda4af"],
-    angle: 160,
+    colors: ["#180838", "#43147a", "#6366f1", "#a855f7", "#fbcfe8"],
+    angle: 180,
   },
+  // 6. Midnight Ultramarine & Soft Lilac
   {
-    // Cosmic Nebula / Violet & Peach Coral
-    colors: ["#0b092b", "#311042", "#6d28d9", "#ec4899", "#fbcfe8"],
-    angle: 220,
+    colors: ["#110838", "#2e1065", "#4338ca", "#818cf8", "#e0e7ff"],
+    angle: 180,
   },
+  // 7. Cosmic Indigo & Neon Violet
   {
-    // Deep Ultramarine & Lavender Glow
-    colors: ["#020b1f", "#1e1b4b", "#4338ca", "#818cf8", "#c7d2fe"],
-    angle: 175,
+    colors: ["#170836", "#311042", "#4f46e5", "#c084fc", "#f472b6"],
+    angle: 180,
   },
 ];
 
@@ -90,7 +90,7 @@ export default function Home() {
 
     const interval = setInterval(() => {
       setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
-    }, 3500);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, [activeTab, isMusicOpen, musicPaletteIndex]);
@@ -143,7 +143,6 @@ export default function Home() {
         } else {
           setActiveTab("Music");
           setIsMusicOpen(true);
-          setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
         }
       },
     },
@@ -210,7 +209,8 @@ export default function Home() {
             softness={8}
             flow={0.5}
             scale={1}
-            speed={activeTab === "Music" && isMusicOpen ? 2.5 : 2}
+            speed={2}
+            paletteFollow={activeTab === "Music" && isMusicOpen ? 2.2 : 0.9}
             silk={0.63}
             grainAmount={0.08}
             grainSize={0.5}

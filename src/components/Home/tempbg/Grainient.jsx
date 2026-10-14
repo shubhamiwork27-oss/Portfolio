@@ -274,6 +274,7 @@ const Grainient = ({
   intro = true,
   lightMode = false,
   dpr,
+  paletteFollow = 0.9,
   className = '',
   style,
   ...rest
@@ -303,7 +304,8 @@ const Grainient = ({
     clickSwirl,
     intro,
     lightMode,
-    dpr
+    dpr,
+    paletteFollow: Math.max(0.05, paletteFollow ?? 0.9)
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -430,8 +432,8 @@ const Grainient = ({
       targetDirY = Math.cos(targetRad);
 
       if (!reduce && rampInitialized) {
-        // Smooth exponential interpolation over ~0.9s for silky morphing
-        const follow = 1 - Math.exp(-dt / 0.9);
+        // Smooth exponential interpolation for silky morphing
+        const follow = 1 - Math.exp(-dt / s.paletteFollow);
         let stillTransitioning = false;
         for (let i = 0; i < MAX_COLORS * 3; i++) {
           const diff = targetRamp[i] - ramp[i];
