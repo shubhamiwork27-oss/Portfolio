@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import Grainient from "./tempbg/Grainient";
 import TechText from "./TechText";
 import TextType from "./TextType";
 import Dock from "./Dock";
+import MusicPlayer from "../music/MusicPlayer";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  AtSignIcon ,
-  User02Icon ,
-  MountainSnowIcon ,
+  AtSignIcon,
+  User02Icon,
+  MountainSnowIcon,
   MusicNote03Icon,
-  CodeFolderIcon ,
+  CodeFolderIcon,
 } from "@hugeicons/core-free-icons";
 
 const glyph = (icon) => (
-  <HugeiconsIcon icon={icon} size='1em' strokeWidth={1.8} />
+  <HugeiconsIcon icon={icon} size="1em" strokeWidth={1.8} />
 );
 
 const GRADIENTS = {
@@ -22,15 +24,15 @@ const GRADIENTS = {
     angle: 180,
   },
   Interests: {
-    colors: ["#022c22","#064e3b", "#0d9488", "#10b981", "#6ee7b7"],
+    colors: ["#022c22", "#064e3b", "#0d9488", "#10b981", "#6ee7b7"],
     angle: 180,
   },
   Music: {
-    colors: ["#1e0836", "#3b0764","#7c3aed", "#d946ef", "#f472b6"],
+    colors: ["#1e0836", "#3b0764", "#7c3aed", "#d946ef", "#f472b6"],
     angle: 180,
   },
   Projects: {
-    colors: ["#2a0d00", "#7c2d12","#c2410c", "#f97316", "#fbbf24"],
+    colors: ["#2a0d00", "#7c2d12", "#c2410c", "#f97316", "#fbbf24"],
     angle: 180,
   },
   Contact: {
@@ -39,16 +41,74 @@ const GRADIENTS = {
   },
 };
 
+const MUSIC_GRADIENT_PALETTES = [
+  {
+    // Deep Violet & Hot Pink (original music palette)
+    colors: ["#1e0836", "#3b0764", "#7c3aed", "#d946ef", "#f472b6"],
+    angle: 180,
+  },
+  {
+    // Midnight Blue & Electric Cyan
+    colors: ["#030b2e", "#0f2b69", "#0284c7", "#06b6d4", "#67e8f9"],
+    angle: 215,
+  },
+  {
+    // Sunset Waves / Magenta & Radiant Orange
+    colors: ["#2d063a", "#701a75", "#be185d", "#f43f5e", "#fb923c"],
+    angle: 145,
+  },
+  {
+    // Cyber Emerald & Mint
+    colors: ["#022c22", "#0f766e", "#0d9488", "#10b981", "#86efac"],
+    angle: 200,
+  },
+  {
+    // Velvet Rose & Crimson Glow
+    colors: ["#1f0210", "#4c0519", "#9f1239", "#e11d48", "#fda4af"],
+    angle: 160,
+  },
+  {
+    // Cosmic Nebula / Violet & Peach Coral
+    colors: ["#0b092b", "#311042", "#6d28d9", "#ec4899", "#fbcfe8"],
+    angle: 220,
+  },
+  {
+    // Deep Ultramarine & Lavender Glow
+    colors: ["#020b1f", "#1e1b4b", "#4338ca", "#818cf8", "#c7d2fe"],
+    angle: 175,
+  },
+];
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Profile");
-  const currentGradient = GRADIENTS[activeTab] || GRADIENTS.Profile;
+  const [isMusicOpen, setIsMusicOpen] = useState(false);
+  const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
+
+  // Animate and cycle gradient colors smoothly only while in Music mode
+  useEffect(() => {
+    if (activeTab !== "Music" || !isMusicOpen) return;
+
+    const interval = setInterval(() => {
+      setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [activeTab, isMusicOpen, musicPaletteIndex]);
+
+  const currentGradient =
+    activeTab === "Music" && isMusicOpen
+      ? MUSIC_GRADIENT_PALETTES[musicPaletteIndex]
+      : GRADIENTS[activeTab] || GRADIENTS.Profile;
 
   const items = [
     {
       icon: glyph(User02Icon),
       label: "Profile",
       active: activeTab === "Profile",
-      onClick: () => setActiveTab("Profile"),
+      onClick: () => {
+        setActiveTab("Profile");
+        setIsMusicOpen(false);
+      },
       menu: [
         { label: "New Window", onClick: () => console.log("New Window") },
         { separator: true },
@@ -67,27 +127,46 @@ export default function Home() {
       icon: glyph(MountainSnowIcon),
       label: "Interests",
       active: activeTab === "Interests",
-      onClick: () => setActiveTab("Interests"),
+      onClick: () => {
+        setActiveTab("Interests");
+        setIsMusicOpen(false);
+      },
     },
     {
       icon: glyph(MusicNote03Icon),
       label: "Music",
-      active: activeTab === "Music",
-      onClick: () => setActiveTab("Music"),
+      active: activeTab === "Music" && isMusicOpen,
+      onClick: () => {
+        if (activeTab === "Music" && isMusicOpen) {
+          // Clicking music button while active advances to next animated gradient color palette immediately
+          setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
+        } else {
+          setActiveTab("Music");
+          setIsMusicOpen(true);
+          setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
+        }
+      },
     },
     {
       icon: glyph(CodeFolderIcon),
       label: "Projects",
       active: activeTab === "Projects",
-      onClick: () => setActiveTab("Projects"),
+      onClick: () => {
+        setActiveTab("Projects");
+        setIsMusicOpen(false);
+      },
     },
     {
       icon: glyph(AtSignIcon),
       label: "Contact",
       active: activeTab === "Contact",
-      onClick: () => setActiveTab("Contact"),
+      onClick: () => {
+        setActiveTab("Contact");
+        setIsMusicOpen(false);
+      },
     },
   ];
+
   return (
     <div
       style={{
@@ -99,7 +178,8 @@ export default function Home() {
         overflow: "hidden",
         backgroundColor: "Black",
         display: "flex",
-      }}>
+      }}
+    >
       {/* Inner container with border-radius and outer white border structure */}
       <div
         style={{
@@ -110,54 +190,82 @@ export default function Home() {
           overflow: "hidden",
           isolation: "isolate",
           transform: "translateZ(0)",
-        }}>
+        }}
+      >
+        {/* Temporary Background (Grainient) */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 0,
+          }}
+        >
+          <Grainient
+            colors={currentGradient.colors}
+            type="linear"
+            angle={currentGradient.angle}
+            bands={1}
+            softness={8}
+            flow={0.5}
+            scale={1}
+            speed={activeTab === "Music" && isMusicOpen ? 2.5 : 2}
+            silk={0.63}
+            grainAmount={0.08}
+            grainSize={0.5}
+            contrast={1}
+            saturation={1.03}
+            variation={0}
+            stir={1.6}
+            grainAnimated
+            interactive
+            clickSwirl
+            intro
+            lightMode={false}
+          />
+        </div>
 
-      {/* Temporary Background (Grainient) */}
-      <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}>
-        <Grainient
-          colors={currentGradient.colors}
-          type="linear"
-          angle={currentGradient.angle}
-          bands={1}
-          softness={8}
-          flow={0.5}
-          scale={1}
-          speed={2}
-          silk={0.63}
-          grainAmount={0.08}
-          grainSize={0.5}
-          contrast={1}
-          saturation={1.03}
-          variation={0}
-          stir={1.60}
-          grainAnimated
-          interactive
-          clickSwirl
-          intro
-          lightMode={false}
+        {/* Custom Hugeicons Music Player Pop-out */}
+        <AnimatePresence>
+          {isMusicOpen && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.88, y: 30, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.88, y: 20, filter: "blur(8px)" }}
+              transition={{
+                type: "spring",
+                stiffness: 380,
+                damping: 26,
+                mass: 0.7,
+              }}
+              className="absolute bottom-[147px] left-1/2 -translate-x-1/2 z-20 pointer-events-auto"
+            >
+              <MusicPlayer />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mid Bottom Dock */}
+        <Dock
+          items={items}
+          theme="light"
+          baseItemSize={50}
+          magnification={80}
+          panelHeight={70}
+          accentColor="#0a84ff"
+          badgeColor="#fff"
+          position="bottom"
+          distance={230}
+          gap={10}
+          roundness={0.7}
+          bounce
+          autoHide={false}
+          tiles
+          showLabels
+          showIndicators={true}
+          showBadges
         />
-      </div>
-
-      {/* Mid Bottom Dock */}
-      <Dock
-        items={items}
-        theme="light"
-        baseItemSize={50}
-        magnification={80}
-        panelHeight={70}
-        accentColor="#0a84ff"
-        badgeColor="#fff"
-        position="bottom"
-        distance={230}
-        gap={10}
-        roundness={0.7}
-        bounce
-        autoHide={false}
-        tiles
-        showLabels
-        showIndicators={true}
-        showBadges
-      />
       </div>
     </div>
   );
