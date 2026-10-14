@@ -8,7 +8,7 @@ import './Dock.css';
 const SIDES = ['bottom', 'top', 'left', 'right'];
 const EDGE = 12;
 const HOP = 0.4;
-const HOP_TIME = 0.38;
+const HOP_TIME = 0.28;
 const HOLD_TIME = 450;
 const TAIL = 9;
 const TAIL_HALF = 9;
@@ -30,7 +30,7 @@ const THEMES = {
     '--dock-ink': '#27272a',
     '--dock-label': '#ffffff',
     '--dock-label-ink': '#18181b',
-    '--dock-dot': 'rgba(24, 24, 27, 0.55)',
+    '--dock-dot': '#fff',
     '--dock-separator': 'rgba(24, 24, 27, 0.12)',
     '--dock-press': 'brightness(0.9)',
     '--dock-menu': 'rgba(248, 248, 250, 0.86)',

@@ -355,7 +355,16 @@ const Grainient = ({
 
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const view = { width: 1, height: 1, ratio: 1 };
+    const targetRamp = new Float32Array(MAX_COLORS * 3);
     const ramp = new Float32Array(MAX_COLORS * 3);
+    let rampInitialized = false;
+    let targetCount = 0;
+    let currentCount = 0;
+    let currentDirX = 0;
+    let currentDirY = 1;
+    let targetDirX = 0;
+    let targetDirY = 1;
+    let isPaletteTransitioning = false;
     const stirs = new Float32Array(MAX_STIRS * 4);
     const stirWeights = new Float32Array(MAX_STIRS);
     const twirls = new Float32Array(MAX_TWIRLS * 4);
@@ -377,22 +386,86 @@ const Grainient = ({
       if (key === paletteKey) return;
       paletteKey = key;
       const labs = s.colors.map(color => toLab(parse(color)));
+      targetCount = labs.length;
       if (!s.lightMode) {
-        labs.forEach((lab, i) => ramp.set(lab, i * 3));
+        labs.forEach((lab, i) => targetRamp.set(lab, i * 3));
       } else {
         const blank = labs.map(([L]) => Math.abs(L - labs[0][0]) < 0.1);
         const tints = labs.filter((_, i) => !blank[i]).reverse();
         labs.forEach((_, i) => {
           const [L, a, b] = blank[i] ? [1, 0, 0] : tints.shift();
-          ramp.set([L + (1 - L) * LIFT, a * (1 - LIFT), b * (1 - LIFT)], i * 3);
+          targetRamp.set([L + (1 - L) * LIFT, a * (1 - LIFT), b * (1 - LIFT)], i * 3);
         });
+      }
+      if (labs.length > 0) {
+        const lastIdx = labs.length - 1;
+        const lastLab = [targetRamp[lastIdx * 3], targetRamp[lastIdx * 3 + 1], targetRamp[lastIdx * 3 + 2]];
+        for (let i = labs.length; i < MAX_COLORS; i++) {
+          targetRamp.set(lastLab, i * 3);
+        }
+      }
+
+      const targetRad = (s.angle * Math.PI) / 180;
+      targetDirX = Math.sin(targetRad);
+      targetDirY = Math.cos(targetRad);
+
+      if (!rampInitialized) {
+        ramp.set(targetRamp);
+        currentCount = targetCount;
+        currentDirX = targetDirX;
+        currentDirY = targetDirY;
+        rampInitialized = true;
+      } else {
+        isPaletteTransitioning = true;
       }
     };
 
-    const draw = () => {
+    const draw = (dt = 1 / 60) => {
       const s = settingsRef.current;
       const aspect = view.width / view.height;
       syncPalette();
+
+      const targetRad = (s.angle * Math.PI) / 180;
+      targetDirX = Math.sin(targetRad);
+      targetDirY = Math.cos(targetRad);
+
+      if (!reduce && rampInitialized) {
+        // Smooth exponential interpolation over ~0.9s for silky morphing
+        const follow = 1 - Math.exp(-dt / 0.9);
+        let stillTransitioning = false;
+        for (let i = 0; i < MAX_COLORS * 3; i++) {
+          const diff = targetRamp[i] - ramp[i];
+          if (Math.abs(diff) > 0.0003) {
+            ramp[i] += diff * follow;
+            stillTransitioning = true;
+          } else {
+            ramp[i] = targetRamp[i];
+          }
+        }
+        const dirDiffX = targetDirX - currentDirX;
+        const dirDiffY = targetDirY - currentDirY;
+        if (Math.abs(dirDiffX) > 0.0003 || Math.abs(dirDiffY) > 0.0003) {
+          currentDirX += dirDiffX * follow;
+          currentDirY += dirDiffY * follow;
+          stillTransitioning = true;
+        } else {
+          currentDirX = targetDirX;
+          currentDirY = targetDirY;
+        }
+        currentCount += (targetCount - currentCount) * follow;
+        isPaletteTransitioning = stillTransitioning;
+      } else {
+        ramp.set(targetRamp);
+        currentDirX = targetDirX;
+        currentDirY = targetDirY;
+        currentCount = targetCount;
+        isPaletteTransitioning = false;
+      }
+
+      const dirLen = Math.hypot(currentDirX, currentDirY) || 1;
+      const dirX = currentDirX / dirLen;
+      const dirY = currentDirY / dirLen;
+
       gl.bindVertexArray(vao);
       gl.disable(gl.BLEND);
       gl.bindFramebuffer(gl.FRAMEBUFFER, buffer);
@@ -401,11 +474,10 @@ const Grainient = ({
       gl.uniform1f(fu.uAspect, aspect);
       gl.uniform1f(fu.uTime, time);
       gl.uniform3fv(fu.uRamp, ramp);
-      gl.uniform1i(fu.uCount, s.colors.length);
-      const radians = (s.angle * Math.PI) / 180;
+      gl.uniform1i(fu.uCount, Math.round(currentCount));
       gl.uniform1i(fu.uType, s.type);
-      gl.uniform2f(fu.uDir, Math.sin(radians), Math.cos(radians));
-      gl.uniform1f(fu.uExtent, aspect * Math.abs(Math.sin(radians)) + Math.abs(Math.cos(radians)));
+      gl.uniform2f(fu.uDir, dirX, dirY);
+      gl.uniform1f(fu.uExtent, aspect * Math.abs(dirX) + Math.abs(dirY));
       gl.uniform1f(fu.uBands, s.bands);
       gl.uniform1f(fu.uSoftness, s.softness);
       gl.uniform1f(fu.uFlow, s.flow);
@@ -525,9 +597,13 @@ const Grainient = ({
         frameSeed = (frameSeed + 1) % 97;
       }
       updateTouches(dt, view.width / view.height);
-      draw();
+      draw(dt);
       const busy =
-        (!reduce && (s.speed > 0 || s.grainAnimated)) || introClock < 1 || trail.length > 0 || spins.length > 0;
+        (!reduce && (s.speed > 0 || s.grainAnimated)) ||
+        introClock < 1 ||
+        trail.length > 0 ||
+        spins.length > 0 ||
+        isPaletteTransitioning;
       if (busy) raf = requestAnimationFrame(frame);
       else last = 0;
     };

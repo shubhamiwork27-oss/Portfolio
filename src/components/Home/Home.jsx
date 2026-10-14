@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Grainient from "./tempbg/Grainient";
 import TechText from "./TechText";
 import TextType from "./TextType";
 import Dock from "./Dock";
-import OverlappingCards from "./OverlappingCards";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon ,
@@ -17,50 +16,78 @@ const glyph = (icon) => (
   <HugeiconsIcon icon={icon} size='1em' strokeWidth={1.8} />
 );
 
-const items = [
-  {
-    icon: glyph(User02Icon),
-    label: "Profile",
-    active: true,
-    onClick: () => console.log("profile"),
-    menu: [
-      { label: "New Window", onClick: () => console.log("New Window") },
-      { separator: true },
-      {
-        label: "Options",
-        items: [
-          { label: "Open at Login", checked: true },
-          { label: "Show in Finder" },
-        ],
-      },
-      { separator: true },
-      { label: "Quit", onClick: () => console.log("Quit") },
-    ],
+const GRADIENTS = {
+  Profile: {
+    colors: ["#001694", "#12429a", "#0094ff", "#00daff", "#91f9ff"],
+    angle: 180,
   },
-  {
-    icon: glyph(MountainSnowIcon ),
-    label: "Interests",
-    onClick: () => console.log("Interests"),
+  Interests: {
+    colors: ["#022c22","#064e3b", "#0d9488", "#10b981", "#6ee7b7"],
+    angle: 180,
   },
-  {
-    icon: glyph(MusicNote03Icon),
-    label: "Music",
-    active: true,
-    onClick: () => console.log("Music"),
+  Music: {
+    colors: ["#1e0836", "#3b0764","#7c3aed", "#d946ef", "#f472b6"],
+    angle: 180,
   },
-  {
-    icon: glyph(CodeFolderIcon ),
-    label: "Projects",
-    onClick: () => console.log("Projects"),
+  Projects: {
+    colors: ["#2a0d00", "#7c2d12","#c2410c", "#f97316", "#fbbf24"],
+    angle: 180,
   },
-  {
-    icon: glyph(AtSignIcon ),
-    label: "Contact",
-    onClick: () => console.log("Contact"),
+  Contact: {
+    colors: ["black", "black", "grey", "grey", "white"],
+    angle: 180,
   },
-];
+};
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState("Profile");
+  const currentGradient = GRADIENTS[activeTab] || GRADIENTS.Profile;
+
+  const items = [
+    {
+      icon: glyph(User02Icon),
+      label: "Profile",
+      active: activeTab === "Profile",
+      onClick: () => setActiveTab("Profile"),
+      menu: [
+        { label: "New Window", onClick: () => console.log("New Window") },
+        { separator: true },
+        {
+          label: "Options",
+          items: [
+            { label: "Open at Login", checked: true },
+            { label: "Show in Finder" },
+          ],
+        },
+        { separator: true },
+        { label: "Quit", onClick: () => console.log("Quit") },
+      ],
+    },
+    {
+      icon: glyph(MountainSnowIcon),
+      label: "Interests",
+      active: activeTab === "Interests",
+      onClick: () => setActiveTab("Interests"),
+    },
+    {
+      icon: glyph(MusicNote03Icon),
+      label: "Music",
+      active: activeTab === "Music",
+      onClick: () => setActiveTab("Music"),
+    },
+    {
+      icon: glyph(CodeFolderIcon),
+      label: "Projects",
+      active: activeTab === "Projects",
+      onClick: () => setActiveTab("Projects"),
+    },
+    {
+      icon: glyph(AtSignIcon),
+      label: "Contact",
+      active: activeTab === "Contact",
+      onClick: () => setActiveTab("Contact"),
+    },
+  ];
   return (
     <div
       style={{
@@ -88,9 +115,9 @@ export default function Home() {
       {/* Temporary Background (Grainient) */}
       <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Grainient
-          colors={["#12429a","#00daff","#91f9ff","#001694"]}
+          colors={currentGradient.colors}
           type="linear"
-          angle={180}
+          angle={currentGradient.angle}
           bands={1}
           softness={8}
           flow={0.5}
@@ -98,11 +125,11 @@ export default function Home() {
           speed={2}
           silk={0.63}
           grainAmount={0.08}
-          grainSize={0.9}
-          contrast={0.85}
+          grainSize={0.5}
+          contrast={1}
           saturation={1.03}
           variation={0}
-          stir={1.35}
+          stir={1.60}
           grainAnimated
           interactive
           clickSwirl
@@ -111,145 +138,24 @@ export default function Home() {
         />
       </div>
 
-      
-
-
-      {/* Top Left TechText & TextType (Temporarily disconnected) */}
-      {/*
-      <div
-        style={{
-          position: "absolute",
-          top: "32px",
-          left: "32px",
-          width: "min(90vw, 620px)",
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 10,
-          pointerEvents: "auto",
-        }}>
-        <div style={{ width: "100%", height: "175px", position: "relative" }}>
-          <TechText
-            text='Shubham'
-            align='left'
-            fontWeight={800}
-            fontSize={240}
-            reveal='area'
-            dashLength={4}
-            dashGap={2}
-            specks={15}
-            fontFamily='monospace'
-            color='#ffffff'
-            accentColor='#ffffff'
-            letterSpacing={-0.05}
-            reach={80}
-            softness={0.7}
-            strokeWidth={1.5}
-            speed={1.2}
-            lineStyle='solid'
-            selection
-            labels
-            draggable={false}
-            sweep
-          />
-        </div>
-        <div
-          style={{
-            width: "100%",
-            height: "175px",
-            position: "relative",
-            marginTop: "-38px",
-          }}>
-          <TechText
-            text='Idnani'
-            align='left'
-            fontWeight={800}
-            fontSize={240}
-            reveal='area'
-            dashLength={4}
-            dashGap={2}
-            specks={15}
-            fontFamily='monospace'
-            color='#ffffff'
-            accentColor='#ffffff'
-            letterSpacing={-0.05}
-            reach={80}
-            softness={0.7}
-            strokeWidth={1.5}
-            speed={1.2}
-            lineStyle='solid'
-            selection
-            labels
-            draggable={false}
-            sweep
-          />
-        </div>
-
-        <div
-          style={{
-            width: "fit-content",
-            padding: "8px 28px",
-            fontSize:70,
-            fontWeight: 700,
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-            color: "#f8fafc",
-            letterSpacing: "-0.04em",
-            minHeight: "46px",
-            display: "inline-flex",
-            alignItems: "center",
-            userSelect: "none",
-            WebkitUserSelect: "none",
-            MozUserSelect: "none",
-            msUserSelect: "none",
-          }}
-        >
-          <TextType 
-            text={["Developer", "Designer", "Adventurer"]}
-            typingSpeed={75}
-            pauseDuration={1500}
-            showCursor
-            cursorCharacter="|"
-            deletingSpeed={50}
-            variableSpeedEnabled={false}
-            cursorBlinkDuration={0.5}
-          />
-        </div>
-      </div>
-      */}
-
-      {/* Right Side Overlapping White Cards (Temporarily disconnected) */}
-      {/*
-      <div
-        className="hidden md:flex items-center justify-center pointer-events-auto"
-        style={{
-          position: "absolute",
-          top: "50%",
-          right: "clamp(40px, 8vw, 130px)",
-          transform: "translateY(-50%)",
-          zIndex: 10,
-        }}
-      >
-        <OverlappingCards />
-      </div>
-      */}
-
       {/* Mid Bottom Dock */}
       <Dock
         items={items}
         theme="light"
-        baseItemSize={46}
-        magnification={70}
-        panelHeight={62}
+        baseItemSize={50}
+        magnification={80}
+        panelHeight={70}
         accentColor="#0a84ff"
-        badgeColor="#5e5e5e"
+        badgeColor="#fff"
         position="bottom"
         distance={230}
-        gap={14}
+        gap={10}
         roundness={0.7}
         bounce
         autoHide={false}
         tiles
         showLabels
-        showIndicators={false}
+        showIndicators={true}
         showBadges
       />
       </div>
