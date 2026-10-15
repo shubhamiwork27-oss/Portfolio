@@ -1,0 +1,125 @@
+---
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en" class="w-full h-full">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Resume | Shubham Idnani</title>
+  </head>
+  <body class="bg-black text-white w-full h-full min-h-screen m-0 p-3 sm:p-5 box-border flex flex-col font-sans select-none overflow-hidden">
+    <!-- Main Shell -->
+    <div class="w-full h-full flex-1 flex flex-col rounded-[22px] sm:rounded-[32px] bg-[#00012a] border border-white/10 overflow-hidden shadow-2xl relative">
+      
+      <!-- Top Navigation & Action Bar -->
+      <header class="w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/[0.03] border-b border-white/10 backdrop-blur-xl flex items-center justify-between gap-3 z-10 shrink-0">
+        
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center gap-3 sm:gap-4">
+          <a
+            href="/"
+            class="group inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white/[0.07] hover:bg-white/[0.14] text-white/80 hover:text-white border border-white/10 transition-all text-xs sm:text-sm font-medium active:scale-95"
+            title="Return to portfolio"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:-translate-x-0.5">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+            <span class="hidden xs:inline">Portfolio</span>
+          </a>
+
+          <div class="flex items-center gap-2.5">
+            <div class="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" x2="8" y1="13" y2="13"/>
+                <line x1="16" x2="8" y1="17" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-sm sm:text-base font-semibold text-white/95 leading-tight">Shubham Idnani — Resume</h1>
+              <p class="text-[11px] sm:text-xs text-white/50 leading-tight">PDF Preview</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Actions (Open Raw & Download) -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a
+            href="/Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-white/70 hover:text-white border border-white/10 transition-all text-xs font-medium"
+            title="Open raw PDF in separate tab"
+          >
+            <span>Open Raw</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" x2="21" y1="14" y2="3"/>
+            </svg>
+          </a>
+
+          <a
+            href="/Resume.pdf"
+            download="Shubham_Idnani_Resume.pdf"
+            class="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs sm:text-sm shadow-lg shadow-blue-600/30 border border-blue-400/40 transition-all active:scale-95 cursor-pointer"
+            title="Download resume PDF to your device"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" x2="12" y1="15" y2="3"/>
+            </svg>
+            <span>Download PDF</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- PDF Preview Container -->
+      <main class="w-full flex-1 relative bg-black/40 overflow-hidden flex flex-col">
+        <object
+          data="/Resume.pdf#toolbar=1&navpanes=0&scrollbar=1"
+          type="application/pdf"
+          class="w-full h-full flex-1"
+        >
+          <iframe
+            src="/Resume.pdf#toolbar=1&navpanes=0&scrollbar=1"
+            class="w-full h-full flex-1 border-0"
+            title="Resume Preview"
+          >
+            <!-- Fallback for browsers/devices without inline PDF viewing capability -->
+            <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+              <div class="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <h2 class="text-lg font-semibold text-white mb-2">Resume Document Ready</h2>
+              <p class="text-sm text-white/60 max-w-sm mb-5">Your browser doesn't support inline PDF previews directly. You can download the PDF file to view it.</p>
+              <a
+                href="/Resume.pdf"
+                download="Shubham_Idnani_Resume.pdf"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm shadow-lg shadow-blue-600/30 transition-all"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                Download PDF
+              </a>
+            </div>
+          </iframe>
+        </object>
+      </main>
+    </div>
+  </body>
+</html>
+

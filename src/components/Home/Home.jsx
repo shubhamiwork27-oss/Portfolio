@@ -12,6 +12,9 @@ import {
   MountainSnowIcon,
   MusicNote03Icon,
   CodeFolderIcon,
+  Linkedin02Icon,
+  Github01Icon,
+  GoogleDocIcon,
 } from "@hugeicons/core-free-icons";
 
 const glyph = (icon) => (
@@ -153,6 +156,35 @@ export default function Home() {
       onClick: () => {
         setActiveTab("Projects");
         setIsMusicOpen(false);
+      },
+    },
+    {
+      icon: glyph(Linkedin02Icon),
+      label: "LinkedIn",
+      onClick: () => {
+        window.open(
+          "https://www.linkedin.com/in/shubhamidnani",
+          "_blank",
+          "noopener,noreferrer"
+        );
+      },
+    },
+    {
+      icon: glyph(Github01Icon),
+      label: "Github",
+      onClick: () => {
+        window.open(
+          "https://github.com/shubhamiwork27-oss",
+          "_blank",
+          "noopener,noreferrer"
+        );
+      },
+    },
+    {
+      icon: glyph(GoogleDocIcon),
+      label: "Resume",
+      onClick: () => {
+        window.open("/resume", "_blank");
       },
     },
     {
