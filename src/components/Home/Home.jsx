@@ -267,16 +267,18 @@ export default function Home() {
           {isMusicOpen && (
             <motion.div
               key="music-player"
-              initial={{ opacity: 0, scale: 0.92, y: 24, filter: "blur(12px)" }}
+              initial={{ opacity: 0, scale: 0.94, y: 20, filter: "blur(12px)" }}
               animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.92, y: 16, filter: "blur(10px)" }}
+              exit={{ opacity: 0, scale: 0.94, y: 14, filter: "blur(10px)" }}
               transition={{
                 duration: 0.45,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="absolute bottom-[147px] left-1/2 -translate-x-1/2 z-20 pointer-events-auto"
+              className="absolute inset-x-0 top-0 bottom-[95px] sm:bottom-[105px] md:bottom-[115px] lg:bottom-[120px] z-20 flex items-center justify-center pointer-events-none px-3 sm:px-6 lg:px-8 py-2 overflow-hidden"
             >
-              <MusicPlayer />
+              <div className="pointer-events-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center">
+                <MusicPlayer />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -304,6 +306,7 @@ export default function Home() {
 
         {/* Mid Bottom Dock */}
         <Dock
+          className="z-30"
           items={items}
           theme="light"
           baseItemSize={50}

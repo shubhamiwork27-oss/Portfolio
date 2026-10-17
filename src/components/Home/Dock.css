@@ -1,6 +1,6 @@
 .dock {
   position: absolute;
-  z-index: 10;
+  z-index: 30;
   display: flex;
   gap: var(--dock-gap);
   box-sizing: border-box;
