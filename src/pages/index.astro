@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import Home from '../components/Home/Home';
 ---
 
@@ -7,10 +8,11 @@ import Home from '../components/Home/Home';
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" href="/S.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
-		<title>MicroSlats Demo</title>
+		<title>Shubham's Portfolio</title>
+		<ClientRouter />
 	</head>
 	<body class="bg-[#00012a] w-full h-full min-h-screen m-0 p-0 overflow-hidden">
 		<Home client:only="react" />

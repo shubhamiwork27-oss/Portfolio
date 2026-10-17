@@ -1,0 +1,80 @@
+.dock-glass-input {
+  background: #5555557a;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 18px 36px -18px rgba(24, 24, 27, 0.3),
+    0 6px 14px -8px rgba(24, 24, 27, 0.16);
+  -webkit-backdrop-filter: blur(24px) saturate(2);
+  backdrop-filter: blur(24px) saturate(2);
+  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dock-glass-input:hover {
+  background: #78787867;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 22px 44px -16px rgba(24, 24, 27, 0.35);
+}
+
+.dock-glass-input:focus,
+.dock-glass-input:focus-within {
+  background: #7372726b;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 24px 48px -14px rgba(24, 24, 27, 0.45),
+    0 0 0 4px rgba(255, 255, 255, 0.15);
+  outline: none;
+}
+
+.dock-glass-input-error {
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 100, 100, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 18px 36px -18px rgba(255, 0, 0, 0.2) !important;
+}
+
+.dock-glass-button {
+  background: #94939362;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 14px 28px -10px rgba(24, 24, 27, 0.3);
+  -webkit-backdrop-filter: blur(20px) saturate(2);
+  backdrop-filter: blur(20px) saturate(2);
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dock-glass-button:hover:not(:disabled) {
+  background: rgba(148, 148, 148, 0.48);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 18px 34px -10px rgba(24, 24, 27, 0.38),
+    0 0 20px 2px rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.dock-glass-button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+
+/* Subtle clean scrollbar for contact container */
+.contact-scroll-area::-webkit-scrollbar {
+  width: 5px;
+}
+.contact-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.contact-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+.contact-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}

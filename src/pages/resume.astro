@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 ---
 
 <!doctype html>
@@ -11,6 +12,7 @@ import '../styles/global.css';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <title>Resume | Shubham Idnani</title>
+    <ClientRouter />
   </head>
   <body class="bg-black text-white w-full h-full min-h-screen m-0 p-3 sm:p-5 box-border flex flex-col font-sans select-none overflow-hidden">
     <!-- Main Shell -->
@@ -48,37 +50,7 @@ import '../styles/global.css';
           </div>
         </div>
 
-        <!-- Right: Actions (Open Raw & Download) -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <a
-            href="/Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-white/70 hover:text-white border border-white/10 transition-all text-xs font-medium"
-            title="Open raw PDF in separate tab"
-          >
-            <span>Open Raw</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/>
-              <line x1="10" x2="21" y1="14" y2="3"/>
-            </svg>
-          </a>
-
-          <a
-            href="/Resume.pdf"
-            download="Shubham_Idnani_Resume.pdf"
-            class="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs sm:text-sm shadow-lg shadow-blue-600/30 border border-blue-400/40 transition-all active:scale-95 cursor-pointer"
-            title="Download resume PDF to your device"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" x2="12" y1="15" y2="3"/>
-            </svg>
-            <span>Download PDF</span>
-          </a>
-        </div>
+      
       </header>
 
       <!-- PDF Preview Container -->

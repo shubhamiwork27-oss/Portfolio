@@ -5,6 +5,7 @@ import TechText from "./TechText";
 import TextType from "./TextType";
 import Dock from "./Dock";
 import MusicPlayer from "../music/MusicPlayer";
+import Contact from "../Contact/Contact";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon,
@@ -39,7 +40,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Contact: {
-    colors: ["black", "black", "grey", "grey", "white"],
+    colors: ["black", "#292929", "#424242", "#4d4c4c", "#696868","#c2c2c2"],
     angle: 180,
   },
 };
@@ -162,6 +163,7 @@ export default function Home() {
       icon: glyph(Linkedin02Icon),
       label: "LinkedIn",
       onClick: () => {
+        if (activeTab === "Contact") setActiveTab("Profile");
         window.open(
           "https://www.linkedin.com/in/shubhamidnani",
           "_blank",
@@ -173,6 +175,7 @@ export default function Home() {
       icon: glyph(Github01Icon),
       label: "Github",
       onClick: () => {
+        if (activeTab === "Contact") setActiveTab("Profile");
         window.open(
           "https://github.com/shubhamiwork27-oss",
           "_blank",
@@ -184,6 +187,7 @@ export default function Home() {
       icon: glyph(GoogleDocIcon),
       label: "Resume",
       onClick: () => {
+        if (activeTab === "Contact") setActiveTab("Profile");
         window.open("/resume", "_blank");
       },
     },
@@ -192,7 +196,7 @@ export default function Home() {
       label: "Contact",
       active: activeTab === "Contact",
       onClick: () => {
-        setActiveTab("Contact");
+        setActiveTab((prev) => (prev === "Contact" ? "Profile" : "Contact"));
         setIsMusicOpen(false);
       },
     },
@@ -242,7 +246,7 @@ export default function Home() {
             flow={0.5}
             scale={1}
             speed={2}
-            paletteFollow={activeTab === "Music" && isMusicOpen ? 2.2 : 0.9}
+            paletteFollow={activeTab === "Music" && isMusicOpen ? 2.0 : 1.3}
             silk={0.63}
             grainAmount={0.08}
             grainSize={0.5}
@@ -259,21 +263,41 @@ export default function Home() {
         </div>
 
         {/* Custom Hugeicons Music Player Pop-out */}
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {isMusicOpen && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.88, y: 30, filter: "blur(10px)" }}
+              key="music-player"
+              initial={{ opacity: 0, scale: 0.92, y: 24, filter: "blur(12px)" }}
               animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.88, y: 20, filter: "blur(8px)" }}
+              exit={{ opacity: 0, scale: 0.92, y: 16, filter: "blur(10px)" }}
               transition={{
-                type: "spring",
-                stiffness: 380,
-                damping: 26,
-                mass: 0.7,
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1],
               }}
               className="absolute bottom-[147px] left-1/2 -translate-x-1/2 z-20 pointer-events-auto"
             >
               <MusicPlayer />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Contact Pop-out */}
+        <AnimatePresence mode="wait">
+          {activeTab === "Contact" && (
+            <motion.div
+              key="contact-view"
+              initial={{ opacity: 0, scale: 0.97, y: 18, filter: "blur(12px)" }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.97, y: -12, filter: "blur(10px)" }}
+              transition={{
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-4 sm:p-8 md:p-12 pt-6 sm:pt-10 pb-28 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
+            >
+              <div className="pointer-events-auto w-full flex justify-center my-auto">
+                <Contact />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

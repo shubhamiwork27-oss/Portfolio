@@ -155,7 +155,7 @@ export default function MusicPlayer() {
           backdropFilter: "blur(20px) saturate(2)",
           WebkitBackdropFilter: "blur(20px) saturate(2)",
           boxShadow:
-            "inset 0 0 0 1px #ffffff8c, inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 22px 44px -22px rgba(24, 24, 27, 0.35)",
+            "inset 0 0 0 10px #ffffff8c, inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 22px 44px -22px rgba(24, 24, 27, 0.35)",
         }}
         className='relative w-[500px] h-[500px] sm:w-[400px] sm:h-[400px] max-w-[78vw] max-h-[45vh] aspect-square rounded-[38px] sm:rounded-[44px] overflow-hidden'>
         <AnimatePresence custom={direction} mode='popLayout' initial={false}>

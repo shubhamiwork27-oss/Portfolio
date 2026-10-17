@@ -457,8 +457,9 @@ const Grainient = ({
       targetDirY = Math.cos(targetRad);
 
       if (!reduce && rampInitialized) {
-        // Smooth exponential interpolation over ~0.9s for silky morphing
-        const follow = 1 - Math.exp(-dt / 0.9);
+        // Smooth exponential interpolation over paletteFollow time constant for silky morphing
+        const followSpeed = Math.max(0.2, Number(s.paletteFollow) || 1.2);
+        const follow = 1 - Math.exp(-dt / followSpeed);
         let stillTransitioning = false;
         for (let i = 0; i < MAX_COLORS * 3; i++) {
           const diff = targetRamp[i] - ramp[i];
