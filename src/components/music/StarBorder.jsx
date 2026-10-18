@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { motion } from "motion/react";
 
 export default function StarBorder({
@@ -10,25 +10,43 @@ export default function StarBorder({
   onClick,
   ...props
 }) {
-  const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
   const btnRef = useRef(null);
+  const glareRef = useRef(null);
+  const rectRef = useRef(null);
+
+  const updateRect = useCallback(() => {
+    if (btnRef.current) {
+      rectRef.current = btnRef.current.getBoundingClientRect();
+    }
+  }, []);
 
   const handleMouseMove = (e) => {
     if (!btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    setGlarePos({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
+    if (!rectRef.current) updateRect();
+    if (!rectRef.current || !glareRef.current) return;
+
+    const x = ((e.clientX - rectRef.current.left) / rectRef.current.width) * 100;
+    const y = ((e.clientY - rectRef.current.top) / rectRef.current.height) * 100;
+    glareRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255, 255, 255, 0.8) 0%, transparent 60%)`;
+  };
+
+  const handleMouseEnter = () => {
+    updateRect();
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    rectRef.current = null;
+    setIsHovered(false);
   };
 
   return (
     <Component
       ref={btnRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
         background: "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(246,246,248,0.85) 100%)",
@@ -40,10 +58,11 @@ export default function StarBorder({
     >
       {/* Glare hover overlay */}
       <div
+        ref={glareRef}
         className="pointer-events-none absolute inset-0 rounded-full transition-opacity duration-300"
         style={{
           opacity: isHovered ? 0.6 : 0,
-          background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255, 255, 255, 0.8) 0%, transparent 60%)`,
+          background: `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 0%, transparent 60%)`,
         }}
       />
 

@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { useState, useEffect, useMemo } from "react";
+import { motion } from "motion/react";
 import Grainient from "./tempbg/Grainient";
-import TechText from "./TechText";
-import TextType from "./TextType";
 import Dock from "./Dock";
 import MusicPlayer from "../music/MusicPlayer";
 import Contact from "../Contact/Contact";
@@ -24,7 +22,7 @@ const glyph = (icon) => (
 
 const GRADIENTS = {
   Profile: {
-    colors: ["#001694", "#12429a", "#0094ff", "#00daff", "#91f9ff"],
+    colors: ["#011e4d","#012d73", "#0446b0", "#0b5ee3", "#4dc1ff"],
     angle: 180,
   },
   Interests: {
@@ -88,6 +86,32 @@ export default function Home() {
   const [isMusicOpen, setIsMusicOpen] = useState(false);
   const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
 
+  // Lazy-mount flags so windows are mounted on first open and stay mounted (hidden when closed)
+  const [hasMountedMusic, setHasMountedMusic] = useState(false);
+  const [hasMountedContact, setHasMountedContact] = useState(false);
+
+  // Animation active flags to toggle will-change only while animating
+  const [isMusicAnimating, setIsMusicAnimating] = useState(false);
+  const [isContactAnimating, setIsContactAnimating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(typeof window !== "undefined" && window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMusicOpen && !hasMountedMusic) setHasMountedMusic(true);
+  }, [isMusicOpen, hasMountedMusic]);
+
+  useEffect(() => {
+    if (activeTab === "Contact" && !hasMountedContact) setHasMountedContact(true);
+  }, [activeTab, hasMountedContact]);
+
   // Animate and cycle gradient colors smoothly only while in Music mode
   useEffect(() => {
     if (activeTab !== "Music" || !isMusicOpen) return;
@@ -104,103 +128,106 @@ export default function Home() {
       ? MUSIC_GRADIENT_PALETTES[musicPaletteIndex]
       : GRADIENTS[activeTab] || GRADIENTS.Profile;
 
-  const items = [
-    {
-      icon: glyph(User02Icon),
-      label: "Profile",
-      active: activeTab === "Profile",
-      onClick: () => {
-        setActiveTab("Profile");
-        setIsMusicOpen(false);
-      },
-      menu: [
-        { label: "New Window", onClick: () => console.log("New Window") },
-        { separator: true },
-        {
-          label: "Options",
-          items: [
-            { label: "Open at Login", checked: true },
-            { label: "Show in Finder" },
-          ],
+  const items = useMemo(
+    () => [
+      {
+        icon: glyph(User02Icon),
+        label: "Profile",
+        active: activeTab === "Profile",
+        onClick: () => {
+          setActiveTab("Profile");
+          setIsMusicOpen(false);
         },
-        { separator: true },
-        { label: "Quit", onClick: () => console.log("Quit") },
-      ],
-    },
-    {
-      icon: glyph(MountainSnowIcon),
-      label: "Interests",
-      active: activeTab === "Interests",
-      onClick: () => {
-        setActiveTab("Interests");
-        setIsMusicOpen(false);
+        menu: [
+          { label: "New Window" },
+          { separator: true },
+          {
+            label: "Options",
+            items: [
+              { label: "Open at Login", checked: true },
+              { label: "Show in Finder" },
+            ],
+          },
+          { separator: true },
+          { label: "Quit" },
+        ],
       },
-    },
-    {
-      icon: glyph(MusicNote03Icon),
-      label: "Music",
-      active: activeTab === "Music" && isMusicOpen,
-      onClick: () => {
-        if (activeTab === "Music" && isMusicOpen) {
-          // Clicking music button while active advances to next animated gradient color palette immediately
-          setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
-        } else {
-          setActiveTab("Music");
-          setIsMusicOpen(true);
-        }
+      {
+        icon: glyph(MountainSnowIcon),
+        label: "Interests",
+        active: activeTab === "Interests",
+        onClick: () => {
+          setActiveTab("Interests");
+          setIsMusicOpen(false);
+        },
       },
-    },
-    {
-      icon: glyph(CodeFolderIcon),
-      label: "Projects",
-      active: activeTab === "Projects",
-      onClick: () => {
-        setActiveTab("Projects");
-        setIsMusicOpen(false);
+      {
+        icon: glyph(MusicNote03Icon),
+        label: "Music",
+        active: activeTab === "Music" && isMusicOpen,
+        onClick: () => {
+          if (activeTab === "Music" && isMusicOpen) {
+            // Clicking music button while active advances to next animated gradient color palette immediately
+            setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
+          } else {
+            setActiveTab("Music");
+            setIsMusicOpen(true);
+          }
+        },
       },
-    },
-    {
-      icon: glyph(Linkedin02Icon),
-      label: "LinkedIn",
-      onClick: () => {
-        if (activeTab === "Contact") setActiveTab("Profile");
-        window.open(
-          "https://www.linkedin.com/in/shubhamidnani",
-          "_blank",
-          "noopener,noreferrer"
-        );
+      {
+        icon: glyph(CodeFolderIcon),
+        label: "Projects",
+        active: activeTab === "Projects",
+        onClick: () => {
+          setActiveTab("Projects");
+          setIsMusicOpen(false);
+        },
       },
-    },
-    {
-      icon: glyph(Github01Icon),
-      label: "Github",
-      onClick: () => {
-        if (activeTab === "Contact") setActiveTab("Profile");
-        window.open(
-          "https://github.com/shubhamiwork27-oss",
-          "_blank",
-          "noopener,noreferrer"
-        );
+      {
+        icon: glyph(Linkedin02Icon),
+        label: "LinkedIn",
+        onClick: () => {
+          if (activeTab === "Contact") setActiveTab("Profile");
+          window.open(
+            "https://www.linkedin.com/in/shubhamidnani",
+            "_blank",
+            "noopener,noreferrer"
+          );
+        },
       },
-    },
-    {
-      icon: glyph(GoogleDocIcon),
-      label: "Resume",
-      onClick: () => {
-        if (activeTab === "Contact") setActiveTab("Profile");
-        window.open("/resume", "_blank");
+      {
+        icon: glyph(Github01Icon),
+        label: "Github",
+        onClick: () => {
+          if (activeTab === "Contact") setActiveTab("Profile");
+          window.open(
+            "https://github.com/shubhamiwork27-oss",
+            "_blank",
+            "noopener,noreferrer"
+          );
+        },
       },
-    },
-    {
-      icon: glyph(AtSignIcon),
-      label: "Contact",
-      active: activeTab === "Contact",
-      onClick: () => {
-        setActiveTab((prev) => (prev === "Contact" ? "Profile" : "Contact"));
-        setIsMusicOpen(false);
+      {
+        icon: glyph(GoogleDocIcon),
+        label: "Resume",
+        onClick: () => {
+          if (activeTab === "Contact") setActiveTab("Profile");
+          window.open("/resume", "_blank");
+        },
       },
-    },
-  ];
+      {
+        icon: glyph(AtSignIcon),
+        label: "Contact",
+        active: activeTab === "Contact",
+        onClick: () => {
+          setActiveTab((prev) => (prev === "Contact" ? "Profile" : "Contact"));
+          setIsMusicOpen(false);
+        },
+      },
+    ],
+    [activeTab, isMusicOpen]
+  );
 
   return (
     <div
@@ -227,7 +254,7 @@ export default function Home() {
           transform: "translateZ(0)",
         }}
       >
-        {/* Temporary Background (Grainient) */}
+        {/* Isolated static background layer */}
         <div
           style={{
             position: "absolute",
@@ -235,6 +262,9 @@ export default function Home() {
             width: "100%",
             height: "100%",
             zIndex: 0,
+            pointerEvents: "none",
+            transform: "translateZ(0)",
+            contain: "strict",
           }}
         >
           <Grainient
@@ -263,60 +293,98 @@ export default function Home() {
         </div>
 
         {/* Custom Hugeicons Music Player Pop-out */}
-        <AnimatePresence mode="wait">
-          {isMusicOpen && (
-            <motion.div
-              key="music-player"
-              initial={{ opacity: 0, scale: 0.94, y: 20, filter: "blur(12px)" }}
-              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.94, y: 14, filter: "blur(10px)" }}
-              transition={{
-                duration: 0.45,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="absolute inset-x-0 top-0 bottom-[95px] sm:bottom-[105px] md:bottom-[115px] lg:bottom-[120px] z-20 flex items-center justify-center pointer-events-none px-3 sm:px-6 lg:px-8 py-2 overflow-hidden"
-            >
-              <div className="pointer-events-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center">
-                <MusicPlayer />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {hasMountedMusic && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            animate={
+              isMusicOpen
+                ? {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    pointerEvents: "auto",
+                    transitionEnd: { visibility: "visible" },
+                  }
+                : {
+                    opacity: 0,
+                    scale: 0.94,
+                    y: 14,
+                    pointerEvents: "none",
+                    transitionEnd: { visibility: "hidden" },
+                  }
+            }
+            transition={{
+              duration: 0.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            onAnimationStart={() => setIsMusicAnimating(true)}
+            onAnimationComplete={() => setIsMusicAnimating(false)}
+            style={{
+              willChange: isMusicAnimating ? "transform, opacity" : "auto",
+              transform: "translateZ(0)",
+              contain: "layout paint style",
+            }}
+            className="absolute inset-x-0 top-0 bottom-[88px] sm:bottom-[100px] md:bottom-[115px] lg:bottom-[120px] z-20 flex items-center justify-center pointer-events-none px-3 sm:px-6 lg:px-8 py-2 overflow-hidden"
+          >
+            <div className="pointer-events-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center">
+              <MusicPlayer isOpen={isMusicOpen} />
+            </div>
+          </motion.div>
+        )}
 
         {/* Contact Pop-out */}
-        <AnimatePresence mode="wait">
-          {activeTab === "Contact" && (
-            <motion.div
-              key="contact-view"
-              initial={{ opacity: 0, scale: 0.97, y: 18, filter: "blur(12px)" }}
-              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.97, y: -12, filter: "blur(10px)" }}
-              transition={{
-                duration: 0.45,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-4 sm:p-8 md:p-12 pt-6 sm:pt-10 pb-28 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
-            >
-              <div className="pointer-events-auto w-full flex justify-center my-auto">
-                <Contact />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {hasMountedContact && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 18 }}
+            animate={
+              activeTab === "Contact"
+                ? {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    pointerEvents: "auto",
+                    transitionEnd: { visibility: "visible" },
+                  }
+                : {
+                    opacity: 0,
+                    scale: 0.97,
+                    y: -12,
+                    pointerEvents: "none",
+                    transitionEnd: { visibility: "hidden" },
+                  }
+            }
+            transition={{
+              duration: 0.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            onAnimationStart={() => setIsContactAnimating(true)}
+            onAnimationComplete={() => setIsContactAnimating(false)}
+            style={{
+              willChange: isContactAnimating ? "transform, opacity" : "auto",
+              transform: "translateZ(0)",
+              contain: "layout paint style",
+            }}
+            className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-4 sm:p-8 md:p-12 pt-6 sm:pt-10 pb-28 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
+          >
+            <div className="pointer-events-auto w-full flex justify-center my-auto">
+              <Contact />
+            </div>
+          </motion.div>
+        )}
 
         {/* Mid Bottom Dock */}
         <Dock
           className="z-30"
           items={items}
           theme="light"
-          baseItemSize={50}
-          magnification={80}
-          panelHeight={70}
+          baseItemSize={isMobile ? 38 : 50}
+          magnification={isMobile ? 50 : 80}
+          panelHeight={isMobile ? 56 : 70}
           accentColor="#0a84ff"
           badgeColor="#fff"
           position="bottom"
-          distance={230}
-          gap={10}
+          distance={isMobile ? 110 : 160}
+          gap={isMobile ? 6 : 10}
           roundness={0.7}
           bounce
           autoHide={false}

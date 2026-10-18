@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { motion } from "motion/react";
 import {
   Mail,
@@ -34,7 +34,7 @@ const INITIAL_FORM = {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function Contact() {
+function ContactComponent() {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
@@ -693,3 +693,5 @@ export default function Contact() {
     </section>
   );
 }
+
+export default memo(ContactComponent);

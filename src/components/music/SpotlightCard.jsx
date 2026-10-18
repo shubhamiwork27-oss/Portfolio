@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 
 export default function SpotlightCard({
   children,
@@ -8,17 +8,25 @@ export default function SpotlightCard({
   ...props
 }) {
   const divRef = useRef(null);
+  const spotlightRef = useRef(null);
+  const rectRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
+
+  const updateRect = useCallback(() => {
+    if (divRef.current) {
+      rectRef.current = divRef.current.getBoundingClientRect();
+    }
+  }, []);
 
   const handleMouseMove = (e) => {
     if (!divRef.current || isFocused) return;
+    if (!rectRef.current) updateRect();
+    if (!rectRef.current || !spotlightRef.current) return;
 
-    const div = divRef.current;
-    const rect = div.getBoundingClientRect();
-
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    const x = e.clientX - rectRef.current.left;
+    const y = e.clientY - rectRef.current.top;
+    spotlightRef.current.style.background = `radial-gradient(400px circle at ${x}px ${y}px, ${spotlightColor}, transparent 75%)`;
   };
 
   const handleFocus = () => {
@@ -32,10 +40,12 @@ export default function SpotlightCard({
   };
 
   const handleMouseEnter = () => {
+    updateRect();
     setOpacity(1);
   };
 
   const handleMouseLeave = () => {
+    rectRef.current = null;
     setOpacity(0);
   };
 
@@ -61,10 +71,11 @@ export default function SpotlightCard({
     >
       {/* Interactive cursor spotlight layer */}
       <div
+        ref={spotlightRef}
         className="pointer-events-none absolute -inset-px transition-opacity duration-300"
         style={{
           opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 75%)`,
+          background: `radial-gradient(400px circle at 0px 0px, ${spotlightColor}, transparent 75%)`,
         }}
       />
       {/* Content wrapper */}

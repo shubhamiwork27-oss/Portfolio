@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { motion, useSpring } from "motion/react";
 
 export default function TiltedCard({
@@ -11,8 +11,9 @@ export default function TiltedCard({
   ...props
 }) {
   const cardRef = useRef(null);
+  const glareRef = useRef(null);
+  const rectRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
 
   const prefersReducedMotion =
     typeof window !== "undefined" &&
@@ -23,10 +24,18 @@ export default function TiltedCard({
   const rotateY = useSpring(0, springConfig);
   const cardScale = useSpring(1, springConfig);
 
+  const updateRect = useCallback(() => {
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+  }, []);
+
   const handleMouseMove = (e) => {
     if (!cardRef.current || prefersReducedMotion) return;
+    if (!rectRef.current) updateRect();
+    if (!rectRef.current) return;
 
-    const rect = cardRef.current.getBoundingClientRect();
+    const rect = rectRef.current;
     const width = rect.width;
     const height = rect.height;
 
@@ -40,18 +49,21 @@ export default function TiltedCard({
     rotateY.set(xPct * maxTilt);
     cardScale.set(scale);
 
-    setGlarePosition({
-      x: (mouseX / width) * 100,
-      y: (mouseY / height) * 100,
-    });
+    if (glareRef.current) {
+      const gx = (mouseX / width) * 100;
+      const gy = (mouseY / height) * 100;
+      glareRef.current.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 65%)`;
+    }
   };
 
   const handleMouseEnter = () => {
     if (prefersReducedMotion) return;
+    updateRect();
     setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
+    rectRef.current = null;
     setIsHovered(false);
     rotateX.set(0);
     rotateY.set(0);
@@ -85,10 +97,11 @@ export default function TiltedCard({
 
         {glare && (
           <div
+            ref={glareRef}
             className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-300 z-30"
             style={{
               opacity: isHovered ? 0.35 : 0,
-              background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 65%)`,
+              background: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 65%)`,
             }}
           />
         )}

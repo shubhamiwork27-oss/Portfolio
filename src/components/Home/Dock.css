@@ -14,6 +14,7 @@
   -webkit-backdrop-filter: blur(20px) saturate(2);
   backdrop-filter: blur(20px) saturate(2);
   touch-action: none;
+  max-width: calc(100% - 16px);
   transition:
     translate 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease;
@@ -54,8 +55,14 @@
 }
 
 .dock--bottom {
-  bottom: 12px;
+  bottom: max(14px, env(safe-area-inset-bottom, 14px));
   align-items: flex-end;
+}
+
+@media (max-width: 640px) {
+  .dock--bottom {
+    bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+  }
 }
 
 .dock--top {
@@ -136,6 +143,7 @@
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+  will-change: width, height;
 }
 
 .dock-item:hover,
@@ -145,12 +153,43 @@
 
 .dock-tile {
   position: absolute;
-  top: 0;
-  left: 0;
   width: var(--dock-base);
   height: var(--dock-base);
-  transform-origin: 0 0;
   pointer-events: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.dock--bottom .dock-tile {
+  top: auto;
+  bottom: 0;
+  left: 50%;
+  margin-left: calc(var(--dock-base) * -0.5);
+  transform-origin: 50% 100%;
+}
+
+.dock--top .dock-tile {
+  top: 0;
+  bottom: auto;
+  left: 50%;
+  margin-left: calc(var(--dock-base) * -0.5);
+  transform-origin: 50% 0%;
+}
+
+.dock--left .dock-tile {
+  left: 0;
+  right: auto;
+  top: 50%;
+  margin-top: calc(var(--dock-base) * -0.5);
+  transform-origin: 0% 50%;
+}
+
+.dock--right .dock-tile {
+  right: 0;
+  left: auto;
+  top: 50%;
+  margin-top: calc(var(--dock-base) * -0.5);
+  transform-origin: 100% 50%;
 }
 
 .dock-face {
@@ -168,7 +207,7 @@
     var(--dock-tile-shadow);
   font-size: calc(var(--dock-base) * 0.44);
   line-height: 1;
-  transition: filter 0.2s ease;
+  transition: filter 0.16s ease, transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .dock--bare .dock-face {
@@ -181,7 +220,8 @@
 .dock-item:active .dock-face,
 .dock-item[data-open] .dock-face {
   filter: var(--dock-press);
-  transition-duration: 0s;
+  transform: scale(0.92);
+  transition-duration: 0.06s;
 }
 
 .dock-item:focus-visible .dock-face {
@@ -288,46 +328,51 @@
 
 .dock-label {
   position: absolute;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 5px 10px;
+  border-radius: 7px;
   background: var(--dock-label);
   color: var(--dock-label-ink);
   box-shadow:
     inset 0 0 0 1px var(--dock-panel-edge),
-    0 8px 20px -8px rgba(0, 0, 0, 0.35);
+    0 8px 24px -6px rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: -0.01em;
   line-height: 1;
   white-space: nowrap;
   pointer-events: none;
+  contain: layout style;
   opacity: 0;
+  will-change: transform, opacity;
   transition:
-    opacity 0.16s ease,
-    transform 0.16s ease;
+    opacity 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dock--bottom .dock-label {
   bottom: calc(100% + 12px);
   left: 50%;
-  transform: translate(-50%, 4px);
+  transform: translate(-50%, 6px) scale(0.94);
 }
 
 .dock--top .dock-label {
   top: calc(100% + 12px);
   left: 50%;
-  transform: translate(-50%, -4px);
+  transform: translate(-50%, -6px) scale(0.94);
 }
 
 .dock--left .dock-label {
   top: 50%;
   left: calc(100% + 12px);
-  transform: translate(-4px, -50%);
+  transform: translate(-6px, -50%) scale(0.94);
 }
 
 .dock--right .dock-label {
   top: 50%;
   right: calc(100% + 12px);
-  transform: translate(4px, -50%);
+  transform: translate(6px, -50%) scale(0.94);
 }
 
 .dock-item:focus-visible .dock-label {
@@ -336,12 +381,12 @@
 
 .dock--bottom .dock-item:focus-visible .dock-label,
 .dock--top .dock-item:focus-visible .dock-label {
-  transform: translate(-50%, 0);
+  transform: translate(-50%, 0) scale(1);
 }
 
 .dock--left .dock-item:focus-visible .dock-label,
 .dock--right .dock-item:focus-visible .dock-label {
-  transform: translate(0, -50%);
+  transform: translate(0, -50%) scale(1);
 }
 
 @media (hover: hover) {
@@ -351,17 +396,29 @@
 
   .dock--bottom .dock-item:hover .dock-label,
   .dock--top .dock-item:hover .dock-label {
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 0) scale(1);
   }
 
   .dock--left .dock-item:hover .dock-label,
   .dock--right .dock-item:hover .dock-label {
-    transform: translate(0, -50%);
+    transform: translate(0, -50%) scale(1);
   }
 }
 
 .dock .dock-item[data-hop] .dock-label {
   opacity: 0;
+}
+
+@media (max-width: 640px) {
+  .dock-label {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .dock--bottom .dock-label {
+    bottom: calc(100% + 8px);
+  }
 }
 
 .dock-menu {

@@ -1,14 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, memo } from 'react';
 import { createPortal } from 'react-dom';
 
 import './Dock.css';
 
 const SIDES = ['bottom', 'top', 'left', 'right'];
 const EDGE = 12;
-const HOP = 0.4;
-const HOP_TIME = 0.28;
+const HOP = 0.45;
+const HOP_TIME = 0.32;
 const HOLD_TIME = 450;
 const TAIL = 9;
 const TAIL_HALF = 9;
@@ -18,7 +18,7 @@ const MARGIN = 8;
 const POP = 'cubic-bezier(0.2, 1.25, 0.4, 1)';
 
 const THEMES = {
-    light: {
+  light: {
     '--dock-panel': '#ffffff45',
     '--dock-panel-edge': '#ffffff8c',
     '--dock-panel-highlight': 'rgba(255, 255, 255, 0.95)',
@@ -28,9 +28,9 @@ const THEMES = {
     '--dock-tile-highlight': 'rgba(255, 255, 255, 1)',
     '--dock-tile-shadow': '0 4px 10px -5px rgba(24, 24, 27, 0.25)',
     '--dock-ink': '#27272a',
-    '--dock-label': '#ffffff',
+    '--dock-label': 'rgba(255, 255, 255, 0.92)',
     '--dock-label-ink': '#18181b',
-    '--dock-dot': '#fff',
+    '--dock-dot': '#ffffff',
     '--dock-separator': 'rgba(24, 24, 27, 0.12)',
     '--dock-press': 'brightness(0.9)',
     '--dock-menu': 'rgba(248, 248, 250, 0.86)',
@@ -39,6 +39,28 @@ const THEMES = {
     '--dock-menu-muted': 'rgba(24, 24, 27, 0.4)',
     '--dock-menu-separator': 'rgba(24, 24, 27, 0.1)',
     '--dock-menu-shadow': '0 18px 40px -14px rgba(24, 24, 27, 0.3), 0 3px 10px rgba(24, 24, 27, 0.1)'
+  },
+  dark: {
+    '--dock-panel': 'rgba(30, 30, 35, 0.55)',
+    '--dock-panel-edge': 'rgba(255, 255, 255, 0.12)',
+    '--dock-panel-highlight': 'rgba(255, 255, 255, 0.2)',
+    '--dock-panel-shadow': '0 22px 44px -22px rgba(0, 0, 0, 0.5), 0 6px 16px -10px rgba(0, 0, 0, 0.3)',
+    '--dock-tile': 'linear-gradient(180deg, #2c2c30 0%, #1c1c1f 100%)',
+    '--dock-tile-edge': 'rgba(255, 255, 255, 0.12)',
+    '--dock-tile-highlight': 'rgba(255, 255, 255, 0.25)',
+    '--dock-tile-shadow': '0 4px 10px -5px rgba(0, 0, 0, 0.5)',
+    '--dock-ink': '#f4f4f5',
+    '--dock-label': 'rgba(24, 24, 27, 0.88)',
+    '--dock-label-ink': '#ffffff',
+    '--dock-dot': '#ffffff',
+    '--dock-separator': 'rgba(255, 255, 255, 0.15)',
+    '--dock-press': 'brightness(0.85)',
+    '--dock-menu': 'rgba(32, 32, 36, 0.92)',
+    '--dock-menu-edge': 'rgba(255, 255, 255, 0.12)',
+    '--dock-menu-ink': '#f4f4f5',
+    '--dock-menu-muted': 'rgba(255, 255, 255, 0.45)',
+    '--dock-menu-separator': 'rgba(255, 255, 255, 0.12)',
+    '--dock-menu-shadow': '0 18px 40px -14px rgba(0, 0, 0, 0.6), 0 3px 10px rgba(0, 0, 0, 0.3)'
   }
 };
 
@@ -411,17 +433,17 @@ function DockMenu({
   );
 }
 
-export default function Dock({
+function Dock({
   items = [],
   position = 'bottom',
   theme = 'dark',
   baseItemSize = 50,
   magnification = 70,
-  distance = 200,
+  distance = 160,
   panelHeight = 68,
   gap = 10,
   roundness = 0.5,
-  spring = { mass: 0.1, stiffness: 150, damping: 12 },
+  spring = { mass: 0.1, stiffness: 280, damping: 10 },
   bounce = true,
   autoHide = false,
   tiles = true,
@@ -471,8 +493,8 @@ export default function Dock({
     gap: rawGap * fit,
     distance: Math.max(1, distance) * fit,
     mass: Math.max(0.01, spring?.mass ?? 0.1),
-    stiffness: Math.max(1, spring?.stiffness ?? 150),
-    damping: Math.max(0, spring?.damping ?? 12),
+    stiffness: Math.max(1, spring?.stiffness ?? 280),
+    damping: Math.max(0, spring?.damping ?? 10),
     bounce,
     autoHide
   };
@@ -494,8 +516,17 @@ export default function Dock({
     const host = root.offsetParent ?? document.documentElement;
     const measure = () => {
       const s = settingsRef.current;
-      const room = (s.vertical ? host.clientHeight : host.clientWidth) - EDGE * 2;
-      const next = s.length > 0 ? Math.min(1, Math.max(0.4, room / s.length)) : 1;
+      const hostDimension = s.vertical ? host.clientHeight : host.clientWidth;
+      const isMobile = hostDimension <= 640;
+      const margin = isMobile ? 8 : EDGE;
+      const room = hostDimension - margin * 2;
+      const peakHeadroom = isMobile ? (s.peak - s.base) * 0.35 : (s.peak - s.base);
+      const effectiveLength =
+        s.items.reduce((sum, item) => sum + (item?.separator ? 1 : s.base), 0) +
+        s.gap * Math.max(0, s.items.length - 1) +
+        (s.thickness - s.base) +
+        peakHeadroom;
+      const next = effectiveLength > 0 ? Math.min(1, Math.max(0.45, room / effectiveLength)) : 1;
       setFit(Math.round(next * 1000) / 1000);
     };
     measure();
@@ -542,6 +573,14 @@ export default function Dock({
       return state;
     };
 
+    let cachedCenter = 0;
+    const updateCenter = () => {
+      const s = settingsRef.current;
+      const rect = root.getBoundingClientRect();
+      cachedCenter = s.vertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
+    };
+    updateCenter();
+
     const tick = now => {
       raf = 0;
       if (!alive) return;
@@ -556,8 +595,7 @@ export default function Dock({
         });
         lastBase = s.base;
       }
-      const rect = root.getBoundingClientRect();
-      const center = s.vertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
+      const center = cachedCenter;
       const spans = s.items.map(item => (item?.separator ? 1 : s.base));
       let cursor = -(spans.reduce((sum, span) => sum + span, 0) + s.gap * Math.max(0, spans.length - 1)) / 2;
       const rest = spans.map(span => {
@@ -593,13 +631,15 @@ export default function Dock({
             if (!state.hopping) continue;
             state.rise -= state.gravity * h;
             state.lift += state.rise * h;
-            if (state.lift > 0) continue;
-            state.lift = 0;
-            state.rise *= -0.36;
-            if (state.rise < state.launch * 0.2) {
-              state.rise = 0;
-              state.hopping = false;
-              node.removeAttribute('data-hop');
+            if (state.lift <= 0) {
+              state.lift = 0;
+              state.rise *= -0.46;
+              if (Math.abs(state.rise) < state.launch * 0.18) {
+                state.rise = 0;
+                state.lift = 0;
+                state.hopping = false;
+                node.removeAttribute('data-hop');
+              }
             }
           }
         }
@@ -611,16 +651,21 @@ export default function Dock({
         }
         if (state.hopping) moving = true;
         const size = Math.max(1, state.size);
-        const drawn = `${size.toFixed(2)} ${state.lift.toFixed(2)} ${s.side}`;
+        const scale = (size / s.base).toFixed(4);
+        const liftPx = (s.side === 'bottom' || s.side === 'right' ? -state.lift : state.lift).toFixed(2);
+        const drawn = `${size.toFixed(1)} ${liftPx} ${scale}`;
         if (drawn === state.drawn && node === state.node) return;
         state.drawn = drawn;
         state.node = node;
-        const lift = s.side === 'bottom' || s.side === 'right' ? -state.lift : state.lift;
+
+        node.style.width = `${size.toFixed(1)}px`;
+        node.style.height = `${size.toFixed(1)}px`;
         const tile = node.firstElementChild;
-        node.style.width = `${size}px`;
-        node.style.height = `${size}px`;
-        if (tile)
-          tile.style.transform = `translate(${s.vertical ? `${lift}px, 0` : `0, ${lift}px`}) scale(${size / s.base})`;
+        if (tile) {
+          tile.style.transform = s.vertical
+            ? `translate3d(${liftPx}px, 0, 0) scale(${scale})`
+            : `translate3d(0, ${liftPx}px, 0) scale(${scale})`;
+        }
       });
 
       if (moving) raf = requestAnimationFrame(tick);
@@ -670,7 +715,7 @@ export default function Dock({
         if (reduce || !settingsRef.current.bounce || !node) return;
         const state = entry(index);
         if (state.hopping) return;
-        const height = state.size * HOP;
+        const height = Math.max(18, state.size * HOP);
         state.gravity = (8 * height) / (HOP_TIME * HOP_TIME);
         state.launch = (state.gravity * HOP_TIME) / 2;
         state.rise = state.launch;
@@ -696,6 +741,7 @@ export default function Dock({
     };
 
     const onMove = event => {
+      if (!pointer.inside) updateCenter();
       pointer.x = event.clientX;
       pointer.y = event.clientY;
       pointer.inside = true;
@@ -739,6 +785,7 @@ export default function Dock({
     root.addEventListener('focusout', onFocusOut);
     window.addEventListener('pointermove', onWindowMove);
     window.addEventListener('pointerdown', onWindowMove);
+    window.addEventListener('resize', updateCenter);
     wake();
 
     return () => {
@@ -753,6 +800,7 @@ export default function Dock({
       root.removeEventListener('focusout', onFocusOut);
       window.removeEventListener('pointermove', onWindowMove);
       window.removeEventListener('pointerdown', onWindowMove);
+      window.removeEventListener('resize', updateCenter);
       wakeRef.current = null;
       actionsRef.current = null;
       const press = pressRef.current;
@@ -999,3 +1047,5 @@ export default function Dock({
     </div>
   );
 }
+
+export default memo(Dock);

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { memo } from "react";
 import { motion } from "motion/react";
 
-export default function Equalizer({ isPlaying = false, barCount = 4, className = "" }) {
+const MAX_H = 22;
+
+function EqualizerComponent({ isPlaying = false, barCount = 4, className = "" }) {
   const bars = [
     { min: 4, max: 18, duration: 0.65 },
     { min: 6, max: 22, duration: 0.5 },
@@ -20,10 +22,16 @@ export default function Equalizer({ isPlaying = false, barCount = 4, className =
           animate={
             isPlaying
               ? {
-                  height: [bar.min, bar.max, bar.min + 2, bar.max - 3, bar.min],
+                  scaleY: [
+                    bar.min / MAX_H,
+                    bar.max / MAX_H,
+                    (bar.min + 2) / MAX_H,
+                    (bar.max - 3) / MAX_H,
+                    bar.min / MAX_H,
+                  ],
                 }
               : {
-                  height: 4,
+                  scaleY: 4 / MAX_H,
                 }
           }
           transition={
@@ -39,10 +47,16 @@ export default function Equalizer({ isPlaying = false, barCount = 4, className =
                   duration: 0.25,
                 }
           }
-          className="w-1 bg-white/90 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+          style={{
+            transformOrigin: "bottom",
+            willChange: isPlaying ? "transform" : "auto",
+          }}
+          className="w-1 h-[22px] bg-white/90 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.4)]"
         />
       ))}
     </div>
   );
 }
+
+export default memo(EqualizerComponent);
 

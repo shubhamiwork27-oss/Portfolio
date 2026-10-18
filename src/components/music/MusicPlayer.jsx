@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -16,13 +16,14 @@ import {
 } from "@hugeicons/core-free-icons";
 
 import { TRACKS } from "../../data/tracks";
+import { fetchTrackId3 } from "../../data/id3Reader";
 import SpotlightCard from "./SpotlightCard";
 import TiltedCard from "./TiltedCard";
 import StarBorder from "./StarBorder";
 import Equalizer from "./Equalizer";
 import ProgressBar from "./ProgressBar";
 
-export default function MusicPlayer() {
+function MusicPlayer({ isOpen = true }) {
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -32,11 +33,42 @@ export default function MusicPlayer() {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const [mobileTab, setMobileTab] = useState("player"); // "player" | "info" | "queue"
+  const [liveMetadata, setLiveMetadata] = useState({});
 
   const audioRef = useRef(null);
   const volumeRef = useRef(null);
 
-  const currentTrack = TRACKS[trackIndex] || TRACKS[0];
+  const baseTrack = TRACKS[trackIndex] || TRACKS[0];
+  const live = liveMetadata[baseTrack.id];
+  const currentTrack = {
+    ...baseTrack,
+    title: live?.title || baseTrack.title,
+    artist: live?.artist || baseTrack.artist,
+    movie: live?.album || baseTrack.movie,
+    artwork: live?.artworkUrl || baseTrack.artwork,
+    spotifyUrl: live?.title
+      ? `https://open.spotify.com/search/${encodeURIComponent(
+          `${live.title} ${live.album || ""} ${live.artist || ""}`.trim()
+        )}`
+      : baseTrack.spotifyUrl,
+  };
+
+  // Dynamically inspect audio file ID3 tags in background if available
+  useEffect(() => {
+    let active = true;
+    if (!baseTrack?.url) return;
+    fetchTrackId3(baseTrack.url).then((tags) => {
+      if (active && tags && (tags.title || tags.artist || tags.album || tags.artworkUrl)) {
+        setLiveMetadata((prev) => ({
+          ...prev,
+          [baseTrack.id]: tags,
+        }));
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [baseTrack?.id, baseTrack?.url]);
 
   const paginate = useCallback(
     (direction) => {
@@ -56,6 +88,8 @@ export default function MusicPlayer() {
 
   // Keyboard navigation (Space = play/pause, ArrowLeft = prev, ArrowRight = next)
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e) => {
       if (
         e.target instanceof HTMLInputElement ||
@@ -244,15 +278,15 @@ export default function MusicPlayer() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`left-${currentTrack.id}`}
-                initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
                 className="flex flex-col justify-between h-full space-y-3 xl:space-y-4"
               >
                 {/* Header: Track counter badge */}
                 <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] xl:text-xs font-semibold tracking-wider uppercase bg-white/20 border border-white/30 text-white/95 backdrop-blur-md shadow-sm">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] xl:text-xs font-semibold tracking-wider uppercase bg-white/20 border border-white/30 text-white/95 shadow-sm">
                     <HugeiconsIcon icon={SparklesIcon} size={14} />
                     Track {trackIndex + 1} of {TRACKS.length}
                   </span>
@@ -279,7 +313,7 @@ export default function MusicPlayer() {
                     background: "rgba(255, 255, 255, 0.15)",
                     border: "1px solid rgba(255, 255, 255, 0.25)",
                   }}
-                  className="p-3.5 sm:p-4 xl:p-4.5 rounded-2xl backdrop-blur-md h-[120px] sm:h-[130px] xl:h-[140px] flex flex-col justify-center shadow-inner overflow-y-auto scrollbar-thin"
+                  className="p-3.5 sm:p-4 xl:p-4.5 rounded-2xl h-[120px] sm:h-[130px] xl:h-[140px] flex flex-col justify-center shadow-inner overflow-y-auto scrollbar-thin"
                 >
                   <div className="text-[10px] xl:text-[11px] font-bold uppercase tracking-wider text-white/70 mb-1.5 flex items-center gap-1 flex-shrink-0">
                     <span>“</span> Why I love this
@@ -298,7 +332,7 @@ export default function MusicPlayer() {
                     {currentTrack.moodTags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/15 text-white/95 border border-white/20 backdrop-blur-sm transition-colors hover:bg-white/25"
+                        className="text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/15 text-white/95 border border-white/20 transition-colors hover:bg-white/25"
                       >
                         #{tag}
                       </span>
@@ -335,6 +369,10 @@ export default function MusicPlayer() {
                 <img
                   src={currentTrack.artwork}
                   alt={currentTrack.title}
+                  width={390}
+                  height={430}
+                  loading="eager"
+                  decoding="async"
                   className="w-full h-full object-cover select-none pointer-events-none"
                   draggable={false}
                 />
@@ -543,7 +581,7 @@ export default function MusicPlayer() {
         </div>
 
         {/* ======================================================== */}
-        {/* RIGHT PANEL: Up Next Queue, Spotify Button, Favorite Artists */}
+        {/* RIGHT PANEL: Up Next Queue, Dynamic Spotify Action */}
         {/* ======================================================== */}
         <div
           className={`w-full max-w-[360px] sm:max-w-[420px] lg:max-w-none lg:flex-1 lg:min-w-[290px] lg:max-w-[410px] h-[430px] sm:h-[460px] lg:h-[470px] xl:h-[500px] 2xl:h-[530px] max-h-[min(540px,calc(100vh-175px))] ${
@@ -552,66 +590,138 @@ export default function MusicPlayer() {
         >
           <SpotlightCard className="p-5 sm:p-6 xl:p-7 flex flex-col justify-between w-full h-full text-white">
             <div className="flex flex-col justify-between h-full space-y-3 xl:space-y-4">
-              {/* Header: Up Next & Queue Count */}
-              <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                <span className="inline-flex items-center gap-1.5 text-xs xl:text-sm font-bold tracking-wider uppercase text-white/95">
-                  <HugeiconsIcon icon={MusicNote01Icon} size={16} />
-                  Up Next
-                </span>
-                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white/20 border border-white/25 text-white/90">
-                  {TRACKS.length} tracks
-                </span>
+              {/* Header: Up Next & Live Status */}
+              <div className="flex items-center justify-between pb-2 border-b border-white/10 flex-shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-white/15 border border-white/20 flex items-center justify-center text-white/95">
+                    <HugeiconsIcon icon={MusicNote01Icon} size={14} />
+                  </div>
+                  <span className="text-xs xl:text-sm font-bold tracking-wider uppercase text-white/95">
+                    Up Next
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {isPlaying && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 border border-emerald-500/30 text-emerald-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Live
+                    </span>
+                  )}
+                  <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20 text-white/85">
+                    {TRACKS.length} tracks
+                  </span>
+                </div>
               </div>
 
-              {/* Scrollable Queue List */}
-              <div className="flex-1 overflow-y-auto pr-1.5 space-y-2 sm:space-y-2.5 min-h-[220px] max-h-[340px] xl:max-h-[380px] 2xl:max-h-[420px] scrollbar-thin">
+              {/* Scrollable Queue List (With smooth edge fade & hidden scrollbar) */}
+              <div
+                style={{
+                  maskImage:
+                    "linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 8px), transparent 100%)",
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 8px), transparent 100%)",
+                }}
+                className="flex-1 overflow-y-auto space-y-1.5 sm:space-y-2 py-1 min-h-[220px] max-h-[340px] xl:max-h-[380px] 2xl:max-h-[420px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              >
                 {TRACKS.map((track, idx) => {
                   const isCurrent = idx === trackIndex;
+                  const liveItem = liveMetadata[track.id];
+                  const displayTitle = liveItem?.title || track.title;
+                  const displayArtist = liveItem?.artist || track.artist;
+                  const displayMovie = liveItem?.album || track.movie;
+                  const displayArtwork = liveItem?.artworkUrl || track.artwork;
+
                   return (
                     <button
                       key={track.id}
                       type="button"
                       onClick={() => selectTrack(idx)}
-                      className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
+                      style={{
+                        contentVisibility: "auto",
+                        containIntrinsicSize: "0 52px",
+                      }}
+                      className={`group w-full flex items-center gap-3 p-2 rounded-xl transition-all duration-200 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
                         isCurrent
-                          ? "bg-white/25 border border-white/40 shadow-sm"
-                          : "hover:bg-white/15 border border-transparent"
+                          ? "bg-white/22 border border-white/40 shadow-sm ring-1 ring-white/20"
+                          : "hover:bg-white/14 border border-transparent hover:border-white/20 hover:translate-x-0.5"
                       }`}
                     >
-                      <img
-                        src={track.artwork}
-                        alt={track.title}
-                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover flex-shrink-0 border border-white/25 shadow-sm"
-                      />
+                      {/* Track Thumbnail */}
+                      <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 border border-white/25 shadow-sm">
+                        <img
+                          src={displayArtwork}
+                          alt={displayTitle}
+                          width={40}
+                          height={40}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover select-none transition-transform duration-300 group-hover:scale-105"
+                        />
+                        {isCurrent && isPlaying && (
+                          <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Track Metadata */}
                       <div className="flex-1 min-w-0">
                         <div className="text-xs sm:text-sm font-semibold text-white truncate flex items-center gap-1.5">
-                          {track.title}
-                          {isCurrent && isPlaying && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+                          <span>{displayTitle}</span>
+                        </div>
+                        <div className="text-[10px] sm:text-xs text-white/70 truncate flex items-center gap-1">
+                          <span>{displayArtist}</span>
+                          {displayMovie && (
+                            <>
+                              <span className="text-white/40">•</span>
+                              <span className="text-white/60 truncate">{displayMovie}</span>
+                            </>
                           )}
                         </div>
-                        <div className="text-[10px] sm:text-xs text-white/70 truncate">
-                          {track.artist}
-                        </div>
                       </div>
-                      <span className="text-xs font-mono text-white/50 px-1">
-                        {idx + 1}
-                      </span>
+
+                      {/* Right Indicator: Equalizer / Play Icon / Number */}
+                      <div className="flex items-center justify-center w-6 h-6 flex-shrink-0">
+                        {isCurrent && isPlaying ? (
+                          <div className="flex items-end gap-0.5 h-3.5">
+                            <span className="w-0.5 h-full bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                            <span className="w-0.5 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                            <span className="w-0.5 h-2 bg-emerald-400 rounded-full animate-bounce" />
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-[11px] font-mono text-white/50 group-hover:hidden">
+                              {String(idx + 1).padStart(2, "0")}
+                            </span>
+                            <span className="hidden group-hover:flex items-center justify-center text-white/90">
+                              <HugeiconsIcon icon={PlayIcon} size={13} fill="currentColor" />
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
               </div>
 
-              {/* "Listen on Spotify" Button with StarBorder / Glare */}
-              <div className="pt-1">
+              {/* Dynamic Spotify Footer Card */}
+              <div className="pt-1.5 flex flex-col items-center gap-1.5 border-t border-white/10 flex-shrink-0">
                 <StarBorder
                   onClick={() => window.open(currentTrack.spotifyUrl, "_blank", "noopener,noreferrer")}
-                  className="w-full py-2.5 px-4 text-xs sm:text-sm font-bold text-zinc-900 shadow-lg cursor-pointer"
+                  className="w-full py-2.5 px-4 text-xs sm:text-sm font-bold text-zinc-900 shadow-md cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99]"
                   aria-label="Listen on Spotify"
                 >
                   <HugeiconsIcon icon={SpotifyIcon} size={18} className="text-[#1DB954]" />
                   <span>Listen on Spotify</span>
                 </StarBorder>
+                <div className="flex items-center justify-between w-full text-[10px] text-white/60 px-1 pt-0.5">
+                  <span className="truncate max-w-[210px] text-white/75">
+                    Match: <span className="text-white font-medium">"{currentTrack.title}"</span>
+                  </span>
+                  <span className="text-emerald-300/90 font-medium tracking-wide flex items-center gap-0.5 flex-shrink-0">
+                    Open Spotify ↗
+                  </span>
+                </div>
               </div>
             </div>
           </SpotlightCard>
@@ -620,3 +730,5 @@ export default function MusicPlayer() {
     </div>
   );
 }
+
+export default memo(MusicPlayer);
