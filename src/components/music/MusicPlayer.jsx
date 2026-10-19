@@ -601,12 +601,6 @@ function MusicPlayer({ isOpen = true }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  {isPlaying && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 border border-emerald-500/30 text-emerald-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      Live
-                    </span>
-                  )}
                   <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20 text-white/85">
                     {TRACKS.length} tracks
                   </span>
@@ -643,7 +637,7 @@ function MusicPlayer({ isOpen = true }) {
                       className={`group w-full flex items-center gap-3 p-2 rounded-xl transition-all duration-200 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
                         isCurrent
                           ? "bg-white/22 border border-white/40 shadow-sm ring-1 ring-white/20"
-                          : "hover:bg-white/14 border border-transparent hover:border-white/20 hover:translate-x-0.5"
+                          : "hover:bg-white/14 border border-transparent hover:border-white/20"
                       }`}
                     >
                       {/* Track Thumbnail */}
@@ -658,8 +652,8 @@ function MusicPlayer({ isOpen = true }) {
                           className="w-full h-full object-cover select-none transition-transform duration-300 group-hover:scale-105"
                         />
                         {isCurrent && isPlaying && (
-                          <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="w-7 h-7 rounded-full bg-white animate-ping" />
                           </div>
                         )}
                       </div>
@@ -679,26 +673,6 @@ function MusicPlayer({ isOpen = true }) {
                           )}
                         </div>
                       </div>
-
-                      {/* Right Indicator: Equalizer / Play Icon / Number */}
-                      <div className="flex items-center justify-center w-6 h-6 flex-shrink-0">
-                        {isCurrent && isPlaying ? (
-                          <div className="flex items-end gap-0.5 h-3.5">
-                            <span className="w-0.5 h-full bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                            <span className="w-0.5 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                            <span className="w-0.5 h-2 bg-emerald-400 rounded-full animate-bounce" />
-                          </div>
-                        ) : (
-                          <>
-                            <span className="text-[11px] font-mono text-white/50 group-hover:hidden">
-                              {String(idx + 1).padStart(2, "0")}
-                            </span>
-                            <span className="hidden group-hover:flex items-center justify-center text-white/90">
-                              <HugeiconsIcon icon={PlayIcon} size={13} fill="currentColor" />
-                            </span>
-                          </>
-                        )}
-                      </div>
                     </button>
                   );
                 })}
@@ -711,14 +685,14 @@ function MusicPlayer({ isOpen = true }) {
                   className="w-full py-2.5 px-4 text-xs sm:text-sm font-bold text-zinc-900 shadow-md cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99]"
                   aria-label="Listen on Spotify"
                 >
-                  <HugeiconsIcon icon={SpotifyIcon} size={18} className="text-[#1DB954]" />
+                  <HugeiconsIcon icon={SpotifyIcon} size={25} className="text-[#005b18]" />
                   <span>Listen on Spotify</span>
                 </StarBorder>
                 <div className="flex items-center justify-between w-full text-[10px] text-white/60 px-1 pt-0.5">
                   <span className="truncate max-w-[210px] text-white/75">
                     Match: <span className="text-white font-medium">"{currentTrack.title}"</span>
                   </span>
-                  <span className="text-emerald-300/90 font-medium tracking-wide flex items-center gap-0.5 flex-shrink-0">
+                  <span className="text-white font-medium tracking-wide flex items-center gap-0.5 flex-shrink-0">
                     Open Spotify ↗
                   </span>
                 </div>

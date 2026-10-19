@@ -26,7 +26,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Interests: {
-    colors: ["#022c22", "#064e3b", "#0d9488", "#10b981", "#6ee7b7"],
+    colors: ["#022c22", "#064e3b", "#008f2b", "#10b926", "#83ff91"],
     angle: 180,
   },
   Music: {
@@ -34,7 +34,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Projects: {
-    colors: ["#2a0d00", "#7c2d12", "#c2410c", "#f97316", "#fbbf24"],
+    colors: ["#011e4d", "#315f73", "#ffd069","#f0992f","#be185d"],
     angle: 180,
   },
   Contact: {
