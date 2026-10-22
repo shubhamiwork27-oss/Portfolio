@@ -4,6 +4,7 @@ import Grainient from "./tempbg/Grainient";
 import Dock from "./Dock";
 import MusicPlayer from "../music/MusicPlayer";
 import Contact from "../Contact/Contact";
+import Interests from "../interest/Interests";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon,
@@ -26,7 +27,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Interests: {
-    colors: ["#022c22", "#064e3b", "#008f2b", "#10b926", "#83ff91"],
+    colors: ["#00054A", "#3D137D", "#6A27D6", "#BB6DF2", "#EBD9FF"],
     angle: 180,
   },
   Music: {
@@ -89,10 +90,12 @@ export default function Home() {
   // Lazy-mount flags so windows are mounted on first open and stay mounted (hidden when closed)
   const [hasMountedMusic, setHasMountedMusic] = useState(false);
   const [hasMountedContact, setHasMountedContact] = useState(false);
+  const [hasMountedInterests, setHasMountedInterests] = useState(false);
 
   // Animation active flags to toggle will-change only while animating
   const [isMusicAnimating, setIsMusicAnimating] = useState(false);
   const [isContactAnimating, setIsContactAnimating] = useState(false);
+  const [isInterestsAnimating, setIsInterestsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -111,6 +114,10 @@ export default function Home() {
   useEffect(() => {
     if (activeTab === "Contact" && !hasMountedContact) setHasMountedContact(true);
   }, [activeTab, hasMountedContact]);
+
+  useEffect(() => {
+    if (activeTab === "Interests" && !hasMountedInterests) setHasMountedInterests(true);
+  }, [activeTab, hasMountedInterests]);
 
   // Animate and cycle gradient colors smoothly only while in Music mode
   useEffect(() => {
@@ -157,7 +164,7 @@ export default function Home() {
         label: "Interests",
         active: activeTab === "Interests",
         onClick: () => {
-          setActiveTab("Interests");
+          setActiveTab((prev) => (prev === "Interests" ? "Profile" : "Interests"));
           setIsMusicOpen(false);
         },
       },
@@ -188,7 +195,7 @@ export default function Home() {
         icon: glyph(Linkedin02Icon),
         label: "LinkedIn",
         onClick: () => {
-          if (activeTab === "Contact") setActiveTab("Profile");
+          if (activeTab === "Contact" || activeTab === "Interests") setActiveTab("Profile");
           window.open(
             "https://www.linkedin.com/in/shubhamidnani",
             "_blank",
@@ -200,7 +207,7 @@ export default function Home() {
         icon: glyph(Github01Icon),
         label: "Github",
         onClick: () => {
-          if (activeTab === "Contact") setActiveTab("Profile");
+          if (activeTab === "Contact" || activeTab === "Interests") setActiveTab("Profile");
           window.open(
             "https://github.com/shubhamiwork27-oss",
             "_blank",
@@ -212,7 +219,7 @@ export default function Home() {
         icon: glyph(GoogleDocIcon),
         label: "Resume",
         onClick: () => {
-          if (activeTab === "Contact") setActiveTab("Profile");
+          if (activeTab === "Contact" || activeTab === "Interests") setActiveTab("Profile");
           window.open("/resume", "_blank");
         },
       },
@@ -368,6 +375,46 @@ export default function Home() {
           >
             <div className="pointer-events-auto w-full flex justify-center my-auto">
               <Contact />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Interests Pop-out */}
+        {hasMountedInterests && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 18 }}
+            animate={
+              activeTab === "Interests"
+                ? {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    pointerEvents: "auto",
+                    transitionEnd: { visibility: "visible" },
+                  }
+                : {
+                    opacity: 0,
+                    scale: 0.95,
+                    y: 14,
+                    pointerEvents: "none",
+                    transitionEnd: { visibility: "hidden" },
+                  }
+            }
+            transition={{
+              duration: 0.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            onAnimationStart={() => setIsInterestsAnimating(true)}
+            onAnimationComplete={() => setIsInterestsAnimating(false)}
+            style={{
+              willChange: isInterestsAnimating ? "transform, opacity" : "auto",
+              transform: "translateZ(0)",
+              contain: "layout paint style",
+            }}
+            className="absolute inset-x-0 top-0 bottom-[88px] sm:bottom-[100px] md:bottom-[115px] lg:bottom-[120px] z-20 flex items-center justify-center pointer-events-none px-3 sm:px-6 lg:px-8 py-2 overflow-hidden"
+          >
+            <div className="pointer-events-auto w-full h-full max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center">
+              <Interests isOpen={activeTab === "Interests"} />
             </div>
           </motion.div>
         )}

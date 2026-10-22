@@ -580,3 +580,45 @@
     transition: none;
   }
 }
+
+/* ==========================================================================
+   Additive UI/UX Enhancements for Navigation Dock Contrast & Feedback
+   ========================================================================== */
+
+/* Enhanced active navigation feedback on items with indicators */
+.dock-item:has(.dock-dot) .dock-face,
+.dock-item[data-active="true"] .dock-face,
+.dock-item[aria-current="page"] .dock-face {
+  box-shadow:
+    inset 0 0 0 1.5px var(--dock-accent, #00E5FF),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 0 14px rgba(0, 229, 255, 0.35),
+    var(--dock-tile-shadow);
+}
+
+.dock-item:has(.dock-dot) .dock-dot,
+.dock-item[data-active="true"] .dock-dot,
+.dock-item[aria-current="page"] .dock-dot {
+  background: var(--dock-accent, #00E5FF) !important;
+  box-shadow: 0 0 8px var(--dock-accent, #00E5FF);
+}
+
+/* Translucent dark glass styling for bottom navigation dock */
+.dock[style*="--dock-panel: rgba(30, 30, 35"],
+.dock.dock--dark,
+[data-active-tab="Interests"] .dock {
+  background: rgba(5, 8, 22, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 24px 48px -18px rgba(0, 0, 0, 0.8) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.8) !important;
+  backdrop-filter: blur(24px) saturate(1.8) !important;
+}
+
+/* Tooltip enhanced contrast and dark glass */
+.dock-label {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 10px 28px -6px rgba(0, 0, 0, 0.55);
+}
