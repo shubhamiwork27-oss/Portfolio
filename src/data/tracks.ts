@@ -5,11 +5,15 @@ export interface Track {
   title: string;
   artist: string;
   movie?: string;
+  album?: string;
+  duration?: number;
+  duration_ms?: number;
   artwork: string;
   url: string;
   whyILoveThis: string;
   moodTags: string[];
   spotifyUrl: string;
+  spotifyId?: string;
 }
 
 // Helper to resolve asset URLs from Vite's import.meta.glob

@@ -5,8 +5,8 @@ import { motion } from "motion/react";
 import Grainient from "./tempbg/Grainient";
 import Dock from "./Dock";
 import MusicPlayer from "../music/MusicPlayer";
+import ProfilePanel from "./Profile/ProfilePanel";
 import Contact from "../Contact/Contact";
-import Interests from "../Interest/Interests";
 import Projects from "../Projects/page";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -26,7 +26,7 @@ const glyph = (icon) => (
 
 const GRADIENTS = {
   Profile: {
-    colors: ["#011e4d", "#012d73", "#0446b0", "#0b5ee3", "#4dc1ff"],
+    colors: ["#011e4d", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
     angle: 180,
   },
   Interests: {
@@ -60,8 +60,8 @@ const MUSIC_GRADIENT_PALETTES = [
   { colors: ["#170836", "#311042", "#4f46e5", "#c084fc", "#f472b6"], angle: 180 },
 ];
 
-// Tabs that render a pop-out window (Profile is the empty home state)
-const WINDOW_TABS = ["Music", "Interests", "Projects", "Contact"];
+// Tabs that render a pop-out window
+const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact"];
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -103,8 +103,6 @@ function PopWindow({
       transition={{ duration: 0.45, ease: EASE }}
       onAnimationStart={() => setAnimating(true)}
       onAnimationComplete={() => setAnimating(false)}
-      // NOTE: no static `transform: translateZ(0)` here — motion owns the
-      // transform property (scale/y) and would overwrite it anyway.
       style={{
         willChange: animating ? "transform, opacity" : "auto",
         contain: "layout paint style",
@@ -125,7 +123,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
 
   // Lazy-mount: a window mounts on first open and then stays mounted (hidden)
-  const [mounted, setMounted] = useState({});
+  const [mounted, setMounted] = useState({ Profile: true });
 
   // Derived — previously a separate state that always mirrored activeTab
   const isMusicOpen = activeTab === "Music";
@@ -146,8 +144,6 @@ export default function Home() {
   }, [activeTab, mounted]);
 
   // Cycle the gradient palette only while Music is open.
-  // musicPaletteIndex is a dependency on purpose: a manual click on the Music
-  // dock icon restarts the timer so the palette doesn't change twice in a row.
   useEffect(() => {
     if (!isMusicOpen) return;
     const id = setInterval(() => {
@@ -165,7 +161,7 @@ export default function Home() {
     setActiveTab((prev) => (prev === tab ? "Profile" : tab));
   }, []);
 
-  // Open an external link; close any non-music window first (original behaviour)
+  // Open an external link; close any non-music window first
   const openExternal = useCallback((url) => {
     setActiveTab((prev) =>
       prev === "Contact" || prev === "Interests" || prev === "Projects"
@@ -208,7 +204,6 @@ export default function Home() {
         active: isMusicOpen,
         onClick: () => {
           if (isMusicOpen) {
-            // Already open: jump to the next palette
             setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
           } else {
             setActiveTab("Music");
@@ -250,7 +245,7 @@ export default function Home() {
     <div
       style={{
         width: "100%",
-        height: "100dvh", // 100vh is taller than the visible area on mobile browsers
+        height: "100dvh",
         padding: "clamp(10px, 1.5vw, 20px)",
         boxSizing: "border-box",
         position: "relative",
@@ -309,6 +304,30 @@ export default function Home() {
           />
         </div>
 
+        {/* Profile Panel */}
+        {mounted.Profile && (
+          <PopWindow
+            open={activeTab === "Profile"}
+            className={WINDOW_AREA}
+            scale={0.97}
+            enterY={16}
+            exitY={-12}
+          >
+            <div className="pointer-events-auto w-full h-full flex items-center justify-center">
+              <ProfilePanel
+                isOpen={activeTab === "Profile"}
+                onNavigateTab={(tab) => {
+                  if (tab === "Music") {
+                    setActiveTab("Music");
+                  } else {
+                    toggleTab(tab);
+                  }
+                }}
+              />
+            </div>
+          </PopWindow>
+        )}
+
         {/* Music Player */}
         {mounted.Music && (
           <PopWindow open={isMusicOpen} className={WINDOW_AREA} scale={0.94} enterY={20}>
@@ -328,15 +347,6 @@ export default function Home() {
           >
             <div className="pointer-events-auto w-full flex justify-center my-auto">
               <Contact />
-            </div>
-          </PopWindow>
-        )}
-
-        {/* Interests */}
-        {mounted.Interests && (
-          <PopWindow open={activeTab === "Interests"} className={WINDOW_AREA}>
-            <div className="pointer-events-auto w-full h-full max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center">
-              <Interests isOpen={activeTab === "Interests"} />
             </div>
           </PopWindow>
         )}
@@ -381,3 +391,4 @@ export default function Home() {
     </div>
   );
 }
+

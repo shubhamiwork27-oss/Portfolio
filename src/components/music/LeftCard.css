@@ -1,0 +1,139 @@
+/* macOS-style segmented control & glass container */
+.lyrics-segmented-control {
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 3px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.lyrics-segmented-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 7px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  outline: none;
+  user-select: none;
+}
+
+.lyrics-segmented-btn:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.lyrics-segmented-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+}
+
+.lyrics-segmented-btn:focus-visible {
+  ring: 2px solid rgba(255, 255, 255, 0.8);
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Lyrics fade mask at top and bottom */
+.lyrics-scroll-container {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18px,
+    black calc(100% - 18px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18px,
+    black calc(100% - 18px),
+    transparent 100%
+  );
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Skeleton shimmer */
+@keyframes lyrics-shimmer-anim {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.lyrics-shimmer-line {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: lyrics-shimmer-anim 1.8s infinite linear;
+  border-radius: 6px;
+}
+
+/* Lyric lines */
+.lyric-line {
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.lyric-line.active {
+  color: #ffffff;
+  font-weight: 700;
+  opacity: 1;
+  transform: scale(1.02);
+  transform-origin: left center;
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+}
+
+.lyric-line.inactive {
+  color: rgba(255, 255, 255, 0.42);
+  font-weight: 500;
+  opacity: 0.65;
+  transform: scale(1);
+}
+
+.lyric-line.inactive:hover {
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lyrics-shimmer-line {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  .lyric-line {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .lyric-line.active {
+    transform: none !important;
+  }
+}
+

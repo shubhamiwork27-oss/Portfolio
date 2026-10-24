@@ -17,6 +17,7 @@ import {
 
 import { TRACKS } from "../../data/tracks";
 import { fetchTrackId3 } from "../../data/id3Reader";
+import LeftCard from "./LeftCard";
 import SpotlightCard from "./SpotlightCard";
 import TiltedCard from "./TiltedCard";
 import StarBorder from "./StarBorder";
@@ -274,74 +275,13 @@ function MusicPlayer({ isOpen = true }) {
             mobileTab === "info" ? "flex" : "hidden lg:flex"
           }`}
         >
-          <SpotlightCard className="p-5 sm:p-6 xl:p-7 flex flex-col justify-between w-full h-full text-white">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`left-${currentTrack.id}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="flex flex-col justify-between h-full space-y-3 xl:space-y-4"
-              >
-                {/* Header: Track counter badge */}
-                <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] xl:text-xs font-semibold tracking-wider uppercase bg-white/20 border border-white/30 text-white/95 shadow-sm">
-                    <HugeiconsIcon icon={SparklesIcon} size={14} />
-                    Track {trackIndex + 1} of {TRACKS.length}
-                  </span>
-                </div>
-
-                {/* Artist & Movie details */}
-                <div className="space-y-1 sm:space-y-1.5">
-                  <div className="text-base sm:text-lg xl:text-xl font-bold text-white leading-tight min-h-[26px]">
-                    {currentTrack.artist}
-                  </div>
-                  {currentTrack.movie && (
-                    <div className="text-xs sm:text-sm text-white/85 font-medium flex items-center gap-1.5">
-                      <span className="text-white/60">from</span>
-                      <span className="text-white font-semibold underline decoration-white/30 underline-offset-2">
-                        {currentTrack.movie}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* "Why I love this" card */}
-                <div
-                  style={{
-                    background: "rgba(255, 255, 255, 0.15)",
-                    border: "1px solid rgba(255, 255, 255, 0.25)",
-                  }}
-                  className="p-3.5 sm:p-4 xl:p-4.5 rounded-2xl h-[120px] sm:h-[130px] xl:h-[140px] flex flex-col justify-center shadow-inner overflow-y-auto scrollbar-thin"
-                >
-                  <div className="text-[10px] xl:text-[11px] font-bold uppercase tracking-wider text-white/70 mb-1.5 flex items-center gap-1 flex-shrink-0">
-                    <span>“</span> Why I love this
-                  </div>
-                  <p className="text-xs sm:text-sm text-white/95 leading-relaxed italic line-clamp-3 sm:line-clamp-4">
-                    {currentTrack.whyILoveThis}
-                  </p>
-                </div>
-
-                {/* Mood chips */}
-                <div className="space-y-2 pt-1">
-                  <div className="text-[11px] xl:text-xs font-bold tracking-wider uppercase text-white/60">
-                    Mood & Vibes
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 xl:gap-2">
-                    {currentTrack.moodTags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/15 text-white/95 border border-white/20 transition-colors hover:bg-white/25"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </SpotlightCard>
+          <LeftCard
+            track={currentTrack}
+            trackIndex={trackIndex}
+            totalTracks={TRACKS.length}
+            currentTime={currentTime}
+            duration={duration}
+          />
         </div>
 
         {/* ======================================================== */}

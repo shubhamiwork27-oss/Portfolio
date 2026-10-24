@@ -101,7 +101,7 @@ export default function TiltedCard({
             className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-300 z-30"
             style={{
               opacity: isHovered ? 0.35 : 0,
-              background: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 65%)`,
+              background: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 65%)`,
             }}
           />
         )}
