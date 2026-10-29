@@ -168,7 +168,7 @@ function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
             <StatsWidget />
           </motion.div>
           <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
-            <NowPlayingWidget />
+            <NowPlayingWidget onNavigateTab={onNavigateTab} />
           </motion.div>
 
           {/* Row 3: Tech Stack (4 cols) + GitHub (4 cols) + Currently Building (4 cols) */}

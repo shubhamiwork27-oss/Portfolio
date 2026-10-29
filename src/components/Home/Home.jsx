@@ -9,6 +9,7 @@ import ProfilePanel from "./Profile/ProfilePanel";
 import MenuBar from "./Profile/MenuBar";
 import Contact from "../Contact/Contact";
 import Projects from "../Projects/page";
+import { MusicProvider } from "../../context/MusicContext";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon,
@@ -108,7 +109,7 @@ function PopWindow({
 const WINDOW_AREA =
   "absolute inset-0 z-20 flex items-center justify-center pointer-events-none overflow-hidden";
 
-export default function Home() {
+function HomeContent() {
   const [activeTab, setActiveTab] = useState("Profile");
   const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -401,5 +402,13 @@ export default function Home() {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <MusicProvider>
+      <HomeContent />
+    </MusicProvider>
   );
 }

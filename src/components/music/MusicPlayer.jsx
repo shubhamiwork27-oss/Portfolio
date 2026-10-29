@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, memo } from "react";
+import React, { useState, useRef, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -12,11 +12,9 @@ import {
   RepeatIcon,
   SpotifyIcon,
   MusicNote01Icon,
-  SparklesIcon,
 } from "@hugeicons/core-free-icons";
 
-import { TRACKS } from "../../data/tracks";
-import { fetchTrackId3 } from "../../data/id3Reader";
+import { useMusic } from "../../context/MusicContext";
 import LeftCard from "./LeftCard";
 import SpotlightCard from "./SpotlightCard";
 import TiltedCard from "./TiltedCard";
@@ -25,67 +23,29 @@ import Equalizer from "./Equalizer";
 import ProgressBar from "./ProgressBar";
 
 function MusicPlayer({ isOpen = true }) {
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(80);
-  const [isMuted, setIsMuted] = useState(false);
+  const {
+    tracks,
+    trackIndex,
+    currentTrack,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    setVolume,
+    isMuted,
+    setIsMuted,
+    isLooping,
+    setIsLooping,
+    liveMetadata,
+    togglePlay,
+    paginate,
+    selectTrack,
+    seek,
+  } = useMusic();
+
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  const [isLooping, setIsLooping] = useState(false);
   const [mobileTab, setMobileTab] = useState("player"); // "player" | "info" | "queue"
-  const [liveMetadata, setLiveMetadata] = useState({});
-
-  const audioRef = useRef(null);
   const volumeRef = useRef(null);
-
-  const baseTrack = TRACKS[trackIndex] || TRACKS[0];
-  const live = liveMetadata[baseTrack.id];
-  const currentTrack = {
-    ...baseTrack,
-    title: live?.title || baseTrack.title,
-    artist: live?.artist || baseTrack.artist,
-    movie: live?.album || baseTrack.movie,
-    artwork: live?.artworkUrl || baseTrack.artwork,
-    spotifyUrl: live?.title
-      ? `https://open.spotify.com/search/${encodeURIComponent(
-          `${live.title} ${live.album || ""} ${live.artist || ""}`.trim()
-        )}`
-      : baseTrack.spotifyUrl,
-  };
-
-  // Dynamically inspect audio file ID3 tags in background if available
-  useEffect(() => {
-    let active = true;
-    if (!baseTrack?.url) return;
-    fetchTrackId3(baseTrack.url).then((tags) => {
-      if (active && tags && (tags.title || tags.artist || tags.album || tags.artworkUrl)) {
-        setLiveMetadata((prev) => ({
-          ...prev,
-          [baseTrack.id]: tags,
-        }));
-      }
-    });
-    return () => {
-      active = false;
-    };
-  }, [baseTrack?.id, baseTrack?.url]);
-
-  const paginate = useCallback(
-    (direction) => {
-      setTrackIndex((prev) => (prev + direction + TRACKS.length) % TRACKS.length);
-    },
-    []
-  );
-
-  const selectTrack = (index) => {
-    if (index === trackIndex) {
-      togglePlay();
-      return;
-    }
-    setTrackIndex(index);
-    setIsPlaying(true);
-  };
 
   // Keyboard navigation (Space = play/pause, ArrowLeft = prev, ArrowRight = next)
   useEffect(() => {
@@ -114,35 +74,7 @@ function MusicPlayer({ isOpen = true }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying, paginate]);
-
-  // Sync audio source when track changes
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = 0;
-    setCurrentTime(0);
-    if (isPlaying) {
-      audio.play().catch(() => {});
-    }
-  }, [trackIndex]);
-
-  // Sync volume with audio element
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.volume = isMuted ? 0 : volume / 100;
-      audio.muted = isMuted;
-    }
-  }, [volume, isMuted]);
-
-  // Sync loop mode with audio element
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.loop = isLooping;
-    }
-  }, [isLooping]);
+  }, [isOpen, togglePlay, paginate]);
 
   // Close volume popover on outside click
   useEffect(() => {
@@ -156,58 +88,6 @@ function MusicPlayer({ isOpen = true }) {
     return () => window.removeEventListener("pointerdown", onPointerDown);
   }, [showVolumeSlider]);
 
-  // Audio Play / Pause
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          setIsPlaying(true);
-        });
-    }
-  };
-
-  // Audio Ended handler
-  const handleEnded = () => {
-    if (isLooping) {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-      }
-    } else {
-      paginate(1);
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      setCurrentTime(audio.currentTime);
-    }
-  };
-
-  const handleLoadedMetadata = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      setDuration(audio.duration || 0);
-    }
-  };
-
-  const handleSeek = (newTime) => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
-  };
-
   // Volume icon helper
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) return VolumeMute01Icon;
@@ -215,19 +95,10 @@ function MusicPlayer({ isOpen = true }) {
     return VolumeHighIcon;
   };
 
+  if (!currentTrack) return null;
+
   return (
     <div className="flex flex-col items-center select-none pointer-events-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto px-2 sm:px-4">
-      {/* Background audio element */}
-      <audio
-        ref={audioRef}
-        src={currentTrack.url}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleEnded}
-        preload="metadata"
-        className="hidden"
-      />
-
       {/* Mobile/Tablet Sub-Tab Navigation (<1024px) */}
       <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 mb-2.5 rounded-full bg-white/20 backdrop-blur-md border border-white/25 shadow-sm">
         <button
@@ -261,7 +132,7 @@ function MusicPlayer({ isOpen = true }) {
               : "text-white/80 hover:text-white"
           }`}
         >
-          Up Next ({TRACKS.length})
+          Up Next ({tracks.length})
         </button>
       </div>
 
@@ -278,7 +149,7 @@ function MusicPlayer({ isOpen = true }) {
           <LeftCard
             track={currentTrack}
             trackIndex={trackIndex}
-            totalTracks={TRACKS.length}
+            totalTracks={tracks.length}
             currentTime={currentTime}
             duration={duration}
           />
@@ -343,7 +214,7 @@ function MusicPlayer({ isOpen = true }) {
             <ProgressBar
               currentTime={currentTime}
               duration={duration}
-              onSeek={handleSeek}
+              onSeek={seek}
             />
           </div>
 
@@ -542,7 +413,7 @@ function MusicPlayer({ isOpen = true }) {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20 text-white/85">
-                    {TRACKS.length} tracks
+                    {tracks.length} tracks
                   </span>
                 </div>
               </div>
@@ -557,7 +428,7 @@ function MusicPlayer({ isOpen = true }) {
                 }}
                 className="flex-1 overflow-y-auto space-y-1.5 sm:space-y-2 py-1 min-h-[220px] max-h-[340px] xl:max-h-[380px] 2xl:max-h-[420px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               >
-                {TRACKS.map((track, idx) => {
+                {tracks.map((track, idx) => {
                   const isCurrent = idx === trackIndex;
                   const liveItem = liveMetadata[track.id];
                   const displayTitle = liveItem?.title || track.title;
