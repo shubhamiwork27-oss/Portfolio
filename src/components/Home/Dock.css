@@ -590,7 +590,7 @@
 .dock-item[data-active="true"] .dock-face,
 .dock-item[aria-current="page"] .dock-face {
   box-shadow:
-    inset 0 0 0 1.5px var(--dock-accent, #00E5FF),
+    inset 0 0 0 1.5px var(--dock-accent, #0a84ff),
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
     0 0 14px rgba(0, 229, 255, 0.35),
     var(--dock-tile-shadow);
@@ -599,8 +599,8 @@
 .dock-item:has(.dock-dot) .dock-dot,
 .dock-item[data-active="true"] .dock-dot,
 .dock-item[aria-current="page"] .dock-dot {
-  background: var(--dock-accent, #00E5FF) !important;
-  box-shadow: 0 0 8px var(--dock-accent, #00E5FF);
+  background: var(--dock-accent, #0a84ff) !important;
+  box-shadow: 0 0 8px var(--dock-accent, #0a84ff);
 }
 
 /* Translucent dark glass styling for bottom navigation dock */

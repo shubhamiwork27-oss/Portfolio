@@ -8,14 +8,13 @@ const ProfilePanel = ({ isOpen = true, onNavigateTab }) => {
       {/* 3D Tilted Card on the Right Side */}
       <div className="relative flex items-center justify-center">
         <TiltedCard
-          maxTilt={10}
+          maxTilt={20}
           glare={true}
-          scale={1.02}
           className="rounded-[40px]"
         >
           <div
             className="profile-dock-card relative flex flex-col items-center justify-center
-              w-[clamp(310px,36vw,450px)] 
+              w-[clamp(310px,25vw,650px)] 
               h-[clamp(450px,66vh,640px)] 
               max-h-[74vh] "
               

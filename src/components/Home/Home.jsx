@@ -26,7 +26,7 @@ const glyph = (icon) => (
 
 const GRADIENTS = {
   Profile: {
-    colors: ["#011e4d", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
+    colors: ["black","black","black", "#292929", "#424242"],
     angle: 180,
   },
   Interests: {
@@ -38,27 +38,19 @@ const GRADIENTS = {
     angle: 180,
   },
   Contact: {
-    colors: ["black", "#292929", "#424242", "#4d4c4c", "#696868", "#c2c2c2"],
+    colors: ["black", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
     angle: 180,
   },
 };
 
 const MUSIC_GRADIENT_PALETTES = [
-  // 1. Signature Violet & Fuchsia
-  { colors: ["#1e0836", "#3b0764", "#7c3aed", "#d946ef", "#f472b6"], angle: 180 },
-  // 2. Electric Orchid & Magenta
-  { colors: ["#220638", "#581c87", "#9333ea", "#e879f9", "#fbcfe8"], angle: 180 },
-  // 3. Velvet Twilight & Rose Coral
-  { colors: ["#200524", "#6b21a8", "#a21caf", "#f43f5e", "#fda4af"], angle: 180 },
-  // 4. Sunset Rose & Warm Glow
-  { colors: ["#1f0528", "#5b0e45", "#be185d", "#fb7185", "#fde68a"], angle: 180 },
-  // 5. Deep Nebula & Electric Iris
-  { colors: ["#180838", "#43147a", "#6366f1", "#a855f7", "#fbcfe8"], angle: 180 },
-  // 6. Midnight Ultramarine & Soft Lilac
-  { colors: ["#110838", "#2e1065", "#4338ca", "#818cf8", "#e0e7ff"], angle: 180 },
-  // 7. Cosmic Indigo & Neon Violet
-  { colors: ["#170836", "#311042", "#4f46e5", "#c084fc", "#f472b6"], angle: 180 },
-];
+  { colors: ["#0a0a0a", "#1c1c1c", "#4a4a4a", "#9a9a9a", "#e5e5e5"], angle: 180 },
+  { colors: ["#111111", "#262626", "#525252", "#a3a3a3", "#f5f5f5"], angle: 180 },
+  { colors: ["#050505", "#171717", "#3f3f3f", "#8c8c8c", "#fafafa"], angle: 180 },
+  { colors: ["#0f0f0f", "#222222", "#5c5c5c", "#b0b0b0", "#ededed"], angle: 180 },
+  { colors: ["black", "black", "black", "#292929", "#424242"], angle: 180 },
+  { colors: ["#0c0c0c", "#1f1f1f", "#454545", "#999999", "#ffffff"], angle: 180 },
+]
 
 // Tabs that render a pop-out window
 const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact"];

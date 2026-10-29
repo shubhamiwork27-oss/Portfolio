@@ -2,7 +2,6 @@
 .profile-dock-card {
   position: relative;
   background: rgba(0, 0, 0, 0.344);
-  border: 1px solid rgba(255, 255, 255, 0.65);
   border-radius: 40px;
   overflow: hidden;
     -webkit-backdrop-filter: blur(10  px) saturate(0);
