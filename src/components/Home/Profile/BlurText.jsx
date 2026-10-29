@@ -30,7 +30,7 @@ export default function BlurText({
   };
 
   return (
-    <p ref={ref} className={`inline-flex flex-wrap ${className}`}>
+    <span ref={ref} className={`inline-flex flex-wrap ${className}`}>
       {elements.map((el, i) => (
         <motion.span
           key={i}
@@ -51,7 +51,6 @@ export default function BlurText({
           {animateBy === "words" && i < elements.length - 1 && "\u00A0"}
         </motion.span>
       ))}
-    </p>
+    </span>
   );
 }
-

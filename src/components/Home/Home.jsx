@@ -6,6 +6,7 @@ import Grainient from "./tempbg/Grainient";
 import Dock from "./Dock";
 import MusicPlayer from "../music/MusicPlayer";
 import ProfilePanel from "./Profile/ProfilePanel";
+import MenuBar from "./Profile/MenuBar";
 import Contact from "../Contact/Contact";
 import Projects from "../Projects/page";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -26,7 +27,7 @@ const glyph = (icon) => (
 
 const GRADIENTS = {
   Profile: {
-    colors: ["black","black","black", "#292929", "#424242"],
+    colors: ["black", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
     angle: 180,
   },
   Interests: {
@@ -38,7 +39,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Contact: {
-    colors: ["black", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
+    colors: ["black", "black", "black", "#292929", "#424242"],
     angle: 180,
   },
 };
@@ -50,18 +51,11 @@ const MUSIC_GRADIENT_PALETTES = [
   { colors: ["#0f0f0f", "#222222", "#5c5c5c", "#b0b0b0", "#ededed"], angle: 180 },
   { colors: ["black", "black", "black", "#292929", "#424242"], angle: 180 },
   { colors: ["#0c0c0c", "#1f1f1f", "#454545", "#999999", "#ffffff"], angle: 180 },
-]
+];
 
-// Tabs that render a pop-out window
 const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact"];
-
 const EASE = [0.22, 1, 0.36, 1];
 
-/**
- * Reusable animated pop-out window.
- * The "animating" state lives here, so toggling will-change no longer
- * re-renders the whole Home component (and the WebGL background with it).
- */
 function PopWindow({
   open,
   className,
@@ -74,7 +68,12 @@ function PopWindow({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale, y: enterY }}
+      initial={{
+        opacity: open ? 1 : 0,
+        scale: open ? 1 : scale,
+        y: open ? 0 : enterY,
+        visibility: open ? "visible" : "hidden",
+      }}
       animate={
         open
           ? {
@@ -82,7 +81,7 @@ function PopWindow({
               scale: 1,
               y: 0,
               pointerEvents: "auto",
-              transitionEnd: { visibility: "visible" },
+              visibility: "visible",
             }
           : {
               opacity: 0,
@@ -107,26 +106,28 @@ function PopWindow({
 }
 
 const WINDOW_AREA =
-  "absolute inset-x-0 top-0 bottom-[88px] sm:bottom-[100px] md:bottom-[115px] lg:bottom-[120px] z-20 flex items-center justify-center pointer-events-none px-3 sm:px-6 lg:px-8 py-2 overflow-hidden";
+  "absolute inset-0 z-20 flex items-center justify-center pointer-events-none overflow-hidden";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Profile");
   const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [dockIconSize, setDockIconSize] = useState(48);
 
-  // Lazy-mount: a window mounts on first open and then stays mounted (hidden)
   const [mounted, setMounted] = useState({ Profile: true });
-
-  // Derived — previously a separate state that always mirrored activeTab
   const isMusicOpen = activeTab === "Music";
 
-  // Mobile detection via matchMedia (fires only when the breakpoint changes)
+  // Responsive mobile and dock icon sizing: clamp(44px, 5.6vh, 58px)
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    const handleResize = () => {
+      const vh = window.innerHeight;
+      setIsMobile(window.innerWidth < 640);
+      const size = Math.round(Math.min(58, Math.max(44, vh * 0.056)));
+      setDockIconSize(size);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -135,7 +136,6 @@ export default function Home() {
     }
   }, [activeTab, mounted]);
 
-  // Cycle the gradient palette only while Music is open.
   useEffect(() => {
     if (!isMusicOpen) return;
     const id = setInterval(() => {
@@ -148,12 +148,10 @@ export default function Home() {
     ? MUSIC_GRADIENT_PALETTES[musicPaletteIndex]
     : GRADIENTS[activeTab] || GRADIENTS.Profile;
 
-  // Toggle a window tab on/off (back to Profile)
   const toggleTab = useCallback((tab) => {
     setActiveTab((prev) => (prev === tab ? "Profile" : tab));
   }, []);
 
-  // Open an external link; close any non-music window first
   const openExternal = useCallback((url) => {
     setActiveTab((prev) =>
       prev === "Contact" || prev === "Interests" || prev === "Projects"
@@ -169,26 +167,16 @@ export default function Home() {
         icon: glyph(User02Icon),
         label: "Profile",
         active: activeTab === "Profile",
-        onClick: () => setActiveTab("Profile"),
-        menu: [
-          { label: "New Window" },
-          { separator: true },
-          {
-            label: "Options",
-            items: [
-              { label: "Open at Login", checked: true },
-              { label: "Show in Finder" },
-            ],
-          },
-          { separator: true },
-          { label: "Quit" },
-        ],
+        // The Profile dock icon stays active (blue dot) and does nothing when clicked
+        onClick: () => {
+          if (activeTab !== "Profile") setActiveTab("Profile");
+        },
       },
       {
         icon: glyph(MountainSnowIcon),
-        label: "Interests",
-        active: activeTab === "Interests",
-        onClick: () => toggleTab("Interests"),
+        label: "Gallery",
+        active: activeTab === "Gallery" || activeTab === "Interests",
+        onClick: () => toggleTab("Gallery"),
       },
       {
         icon: glyph(MusicNote03Icon),
@@ -225,8 +213,8 @@ export default function Home() {
       },
       {
         icon: glyph(AtSignIcon),
-        label: "Contact",
-        active: activeTab === "Contact",
+        label: "Email",
+        active: activeTab === "Contact" || activeTab === "Email",
         onClick: () => toggleTab("Contact"),
       },
     ],
@@ -236,29 +224,36 @@ export default function Home() {
   return (
     <div
       style={{
-        width: "100%",
+        width: "100vw",
         height: "100dvh",
-        padding: "clamp(10px, 1.5vw, 20px)",
-        boxSizing: "border-box",
         position: "relative",
         overflow: "hidden",
-        backgroundColor: "black",
+        backgroundColor: "#000000",
         display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2vh 1.2vw",
+        boxSizing: "border-box",
       }}
     >
-      {/* Inner container with rounded corners */}
+      {/* ===================================================================
+          Inner Desktop Viewport: Exactly 5% gap from the physical screen edges,
+          centered, with rounded border radius, 1px border & deep shadow
+          =================================================================== */}
       <div
         style={{
           width: "100%",
           height: "100%",
           position: "relative",
-          borderRadius: "clamp(20px, 4.5vw, 45px)",
+          borderRadius: "clamp(20px, 2.5vw, 26px)",
           overflow: "hidden",
           isolation: "isolate",
-          transform: "translateZ(0)",
+          display: "flex",
+          flexDirection: "column",
+          border: "2px solid rgba(255, 255, 255, 0.20)",
         }}
       >
-        {/* Background layer */}
+        {/* Full-screen background grain/gradient layer covering entire container including dock */}
         <div
           style={{
             position: "absolute",
@@ -296,91 +291,115 @@ export default function Home() {
           />
         </div>
 
-        {/* Profile Panel */}
-        {mounted.Profile && (
-          <PopWindow
-            open={activeTab === "Profile"}
-            className={WINDOW_AREA}
-            scale={0.97}
-            enterY={16}
-            exitY={-12}
-          >
-            <div className="pointer-events-auto w-full h-full flex items-center justify-center">
-              <ProfilePanel
-                isOpen={activeTab === "Profile"}
-                onNavigateTab={(tab) => {
-                  if (tab === "Music") {
-                    setActiveTab("Music");
-                  } else {
-                    toggleTab(tab);
-                  }
-                }}
-              />
-            </div>
-          </PopWindow>
-        )}
 
-        {/* Music Player */}
-        {mounted.Music && (
-          <PopWindow open={isMusicOpen} className={WINDOW_AREA} scale={0.94} enterY={20}>
-            <div className="pointer-events-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center">
-              <MusicPlayer isOpen={isMusicOpen} />
-            </div>
-          </PopWindow>
-        )}
-
-        {/* Contact */}
-        {mounted.Contact && (
-          <PopWindow
-            open={activeTab === "Contact"}
-            className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-4 sm:p-8 md:p-12 pt-6 sm:pt-10 pb-28 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
-            scale={0.97}
-            exitY={-12}
-          >
-            <div className="pointer-events-auto w-full flex justify-center my-auto">
-              <Contact />
-            </div>
-          </PopWindow>
-        )}
-
-        {/* Projects */}
-        {mounted.Projects && (
-          <PopWindow
-            open={activeTab === "Projects"}
-            className="absolute inset-0 z-10 pointer-events-none overflow-hidden"
-            scale={1}
-            enterY={0}
-            exitY={0}
-          >
-            <div className="pointer-events-auto w-full h-full">
-              <Projects isOpen={activeTab === "Projects"} />
-            </div>
-          </PopWindow>
-        )}
-
-        {/* Bottom dock */}
-        <Dock
-          className="z-30"
-          items={items}
-          theme="light"
-          baseItemSize={isMobile ? 38 : 50}
-          magnification={isMobile ? 50 : 80}
-          panelHeight={isMobile ? 56 : 70}
-          accentColor="#0a84ff"
-          badgeColor="#fff"
-          position="bottom"
-          distance={isMobile ? 110 : 160}
-          gap={isMobile ? 6 : 10}
-          roundness={0.7}
-          bounce
-          autoHide={false}
-          tiles
-          showLabels
-          showIndicators
-          showBadges
+        {/* a) MenuBar: 28px, full width, not scaled */}
+        <MenuBar
+          onOpenSpotlight={() => {
+            const event = new KeyboardEvent("keydown", {
+              key: "k",
+              metaKey: true,
+              bubbles: true,
+            });
+            window.dispatchEvent(event);
+          }}
+          onNavigateTab={(tab) => {
+            if (tab === "Music") {
+              setActiveTab("Music");
+            } else {
+              toggleTab(tab);
+            }
+          }}
         />
+
+        {/* b) Main Area: flex 1, min-height 0, position relative */}
+        <main className="relative flex-1 min-h-0 w-full overflow-hidden z-20">
+          {/* Profile Panel PopWindow */}
+          {mounted.Profile && (
+            <PopWindow
+              open={activeTab === "Profile"}
+              className={WINDOW_AREA}
+              scale={0.98}
+              enterY={12}
+              exitY={-10}
+            >
+              <div className="pointer-events-auto w-full h-full">
+                <ProfilePanel
+                  isOpen={activeTab === "Profile"}
+                  onNavigateTab={(tab) => {
+                    if (tab === "Music") {
+                      setActiveTab("Music");
+                    } else {
+                      toggleTab(tab);
+                    }
+                  }}
+                />
+              </div>
+            </PopWindow>
+          )}
+
+          {/* Music Player */}
+          {mounted.Music && (
+            <PopWindow open={isMusicOpen} className={WINDOW_AREA} scale={0.94} enterY={20}>
+              <div className="pointer-events-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] flex items-center justify-center p-4">
+                <MusicPlayer isOpen={isMusicOpen} />
+              </div>
+            </PopWindow>
+          )}
+
+          {/* Contact */}
+          {mounted.Contact && (
+            <PopWindow
+              open={activeTab === "Contact"}
+              className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-4 sm:p-8 md:p-12 pt-6 sm:pt-10 pb-28 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
+              scale={0.97}
+              exitY={-12}
+            >
+              <div className="pointer-events-auto w-full flex justify-center my-auto">
+                <Contact />
+              </div>
+            </PopWindow>
+          )}
+
+          {/* Projects */}
+          {mounted.Projects && (
+            <PopWindow
+              open={activeTab === "Projects"}
+              className="absolute inset-0 z-10 pointer-events-none overflow-hidden"
+              scale={1}
+              enterY={0}
+              exitY={0}
+            >
+              <div className="pointer-events-auto w-full h-full">
+                <Projects isOpen={activeTab === "Projects"} />
+              </div>
+            </PopWindow>
+          )}
+        </main>
+
+        {/* c) Dock Zone: height clamp(80px, 11vh, 100px) */}
+        <footer className="h-[clamp(80px,11vh,100px)] shrink-0 w-full relative z-30 flex items-center justify-center">
+          <Dock
+            className="z-30"
+            items={items}
+            theme="light"
+            baseItemSize={isMobile ? 38 : dockIconSize}
+            magnification={isMobile ? 50 : 80}
+            panelHeight={isMobile ? 56 : Math.round(dockIconSize * 1.35)}
+            accentColor="#fff"
+            badgeColor="#fff"
+            position="bottom"
+            distance={isMobile ? 110 : 160}
+            gap={isMobile ? 6 : 10}
+            roundness={0.7}
+            bounce
+            autoHide={false}
+            tiles
+            showLabels
+            showIndicators
+            showBadges
+          />
+        </footer>
       </div>
     </div>
   );
 }
-
