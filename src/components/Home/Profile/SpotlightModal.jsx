@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, FolderGit2, FileText, Mail, ExternalLink, X } from "lucide-react";
+import { Search, FolderGit2, FileText, Mail, ExternalLink, X, Compass } from "lucide-react";
 
 // Safe SVG Icons for GitHub and LinkedIn (avoids lucide-react CommonJS export error)
 const GithubIcon = ({ size = 16, className = "" }) => (
@@ -46,6 +46,14 @@ const SPOTLIGHT_ITEMS = [
     subtitle: "Browse featured web apps & experiments",
     icon: FolderGit2,
     action: (nav) => nav("Projects"),
+  },
+  {
+    id: "gallery",
+    title: "Interests & Moments",
+    category: "Navigation",
+    subtitle: "Explore interactive 3D orbiting moments & photography",
+    icon: Compass,
+    action: (nav) => nav("Gallery"),
   },
   {
     id: "resume",
@@ -150,7 +158,7 @@ function SpotlightModal({ isOpen, onClose, onNavigateTab }) {
           >
             {/* Search Input Bar */}
             <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.1]">
-              <Search size={18} className="text-[#0A84FF] shrink-0" />
+              <Search size={18} className="text-white shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
@@ -187,25 +195,25 @@ function SpotlightModal({ isOpen, onClose, onNavigateTab }) {
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all ${
                         isSelected
-                          ? "bg-[#0A84FF] text-white shadow-md"
+                          ? "bg-white text-zinc-950 shadow-md font-medium"
                           : "text-white/80 hover:bg-white/[0.06]"
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                            isSelected ? "bg-white/20 text-white" : "bg-white/[0.08] text-white/70"
+                            isSelected ? "bg-zinc-950/10 text-zinc-950" : "bg-white/[0.08] text-white/70"
                           }`}
                         >
                           <Icon size={16} />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-xs font-medium truncate">
+                          <div className="text-xs font-semibold truncate">
                             {item.title}
                           </div>
                           <div
                             className={`text-[10px] truncate ${
-                              isSelected ? "text-white/80" : "text-white/45"
+                              isSelected ? "text-zinc-600" : "text-white/45"
                             }`}
                           >
                             {item.subtitle}
@@ -217,7 +225,7 @@ function SpotlightModal({ isOpen, onClose, onNavigateTab }) {
                         <span
                           className={`text-[9px] uppercase px-1.5 py-0.5 rounded ${
                             isSelected
-                              ? "bg-white/20 text-white"
+                              ? "bg-zinc-950/10 text-zinc-800"
                               : "bg-white/[0.05] text-white/40"
                           }`}
                         >
@@ -225,7 +233,7 @@ function SpotlightModal({ isOpen, onClose, onNavigateTab }) {
                         </span>
                         <ExternalLink
                           size={11}
-                          className={isSelected ? "text-white" : "text-white/40"}
+                          className={isSelected ? "text-zinc-950" : "text-white/40"}
                         />
                       </div>
                     </div>
@@ -245,7 +253,7 @@ function SpotlightModal({ isOpen, onClose, onNavigateTab }) {
                 <span>↵ Open</span>
                 <span>esc Close</span>
               </div>
-              <span className="text-[#0A84FF]">macOS Spotlight</span>
+              <span className="text-white/70">macOS Spotlight</span>
             </div>
           </motion.div>
         </div>

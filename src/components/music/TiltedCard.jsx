@@ -4,6 +4,8 @@ import { motion, useSpring } from "motion/react";
 export default function TiltedCard({
   children,
   className = "",
+  containerClassName = "",
+  containerStyle = {},
   maxTilt = 12,
   glare = true,
   scale = 1.02,
@@ -70,13 +72,20 @@ export default function TiltedCard({
     cardScale.set(1);
   };
 
+  const outerContainerClasses = containerClassName
+    ? containerClassName
+    : className.includes("h-full")
+    ? "w-full h-full"
+    : "inline-block";
+
   return (
     <div
       style={{
         perspective: 900,
         transformStyle: "preserve-3d",
+        ...containerStyle,
       }}
-      className="inline-block"
+      className={outerContainerClasses}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

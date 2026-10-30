@@ -106,9 +106,10 @@ const ProfilePanel = ({ isOpen = true, onNavigateTab }) => {
         >
           <div className="relative w-full h-full flex flex-col items-center justify-center">
             <TiltedCard
-              maxTilt={6}
+              maxTilt={5}
               glare={true}
               scale={1.01}
+              containerClassName="w-full h-full"
               className="w-full h-full rounded-[28px]"
             >
               <div className="profile-portrait-glass w-full h-full relative flex items-center justify-center rounded-[28px] p-2">

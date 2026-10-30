@@ -29,10 +29,10 @@ export const PROFILE_CONFIG = {
   stats: [
     { label: "Years Exp", value: 2, suffix: "+" },
     { label: "Projects", value: 14, suffix: "" },
-    { label: "Commits", value: 480, suffix: "+" },
+    { label: "Commits", value: 115, suffix: "+" },
   ],
   // 12-point sparkline activity points (representing recent weeks)
-  sparklineData: [24, 38, 30, 45, 52, 40, 68, 55, 74, 60, 85, 92],
+  sparklineData: [4, 7, 3, 9, 6, 12, 8, 14, 7, 11, 9, 13],
 
   // Now playing widget data
   nowPlaying: {
@@ -64,6 +64,6 @@ export const PROFILE_CONFIG = {
   // GitHub contribution activity heatmap data
   github: {
     username: "shubhamiwork27-oss",
-    totalContributions: "542 contributions this year",
+    totalContributions: "115 contributions this year",
   },
 };

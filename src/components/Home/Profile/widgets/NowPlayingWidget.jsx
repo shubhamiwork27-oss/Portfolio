@@ -50,7 +50,7 @@ function NowPlayingWidget({ onNavigateTab }) {
         <span className="text-[10px] font-semibold tracking-wider uppercase text-white/50 flex items-center gap-1.5 whitespace-nowrap">
           <Disc3
             size={11}
-            className={`text-[#0A84FF] transition-transform ${
+            className={`text-white transition-transform ${
               isPlaying ? "animate-spin [animation-duration:3.5s]" : ""
             }`}
           />
@@ -61,29 +61,29 @@ function NowPlayingWidget({ onNavigateTab }) {
           {/* Dynamic Equalizer animation */}
           <div className="flex items-end gap-[2px] h-3 shrink-0">
             <span
-              className={`w-[2px] bg-[#0A84FF] rounded-full transition-all duration-300 ${
-                isPlaying ? "animate-[pulse_0.7s_ease-in-out_infinite] h-full" : "h-1 opacity-40"
+              className={`w-[2px] bg-white rounded-full transition-all duration-300 ${
+                isPlaying ? "animate-[pulse_0.7s_ease-in-out_infinite] h-full shadow-[0_0_4px_white]" : "h-1 opacity-40"
               }`}
             />
             <span
-              className={`w-[2px] bg-[#0A84FF] rounded-full transition-all duration-300 ${
-                isPlaying ? "animate-[pulse_0.9s_ease-in-out_0.2s_infinite] h-3/4" : "h-1 opacity-40"
+              className={`w-[2px] bg-white rounded-full transition-all duration-300 ${
+                isPlaying ? "animate-[pulse_0.9s_ease-in-out_0.2s_infinite] h-3/4 shadow-[0_0_4px_white]" : "h-1 opacity-40"
               }`}
             />
             <span
-              className={`w-[2px] bg-[#0A84FF] rounded-full transition-all duration-300 ${
-                isPlaying ? "animate-[pulse_0.6s_ease-in-out_0.4s_infinite] h-4/5" : "h-1 opacity-40"
+              className={`w-[2px] bg-white rounded-full transition-all duration-300 ${
+                isPlaying ? "animate-[pulse_0.6s_ease-in-out_0.4s_infinite] h-4/5 shadow-[0_0_4px_white]" : "h-1 opacity-40"
               }`}
             />
             <span
-              className={`w-[2px] bg-[#0A84FF] rounded-full transition-all duration-300 ${
-                isPlaying ? "animate-[pulse_0.8s_ease-in-out_0.1s_infinite] h-1/2" : "h-1 opacity-40"
+              className={`w-[2px] bg-white rounded-full transition-all duration-300 ${
+                isPlaying ? "animate-[pulse_0.8s_ease-in-out_0.1s_infinite] h-1/2 shadow-[0_0_4px_white]" : "h-1 opacity-40"
               }`}
             />
           </div>
 
           {/* Subtly animated Open Music hint */}
-          <span className="text-[9.5px] font-medium text-white/40 group-hover/widget:text-[#0A84FF] flex items-center gap-0.5 transition-colors">
+          <span className="text-[9.5px] font-medium text-white/40 group-hover/widget:text-white flex items-center gap-0.5 transition-colors">
             <span className="hidden sm:inline">Open</span>
             <ArrowUpRight size={10} />
           </span>
@@ -120,7 +120,7 @@ function NowPlayingWidget({ onNavigateTab }) {
 
         {/* Song Info */}
         <div className="min-w-0 flex-1">
-          <h4 className="text-[11.5px] font-semibold text-white/95 leading-tight truncate group-hover/widget:text-[#0A84FF] transition-colors">
+          <h4 className="text-[11.5px] font-semibold text-white/95 leading-tight truncate group-hover/widget:text-white transition-colors">
             {trackTitle}
           </h4>
           <p className="text-[10px] text-white/50 truncate mt-0.5">
@@ -183,7 +183,7 @@ function NowPlayingWidget({ onNavigateTab }) {
           title="Click to seek"
         >
           <div
-            className="h-full bg-[#0A84FF] rounded-full transition-all duration-150 ease-linear shadow-[0_0_6px_#0A84FF]"
+            className="h-full bg-white rounded-full transition-all duration-150 ease-linear shadow-[0_0_6px_rgba(255,255,255,0.7)]"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

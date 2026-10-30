@@ -12,7 +12,7 @@ function TerminalWidget() {
       <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.08]">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono text-zinc-400 ml-2 flex items-center gap-1">
-            <TerminalIcon size={10} className="text-[#0A84FF]" />
+            <TerminalIcon size={10} className="text-white" />
             shubham@macbook-pro ~ zsh
           </span>
         </div>
@@ -22,12 +22,12 @@ function TerminalWidget() {
       {/* Terminal Lines with DecryptedText */}
       <div className="font-mono text-[11px] sm:text-xs space-y-2 py-0.5">
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="text-[#0A84FF] font-semibold">❯ whoami:</span>
+          <span className="text-white font-semibold">❯ whoami:</span>
           <DecryptedText
             text={whoami}
             speed={25}
             className="text-zinc-200"
-            encryptedClassName="text-[#0A84FF]/60"
+            encryptedClassName="text-white/60"
           />
         </div>
 
@@ -37,7 +37,7 @@ function TerminalWidget() {
             text={skills}
             speed={20}
             className="text-zinc-300"
-            encryptedClassName="text-[#0A84FF]/60"
+            encryptedClassName="text-white/60"
           />
         </div>
 
@@ -47,7 +47,7 @@ function TerminalWidget() {
             text={currentlyBuilding}
             speed={25}
             className="text-zinc-200"
-            encryptedClassName="text-[#0A84FF]/60"
+            encryptedClassName="text-white/60"
           />
         </div>
       </div>

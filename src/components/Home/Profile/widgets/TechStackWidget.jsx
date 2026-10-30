@@ -92,7 +92,7 @@ function TechStackWidget() {
       {/* Header */}
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider uppercase text-white/50 whitespace-nowrap">
-          <Sliders size={11} className="text-[#0A84FF]" />
+          <Sliders size={11} className="text-white" />
           <span>TECH STACK</span>
         </div>
         <span className="text-[9px] text-white/40">8 Modules</span>
@@ -134,7 +134,7 @@ function TechStackWidget() {
       {/* Footer */}
       <div className="pt-1.5 border-t border-white/[0.08] flex items-center justify-between text-[9px] text-white/40 shrink-0">
         <span>Frameworks &amp; Tools</span>
-        <span className="text-[#0A84FF]">Production Ready</span>
+        <span className="text-white/80">Production Ready</span>
       </div>
     </GlassWidgetCard>
   );

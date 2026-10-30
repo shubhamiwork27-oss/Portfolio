@@ -10,7 +10,7 @@ import StatsWidget from "./widgets/StatsWidget";
 import NowPlayingWidget from "./widgets/NowPlayingWidget";
 import TechStackWidget from "./widgets/TechStackWidget";
 import GithubWidget from "./widgets/GithubWidget";
-import CurrentlyBuildingWidget from "./widgets/CurrentlyBuildingWidget";
+import TodoWidget from "./widgets/TodoWidget";
 
 function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
   const panelRef = useRef(null);
@@ -118,7 +118,7 @@ function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
         
         {/* Left: Small Person Glyph + 'Profile' (13px, semibold) */}
         <div className="flex items-center gap-2 text-white/90">
-          <div className="w-5 h-5 rounded-full bg-white/[0.08] flex items-center justify-center text-[#0A84FF]">
+          <div className="w-5 h-5 rounded-full bg-white/[0.08] flex items-center justify-center text-white">
             <User size={12} strokeWidth={2.2} />
           </div>
           <span className="text-[13px] font-semibold tracking-wide">
@@ -133,7 +133,7 @@ function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
           className="h-[26px] px-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.12] text-white/70 shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
           title="Search Spotlight (⌘K)"
         >
-          <Search size={11} className="text-[#0A84FF]" />
+          <Search size={11} className="text-white" />
           <span className="text-[11px] font-medium hidden sm:inline text-white/75">
             Spotlight
           </span>
@@ -179,7 +179,7 @@ function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
             <GithubWidget />
           </motion.div>
           <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
-            <CurrentlyBuildingWidget />
+            <TodoWidget />
           </motion.div>
         </div>
       </div>

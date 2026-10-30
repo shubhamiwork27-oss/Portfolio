@@ -50,7 +50,7 @@ function AvailabilityWidget() {
       {/* Live Clock Display (Inter font with tabular-nums) */}
       <div className="my-auto py-0.5">
         <div className="flex items-center gap-1 text-white/45 text-[10px] mb-0.5">
-          <Clock size={10} className="text-[#0A84FF]" />
+          <Clock size={10} className="text-white" />
           <span>Local Time (IST)</span>
         </div>
         <div className="text-xl sm:text-[22px] font-bold tracking-tight text-white/95 tabular-nums leading-tight">

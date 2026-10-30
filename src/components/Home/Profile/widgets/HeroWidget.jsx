@@ -11,7 +11,7 @@ function HeroWidget({ onNavigateTab }) {
       <div>
         {/* Top Eyebrow */}
         <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider uppercase text-white/50 mb-0.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#0A84FF]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.7)]" />
           <span>{PROFILE_CONFIG.eyebrow}</span>
         </div>
 
@@ -22,7 +22,7 @@ function HeroWidget({ onNavigateTab }) {
 
         {/* Rotating Roles */}
         <div className="mt-0.5 text-xs sm:text-[13px] font-medium text-white/85 flex items-center gap-1.5">
-          <span className="text-[#0A84FF] text-xs">✦</span>
+          <span className="text-white text-xs">✦</span>
           <RotatingText
             texts={PROFILE_CONFIG.roles}
             className="text-white/90 font-medium"
@@ -56,7 +56,7 @@ function HeroWidget({ onNavigateTab }) {
           <button
             type="button"
             onClick={() => onNavigateTab?.("Projects")}
-            className="px-2.5 py-1 rounded-md bg-[#0A84FF] hover:bg-[#0070E0] active:scale-[0.97] text-white text-[10.5px] font-medium shadow-[0_2px_6px_rgba(10,132,255,0.35)] flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap"
+            className="px-2.5 py-1 rounded-md bg-white hover:bg-white/90 active:scale-[0.97] text-zinc-950 text-[10.5px] font-semibold shadow-[0_2px_6px_rgba(255,255,255,0.25)] flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap"
           >
             <span>Projects</span>
             <ArrowUpRight size={11} />

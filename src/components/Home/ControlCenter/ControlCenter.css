@@ -1,0 +1,35 @@
+.control-center-panel {
+  position: absolute;
+  top: 36px;
+  right: 14px;
+  width: 320px;
+  max-width: calc(100vw - 28px);
+  z-index: 50;
+  border-radius: 20px;
+  background: rgba(30, 30, 35, 0.72);
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.control-tile {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  transition: all 0.18s ease;
+}
+
+.control-tile:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.control-tile.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #121214;
+  border-color: rgba(255, 255, 255, 0.95);
+}

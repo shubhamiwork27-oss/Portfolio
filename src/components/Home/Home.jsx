@@ -9,7 +9,10 @@ import ProfilePanel from "./Profile/ProfilePanel";
 import MenuBar from "./Profile/MenuBar";
 import Contact from "../Contact/Contact";
 import Projects from "../Projects/page";
+import Interests from "../Interest/Interests";
 import { MusicProvider } from "../../context/MusicContext";
+import { ControlCenterProvider, useControlCenter } from "../../context/ControlCenterContext";
+import ControlCenter from "./ControlCenter/ControlCenter";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon,
@@ -28,10 +31,14 @@ const glyph = (icon) => (
 
 const GRADIENTS = {
   Profile: {
-    colors: ["black", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
+    colors: ["black", "black", "black", "#00054A", "#091540","#0b5ee3"],
     angle: 180,
   },
   Interests: {
+    colors: ["#00054A", "#3D137D", "#6A27D6", "#BB6DF2", "#EBD9FF"],
+    angle: 180,
+  },
+  Gallery: {
     colors: ["#00054A", "#3D137D", "#6A27D6", "#BB6DF2", "#EBD9FF"],
     angle: 180,
   },
@@ -40,7 +47,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Contact: {
-    colors: ["black", "black", "black", "#292929", "#424242"],
+    colors: ["black", "#091540", "#0446b0", "#0b5ee3", "#4dc1ff"],
     angle: 180,
   },
 };
@@ -54,7 +61,7 @@ const MUSIC_GRADIENT_PALETTES = [
   { colors: ["#0c0c0c", "#1f1f1f", "#454545", "#999999", "#ffffff"], angle: 180 },
 ];
 
-const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact"];
+const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact", "Gallery", "Interests"];
 const EASE = [0.22, 1, 0.36, 1];
 
 function PopWindow({
@@ -110,6 +117,7 @@ const WINDOW_AREA =
   "absolute inset-0 z-20 flex items-center justify-center pointer-events-none overflow-hidden";
 
 function HomeContent() {
+  const { prefs } = useControlCenter();
   const [activeTab, setActiveTab] = useState("Profile");
   const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -138,12 +146,12 @@ function HomeContent() {
   }, [activeTab, mounted]);
 
   useEffect(() => {
-    if (!isMusicOpen) return;
+    if (!isMusicOpen || prefs.lowDataMode) return;
     const id = setInterval(() => {
       setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
     }, 4500);
     return () => clearInterval(id);
-  }, [isMusicOpen, musicPaletteIndex]);
+  }, [isMusicOpen, musicPaletteIndex, prefs.lowDataMode]);
 
   const currentGradient = isMusicOpen
     ? MUSIC_GRADIENT_PALETTES[musicPaletteIndex]
@@ -155,7 +163,7 @@ function HomeContent() {
 
   const openExternal = useCallback((url) => {
     setActiveTab((prev) =>
-      prev === "Contact" || prev === "Interests" || prev === "Projects"
+      prev === "Contact" || prev === "Interests" || prev === "Projects" || prev === "Gallery"
         ? "Profile"
         : prev
     );
@@ -272,21 +280,21 @@ function HomeContent() {
             type="linear"
             angle={currentGradient.angle}
             bands={1}
-            softness={8}
-            flow={0.5}
+            softness={prefs.performanceMode ? 4 : 8}
+            flow={prefs.performanceMode ? 0.1 : 0.5}
             scale={1}
-            speed={2}
+            speed={prefs.performanceMode ? 0.3 : 2}
             paletteFollow={isMusicOpen ? 2.0 : 1.3}
-            silk={0.63}
-            grainAmount={0.08}
+            silk={prefs.performanceMode ? 0.2 : 0.63}
+            grainAmount={prefs.performanceMode ? 0.02 : 0.08}
             grainSize={0.5}
             contrast={1}
             saturation={1.03}
             variation={0}
-            stir={1.6}
-            grainAnimated
-            interactive
-            clickSwirl
+            stir={prefs.performanceMode ? 0.4 : 1.6}
+            grainAnimated={!prefs.performanceMode}
+            interactive={!prefs.performanceMode}
+            clickSwirl={!prefs.performanceMode}
             intro
             lightMode={false}
           />
@@ -311,6 +319,9 @@ function HomeContent() {
             }
           }}
         />
+
+        {/* macOS Control Center Drawer / Floating Panel */}
+        <ControlCenter />
 
         {/* b) Main Area: flex 1, min-height 0, position relative */}
         <main className="relative flex-1 min-h-0 w-full overflow-hidden z-20">
@@ -375,6 +386,21 @@ function HomeContent() {
               </div>
             </PopWindow>
           )}
+
+          {/* Gallery / Interests (OrbitImages) */}
+          {(mounted.Gallery || mounted.Interests) && (
+            <PopWindow
+              open={activeTab === "Gallery" || activeTab === "Interests"}
+              className={WINDOW_AREA}
+              scale={0.96}
+              enterY={16}
+              exitY={-12}
+            >
+              <div className="pointer-events-auto w-full h-full flex items-center justify-center">
+                <Interests isOpen={activeTab === "Gallery" || activeTab === "Interests"} />
+              </div>
+            </PopWindow>
+          )}
         </main>
 
         {/* c) Dock Zone: height clamp(80px, 11vh, 100px) */}
@@ -407,8 +433,10 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <MusicProvider>
-      <HomeContent />
-    </MusicProvider>
+    <ControlCenterProvider>
+      <MusicProvider>
+        <HomeContent />
+      </MusicProvider>
+    </ControlCenterProvider>
   );
 }

@@ -2,42 +2,72 @@ import React, { useMemo, memo } from "react";
 import GlassWidgetCard from "./GlassWidgetCard";
 import { PROFILE_CONFIG } from "../config";
 import { GitCommit } from "lucide-react";
+import { useGitHubStats, getFallbackGrid } from "../useGitHubStats";
 
-// Deterministic Pseudo-Random Generator
-function getDeterministicGrid(rows = 7, cols = 20) {
-  const total = rows * cols;
-  const grid = [];
-  for (let i = 0; i < total; i++) {
-    if (i === total - 1) {
-      grid.push(4); // Today's blue cell (#0A84FF)
-      continue;
-    }
-    const val = (Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1;
-    const absVal = Math.abs(val);
-    if (absVal > 0.88) grid.push(3);
-    else if (absVal > 0.65) grid.push(2);
-    else if (absVal > 0.40) grid.push(1);
-    else grid.push(0);
-  }
-  return grid;
+// Format date into human-readable label: "Oct 29, 2026"
+function formatTooltipDate(dateStr) {
+  if (!dateStr) return "";
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 function GithubWidget() {
-  const grid = useMemo(() => getDeterministicGrid(7, 20), []);
+  const { username, isLoading, cells: liveCells, totalCommits } = useGitHubStats();
 
-  const getCellClass = (level) => {
+  // Cells array (140 elements: 20 columns x 7 rows)
+  const cells = useMemo(() => {
+    if (liveCells?.length === 140) {
+      return liveCells;
+    }
+    return getFallbackGrid(7, 20);
+  }, [liveCells]);
+
+  // Today's YYYY-MM-DD string
+  const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
+
+  // Total contributions display
+  const totalDisplay = useMemo(() => {
+    if (totalCommits != null) {
+      return `${totalCommits} this year`;
+    }
+    return PROFILE_CONFIG.github?.totalContributions || "Activity this year";
+  }, [totalCommits]);
+
+  // Authentic GitHub contribution colors with luminous highlight
+  const getCellClass = (level, isToday, isFuture) => {
+    if (isFuture) {
+      return "opacity-0 pointer-events-none";
+    }
+
+    let color = "bg-white/[0.06]";
     switch (level) {
       case 4:
-        return "bg-[#0A84FF] shadow-[0_0_5px_#0A84FF]";
+        color = "bg-[#39d353] shadow-[0_0_6px_rgba(57,211,83,0.45)]";
+        break;
       case 3:
-        return "bg-zinc-200";
+        color = "bg-[#26a641]";
+        break;
       case 2:
-        return "bg-zinc-400";
+        color = "bg-[#006d32]";
+        break;
       case 1:
-        return "bg-zinc-600/80";
+        color = "bg-[#0e4429]";
+        break;
       default:
-        return "bg-white/[0.06]";
+        color = "bg-white/[0.06]";
     }
+
+    if (isToday) {
+      return `${color} ring-1 ring-[#0A84FF] shadow-[0_0_6px_rgba(10,132,255,0.7)]`;
+    }
+
+    return color;
   };
 
   return (
@@ -49,47 +79,74 @@ function GithubWidget() {
           GITHUB
         </span>
         <a
-          href={`https://github.com/${PROFILE_CONFIG.github.username}`}
+          href={`https://github.com/${username}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-[9px] text-white/40 hover:text-[#0A84FF] transition-colors truncate max-w-[100px]"
+          title={`View @${username} on GitHub`}
         >
-          @{PROFILE_CONFIG.github.username}
+          @{username}
         </a>
       </div>
 
-      {/* 7 x 20 Heatmap Grid */}
+      {/* 7 rows x 20 columns Heatmap Grid (flowing vertically by column like GitHub) */}
       <div className="my-auto py-0.5">
         <div
           className="grid gap-[2px] w-full"
           style={{
-            gridTemplateColumns: "repeat(20, minmax(0, 1fr))",
+            gridAutoFlow: "column",
             gridTemplateRows: "repeat(7, minmax(0, 1fr))",
+            gridTemplateColumns: "repeat(20, minmax(0, 1fr))",
           }}
         >
-          {grid.map((level, idx) => (
-            <div
-              key={idx}
-              className={`aspect-square rounded-[2px] transition-transform duration-150 hover:scale-125 ${getCellClass(
-                level
-              )}`}
-              title={`Day ${idx + 1}`}
-            />
-          ))}
+          {cells.map((cell, idx) => {
+            const isToday = cell.date === todayStr;
+            const title = cell.future
+              ? ""
+              : cell.isFallback
+              ? "GitHub Activity"
+              : cell.count > 0
+              ? `${cell.count} contribution${cell.count === 1 ? "" : "s"} on ${formatTooltipDate(cell.date)}`
+              : `No contributions on ${formatTooltipDate(cell.date)}`;
+
+            return (
+              <a
+                key={cell.date || idx}
+                href={
+                  cell.date
+                    ? `https://github.com/${username}?tab=overview&from=${cell.date}&to=${cell.date}`
+                    : `https://github.com/${username}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                title={title}
+                className={`aspect-square rounded-[2px] transition-all duration-150 hover:scale-125 hover:z-10 block ${getCellClass(
+                  cell.level,
+                  isToday,
+                  cell.future
+                )}`}
+              />
+            );
+          })}
         </div>
       </div>
 
       {/* Footer & Legend (Non-clipped) */}
       <div className="pt-1.5 border-t border-white/[0.08] flex items-center justify-between text-[8.5px] text-white/40 shrink-0">
-        <span className="truncate">542 this year</span>
+        <span className="truncate flex items-center gap-1.5">
+          {totalDisplay}
+          {isLoading && (
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0A84FF] animate-pulse" />
+          )}
+        </span>
         <div className="flex items-center gap-1 shrink-0">
           <span>Less</span>
           <div className="flex items-center gap-[1.5px]">
             <span className="w-1.5 h-1.5 rounded-[1px] bg-white/[0.06]" />
-            <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-600/80" />
-            <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-400" />
-            <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-200" />
-            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#0A84FF]" />
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#0e4429]" />
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#006d32]" />
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#26a641]" />
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#39d353]" />
           </div>
           <span>More</span>
         </div>

@@ -30,9 +30,6 @@ function NotesWidget() {
           <FileText size={10} className="text-[#634a00]" />
           <span>{PROFILE_CONFIG.bioTitle}</span>
         </div>
-        <span className="text-[9.5px] text-[#634a00]/85 tabular-nums">
-          {liveTimestamp}
-        </span>
       </div>
 
       {/* Notes Body: 3 short lines */}
@@ -46,8 +43,8 @@ function NotesWidget() {
 
       {/* Apple Notes Bottom Bar */}
       <div className="px-3.5 py-1.5 border-t border-white/[0.08] text-[9.5px] text-white/45 flex justify-between items-center shrink-0">
-        <span>iCloud Synced</span>
-        <span>3 notes</span>
+        <span>Who am i</span>
+        <span>Currently</span>
       </div>
     </GlassWidgetCard>
   );

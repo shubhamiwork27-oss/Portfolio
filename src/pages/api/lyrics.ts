@@ -1,7 +1,12 @@
 import type { APIRoute } from "astro";
 import { fetchLyricsFromLrclib } from "../../lib/lyrics";
 
-export const prerender = false;
+// export const prerender = false;
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return [];
+}
 
 export const GET: APIRoute = async ({ request }) => {
   try {

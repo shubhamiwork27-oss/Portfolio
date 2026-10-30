@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
-import { Wifi, BatteryMedium, SlidersHorizontal, Search } from "lucide-react";
+import { Wifi, BatteryMedium, Search } from "lucide-react";
 import { PROFILE_CONFIG } from "./config";
 
 function MenuBar({ onOpenSpotlight, onNavigateTab }) {
@@ -89,14 +89,14 @@ function MenuBar({ onOpenSpotlight, onNavigateTab }) {
         </div>
       </div>
 
-      {/* Right Control Center & Clock */}
+      {/* Right Clock */}
       <div className="flex items-center gap-3 text-white/75 text-[11px]">
         {/* Spotlight Icon button */}
         <button
           type="button"
           onClick={onOpenSpotlight}
           className="hover:text-white transition-colors cursor-pointer"
-          title="Spotlight Search (⌘K)"
+          title="Spotlight Search (⌘ K)"
         >
           <Search size={12} />
         </button>
@@ -107,13 +107,10 @@ function MenuBar({ onOpenSpotlight, onNavigateTab }) {
         {/* Battery with percentage */}
         <div className="flex items-center gap-1">
           <span className="tabular-nums text-[10px]">100%</span>
-          <BatteryMedium size={14} className="text-emerald-400" />
+          <BatteryMedium size={14} className="text-green-400" />
         </div>
 
-        {/* Control Center Icon */}
-        <SlidersHorizontal size={12} className="text-white/80 hover:text-white cursor-pointer" />
-
-        {/* Live macOS Menu Clock */}
+        {/* Live Menu Clock */}
         <span className="font-medium text-white/90 tabular-nums">
           {timeStr || "Sun Oct 29  5:00 PM"}
         </span>
