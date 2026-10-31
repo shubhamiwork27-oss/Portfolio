@@ -73,40 +73,6 @@ function MenuBar({ onOpenSpotlight, onNavigateTab }) {
           <span className="hidden sm:inline">Shubham.Portfolio</span>
           <span className="sm:hidden">Shubham</span>
         </span>
-
-        {/* Menu items */}
-        <div className="hidden md:flex items-center gap-3.5 text-white/70 text-[12px]">
-          <span
-            onClick={() => onNavigateTab?.("Projects")}
-            className="hover:text-white cursor-pointer transition-colors"
-          >
-            File
-          </span>
-          <span
-            onClick={() => onNavigateTab?.("Contact")}
-            className="hover:text-white cursor-pointer transition-colors"
-          >
-            Edit
-          </span>
-          <span
-            onClick={() => onNavigateTab?.("Gallery")}
-            className="hover:text-white cursor-pointer transition-colors"
-          >
-            View
-          </span>
-          <span
-            onClick={() => onNavigateTab?.("Profile")}
-            className="hover:text-white cursor-pointer transition-colors"
-          >
-            Window
-          </span>
-          <span
-            onClick={onOpenSpotlight}
-            className="hover:text-white cursor-pointer transition-colors"
-          >
-            Help
-          </span>
-        </div>
       </div>
 
       {/* Right Clock & Status */}

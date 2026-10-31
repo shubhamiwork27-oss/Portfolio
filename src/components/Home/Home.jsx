@@ -31,7 +31,7 @@ const glyph = (icon) => (
 
 const GRADIENTS = {
   Profile: {
-    colors: ["black", "black", "black", "#00054A", "#091540","#0b5ee3"],
+     colors: ["black", "black", "black", "black","#011e4d" ,"#0b5ee3"],
     angle: 180,
   },
   Gallery: {
@@ -39,7 +39,7 @@ const GRADIENTS = {
     angle: 180,
   },
   Projects: {
-    colors: ["#011e4d", "#315f73", "#ffd069", "#f0992f", "#be185d"],
+    colors: ["black","#011e4d", "#315f73", "#ffd069", "#f0992f", "#be185d"],
     angle: 180,
   },
   Contact: {
@@ -49,11 +49,11 @@ const GRADIENTS = {
 };
 
 const MUSIC_GRADIENT_PALETTES = [
-  {colors: ["black", "black", "black", "black ","white","#0446b0"], angle: 180 },
-  {colors:  ["black", "black", "black","black ", "white","#315f73"],angle: 180 },
-  {colors: ["black", "black", "black", "black ","white","#011e4d"], angle: 180 },
-  {colors:  ["black", "black", "black","black ", "white","#0b5ee3"],angle: 180 },
-  {colors:  ["black", "black", "black","black ", "white","#4dc1ff"],angle: 180 },
+  {colors: ["black", "black", "black", "black ","#d2d2d2","#0446b0"], angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#d2d2d2","#315f73"],angle: 180 },
+  {colors: ["black", "black", "black", "black ","#d2d2d2","#011e4d"], angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#d2d2d2","#0b5ee3"],angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#d2d2d2","#4dc1ff"],angle: 180 },
 
 ];
 

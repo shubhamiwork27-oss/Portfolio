@@ -1,13 +1,13 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  CodeFolderIcon,
   Github01Icon,
   ArrowRight01Icon,
+  SparklesIcon,
 } from "@hugeicons/core-free-icons";
-import AnimatedContent from "../Home/AnimatedContent";
+import Carousel from "./Carousel";
 
-const PROJECTS = [
+export const PROJECTS = [
   {
     id: "moodify",
     title: "Moodify",
@@ -17,6 +17,7 @@ const PROJECTS = [
     tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Three.js", "REST APIs"],
     github: "https://github.com/shubhamiwork27-oss",
     stats: "4 AI Mood Channels • Custom Playlists • 3D Visualizer",
+    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80",
   },
   {
     id: "cineverse",
@@ -27,6 +28,7 @@ const PROJECTS = [
     tech: ["React.js", "JavaScript", "Tailwind CSS", "RESTful APIs", "Motion"],
     github: "https://github.com/shubhamiwork27-oss",
     stats: "Dynamic Media Catalog • Fluid Search • Responsive Layout",
+    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80",
   },
   {
     id: "rajasthan-tourism",
@@ -37,102 +39,126 @@ const PROJECTS = [
     tech: ["React.js", "HTML5 & CSS3", "JavaScript", "UI/UX Design"],
     github: "https://github.com/shubhamiwork27-oss",
     stats: "Scenic Visual Galleries • Heritage Guides • Interactive Itinerary",
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80",
   },
 ];
 
 function ProjectsSection({ isOpen = true, onNavigateTab }) {
-  const handleOpenExternal = (url) => {
+  const handleOpenExternal = (url, e) => {
+    e?.stopPropagation();
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const carouselItems = useMemo(
+    () =>
+      PROJECTS.map((project, idx) => ({
+        id: project.id,
+        image: project.image,
+        title: project.title,
+        description: project.description,
+        rightContent: (
+          <div className="flex flex-col justify-between h-full gap-2 sm:gap-3 pointer-events-auto">
+            {/* Top Meta */}
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider text-blue-300 bg-blue-500/15 border border-blue-400/25 uppercase">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                  0{idx + 1} // {project.id}
+                </span>
+                <span className="text-[10px] font-mono text-white/40">
+                  {idx + 1} / {PROJECTS.length}
+                </span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">
+                {project.title}
+              </h3>
+              <p className="text-[11px] font-semibold text-blue-200/90 mt-0.5 mb-2 tracking-wide">
+                {project.category}
+              </p>
+
+              <p className="text-xs sm:text-[13px] text-white/80 leading-relaxed line-clamp-3 sm:line-clamp-4">
+                {project.description}
+              </p>
+            </div>
+
+            {/* Middle Stats */}
+            {project.stats && (
+              <div className="text-[11px] font-mono text-white/60 py-1.5 border-y border-white/[0.08] hidden sm:block">
+                {project.stats}
+              </div>
+            )}
+
+            {/* Bottom Tech Pills & GitHub link */}
+            <div>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {project.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-white/[0.08] text-zinc-200 border border-white/[0.12]"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => handleOpenExternal(project.github, e)}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/12 hover:bg-white/22 border border-white/18 text-xs text-white font-medium transition-all cursor-pointer hover:translate-x-0.5"
+              >
+                <HugeiconsIcon icon={Github01Icon} size={14} />
+                <span>View Repository</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={12} className="text-white/60" />
+              </button>
+            </div>
+          </div>
+        ),
+      })),
+    []
+  );
+
   return (
-    <div className="w-full h-full max-w-6xl mx-auto px-4 sm:px-8 py-6 flex flex-col justify-center overflow-y-auto text-white pointer-events-auto">
-      
+    <div className="w-full h-full max-w-[96vw] sm:max-w-5xl xl:max-w-6xl 2xl:max-w-[1240px] mx-auto px-2 sm:px-6 py-3 sm:py-6 flex flex-col justify-center text-white pointer-events-auto select-none">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 pb-4 border-b border-white/10 shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-3 sm:mb-5 pb-2.5 sm:pb-3 border-b border-white/10 shrink-0">
         <div>
-          <span className="text-[11px] font-semibold tracking-[0.2em] text-zinc-400 uppercase">
+          <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] text-zinc-400 uppercase flex items-center gap-1.5">
+            <HugeiconsIcon icon={SparklesIcon} size={12} className="text-blue-400" />
             SELECTED PROJECTS
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white mt-0.5">
             Featured Work &amp; Case Studies
           </h2>
         </div>
-        <p className="text-xs text-zinc-400 max-w-xs font-normal">
+        <p className="text-[11px] sm:text-xs text-zinc-400 max-w-xs font-normal hidden sm:block">
           Scalable web applications built with modern frameworks, thoughtful motion and clean architecture.
         </p>
       </div>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 w-full">
-        {PROJECTS.map((project, idx) => (
-          <AnimatedContent
-            key={project.id}
-            delay={idx * 80}
-            distance={16}
-            direction="vertical"
-            className="h-full"
-          >
-            <div className="group relative flex flex-col justify-between h-full p-5 sm:p-6 rounded-[24px] bg-[#0d0d10]/80 border border-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/60">
-              
-              {/* Top Meta */}
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="text-[10px] font-mono tracking-wider text-zinc-400 uppercase">
-                    0{idx + 1} // {project.id}
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-zinc-600 group-hover:bg-[#0a84ff] transition-colors" />
-                </div>
-
-                <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-zinc-100 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-[11px] font-medium text-zinc-400 mt-1 mb-3">
-                  {project.category}
-                </p>
-
-                <p className="text-xs text-zinc-300/80 leading-relaxed line-clamp-4">
-                  {project.description}
-                </p>
-              </div>
-
-              {/* Bottom Tech Tags & Links */}
-              <div className="mt-5 pt-4 border-t border-white/[0.08]">
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-white/[0.04] text-zinc-400 border border-white/[0.06]"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pt-1">
-                  <button
-                    type="button"
-                    onClick={() => handleOpenExternal(project.github)}
-                    className="inline-flex items-center gap-1.5 text-xs text-white/90 hover:text-white font-medium hover:underline underline-offset-4 cursor-pointer"
-                  >
-                    <HugeiconsIcon icon={Github01Icon} size={14} />
-                    <span>View Repository</span>
-                  </button>
-
-                  <span className="text-zinc-600 group-hover:text-white transition-colors duration-200">
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
-                  </span>
-                </div>
-              </div>
-
-            </div>
-          </AnimatedContent>
-        ))}
+      {/* Integrated Carousel */}
+      <div
+        className="w-full flex items-center justify-center min-h-0"
+        style={{ height: "min(540px, 68vh)", position: "relative" }}
+      >
+        <Carousel
+          items={carouselItems}
+          baseWidth={1040}
+          aspectRatio={2.15}
+          effect="fade"
+          indicator="none"
+          frame={true}
+          arrows
+          loop={false}
+          autoplay={false}
+          autoplayDelay={3000}
+          pauseOnHover={false}
+          theme="dark"
+          radius={32}
+        />
       </div>
-
     </div>
   );
 }
 
 export default memo(ProjectsSection);
-
