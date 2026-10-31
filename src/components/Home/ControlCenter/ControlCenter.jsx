@@ -14,7 +14,7 @@ import {
   Volume2,
   VolumeX,
   RotateCcw,
-  Languages,
+  SunMedium,
   Command,
   X,
 } from "lucide-react";
@@ -101,7 +101,7 @@ function ControlCenter() {
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             role="dialog"
             aria-label="Control Center"
-            className="control-center-panel absolute top-9 right-3 sm:right-5 w-[335px] max-w-[calc(100vw-24px)] z-50 text-white select-none overflow-hidden flex flex-col p-3 gap-2.5 max-h-[calc(100vh-80px)]"
+            className="control-center-panel absolute top-9 right-3 sm:right-5 w-[326px] max-w-[calc(100vw-24px)] z-50 text-white select-none overflow-hidden flex flex-col p-2.5 gap-2 max-h-[calc(100vh-80px)]"
           >
             {/* Top Specular Gradient */}
             <div className="control-center-sheen pointer-events-none absolute inset-0 z-0" />
@@ -109,383 +109,289 @@ function ControlCenter() {
             {/* Header: Title & Close Button */}
             <div className="relative z-10 flex items-center justify-between px-1 shrink-0 pb-1 border-b border-white/[0.08]">
               <div className="flex items-center gap-1.5 text-white/90">
-                <div className="w-5 h-5 rounded-full bg-white/[0.08] flex items-center justify-center text-[#0A84FF]">
-                  <SlidersHorizontal size={11} strokeWidth={2.4} />
+                <div className="w-4 h-4 rounded-full bg-white/[0.1] flex items-center justify-center text-[#007AFF]">
+                  <SlidersHorizontal size={10} strokeWidth={2.4} />
                 </div>
-                <span className="text-[12.5px] font-semibold tracking-wide">
+                <span className="text-[12px] font-semibold tracking-wide">
                   Control Center
                 </span>
               </div>
               <button
                 type="button"
                 onClick={close}
-                className="w-5 h-5 rounded-full hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer"
+                className="w-4 h-4 rounded-full hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer"
                 aria-label="Close Control Center"
               >
-                <X size={12} />
+                <X size={11} />
               </button>
             </div>
 
             {/* Scrollable Body */}
-            <div className="relative z-10 space-y-2.5 overflow-y-auto pr-0.5 control-center-scroll">
+            <div className="relative z-10 space-y-2 overflow-y-auto pr-0.5 control-center-scroll">
               
               {/* =========================================================
-                  GROUP 1: PERFORMANCE & DATA (macOS Split Card)
+                  TOP ROW: 2-COLUMN SPLIT (macOS Connectivity & Controls)
                   ========================================================= */}
-              <div className="control-center-card p-2.5 space-y-2">
-                {/* Performance Mode */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
+              <div className="grid grid-cols-2 gap-2">
+                {/* Left Card: Performance & Low Data (Tall macOS Widget) */}
+                <div className="control-center-card p-2.5 flex flex-col justify-between gap-2">
+                  {/* Performance Mode */}
+                  <div
+                    onClick={() => updatePreference("performanceMode", !prefs.performanceMode)}
+                    className="flex items-center gap-2 cursor-pointer group"
+                    role="button"
+                    tabIndex={0}
+                  >
                     <div
-                      className={`w-7 h-7 rounded-xl flex items-center justify-center transition-colors shrink-0 ${
-                        prefs.performanceMode
-                          ? "bg-[#0A84FF] text-white shadow-[0_0_8px_#0A84FF]"
-                          : "bg-white/[0.08] text-white/70"
+                      className={`macos-icon-circle ${
+                        prefs.performanceMode ? "macos-icon-circle-active" : "macos-icon-circle-inactive"
                       }`}
                     >
-                      <Zap size={14} />
+                      <Zap size={13} />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[11.5px] font-semibold text-white/95 leading-tight">
-                        Performance Mode
+                      <div className="text-[11px] font-semibold text-white/95 leading-tight truncate">
+                        Performance
                       </div>
-                      <div className="text-[9.5px] text-white/45 truncate">
-                        {prefs.performanceMode
-                          ? "Optimized for 60fps & low GPU"
-                          : "High-fidelity effects active"}
+                      <div className="text-[9px] text-white/50 leading-tight">
+                        {prefs.performanceMode ? "On" : "Off"}
                       </div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={prefs.performanceMode}
-                    aria-label="Toggle Performance Mode"
-                    onClick={() =>
-                      updatePreference("performanceMode", !prefs.performanceMode)
-                    }
-                    data-checked={prefs.performanceMode}
-                    className="macos-switch"
+
+                  <div className="h-[0.5px] bg-white/[0.08] w-full" />
+
+                  {/* Low Data Mode */}
+                  <div
+                    onClick={() => updatePreference("lowDataMode", !prefs.lowDataMode)}
+                    className="flex items-center gap-2 cursor-pointer group"
+                    role="button"
+                    tabIndex={0}
                   >
-                    <span className="macos-switch-thumb" />
-                  </button>
+                    <div
+                      className={`macos-icon-circle ${
+                        prefs.lowDataMode ? "macos-icon-circle-active" : "macos-icon-circle-inactive"
+                      }`}
+                    >
+                      <WifiOff size={12} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-semibold text-white/95 leading-tight truncate">
+                        Low Data
+                      </div>
+                      <div className="text-[9px] text-white/50 leading-tight">
+                        {prefs.lowDataMode ? "On" : "Off"}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="h-[1px] bg-white/[0.06] w-full" />
-
-                {/* Low Data Mode */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div
-                      className={`w-7 h-7 rounded-xl flex items-center justify-center transition-colors shrink-0 ${
-                        prefs.lowDataMode
-                          ? "bg-[#0A84FF] text-white shadow-[0_0_8px_#0A84FF]"
-                          : "bg-white/[0.08] text-white/70"
-                      }`}
-                    >
-                      <WifiOff size={13} />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-[11.5px] font-semibold text-white/95 leading-tight">
-                        Low Data Mode
-                      </div>
-                      <div className="text-[9.5px] text-white/45 truncate">
-                        {prefs.lowDataMode
-                          ? "Media autoplay disabled"
-                          : "Standard media loading"}
-                      </div>
-                    </div>
-                  </div>
+                {/* Right Column: 2 Stacked Cards (Sound FX & Language) */}
+                <div className="flex flex-col gap-2">
+                  {/* Sound FX Card */}
                   <button
                     type="button"
-                    role="switch"
-                    aria-checked={prefs.lowDataMode}
-                    aria-label="Toggle Low Data Mode"
-                    onClick={() =>
-                      updatePreference("lowDataMode", !prefs.lowDataMode)
-                    }
-                    data-checked={prefs.lowDataMode}
-                    className="macos-switch"
+                    onClick={() => updatePreference("soundEffects", !prefs.soundEffects)}
+                    className="control-center-card p-2 flex items-center gap-2 text-left cursor-pointer transition-all flex-1"
                   >
-                    <span className="macos-switch-thumb" />
+                    <div
+                      className={`macos-icon-circle ${
+                        prefs.soundEffects ? "macos-icon-circle-active" : "macos-icon-circle-inactive"
+                      }`}
+                    >
+                      {prefs.soundEffects ? <Volume2 size={13} /> : <VolumeX size={13} />}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-semibold text-white/95 leading-tight truncate">
+                        Sound FX
+                      </div>
+                      <div className="text-[9px] text-white/50 leading-tight">
+                        {prefs.soundEffects ? "On" : "Muted"}
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Ambient Mode Card */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updatePreference("ambientMode", !prefs.ambientMode)
+                    }
+                    className="control-center-card p-2 flex items-center gap-2 text-left cursor-pointer transition-all flex-1"
+                  >
+                    <div
+                      className={`macos-icon-circle ${
+                        prefs.ambientMode
+                          ? "macos-icon-circle-active"
+                          : "macos-icon-circle-inactive"
+                      }`}
+                    >
+                      <SunMedium size={13} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-semibold text-white/95 leading-tight truncate">
+                        Ambient Mode
+                      </div>
+                      <div className="text-[9px] text-white/50 leading-tight">
+                        {prefs.ambientMode ? "Active" : "Off"}
+                      </div>
+                    </div>
                   </button>
                 </div>
               </div>
 
               {/* =========================================================
-                  GROUP 2: DISPLAY & APPEARANCE (ElasticSliders)
+                  DISPLAY / GLASS INTENSITY (macOS Slider Widget)
                   ========================================================= */}
-              <div className="control-center-card p-2.5 space-y-3">
-                {/* Glass Intensity ElasticSlider */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="flex items-center gap-1.5 font-medium text-white/80">
-                      <Sparkles size={12} className="text-[#0A84FF]" />
-                      Glass Intensity
-                    </span>
-                    <span className="text-[10.5px] font-mono text-white/60 tabular-nums">
-                      {Math.round(prefs.glassIntensity)}%
-                    </span>
-                  </div>
-                  <div className="pt-0.5">
-                    <ElasticSlider
-                      value={prefs.glassIntensity}
-                      startingValue={0}
-                      maxValue={100}
-                      onChange={(val) =>
-                        updatePreference("glassIntensity", Math.round(val))
-                      }
-                      leftIcon={null}
-                      rightIcon={null}
-                      activeThickness={9}
-                      maxStretch={11}
-                      formatValue={(value) => `${Math.round(value)}%`}
-                      ariaLabel="Glass intensity"
-                    />
-                  </div>
+              <div className="control-center-card p-2.5 space-y-1.5">
+                <div className="flex items-center justify-between text-[11px] font-semibold text-white/90">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles size={12} className="text-[#007AFF]" />
+                    Display Glass
+                  </span>
+                  <span className="text-[10px] font-mono text-white/50 tabular-nums">
+                    {Math.round(prefs.glassIntensity)}%
+                  </span>
+                </div>
+                <div className="pt-0.5">
+                  <ElasticSlider
+                    value={prefs.glassIntensity}
+                    startingValue={0}
+                    maxValue={100}
+                    onChange={(val) => updatePreference("glassIntensity", Math.round(val))}
+                    leftIcon={null}
+                    rightIcon={null}
+                    activeThickness={10}
+                    maxStretch={8}
+                    formatValue={(value) => `${Math.round(value)}%`}
+                    ariaLabel="Glass intensity"
+                  />
+                </div>
+              </div>
+
+              {/* =========================================================
+                  TEXT SCALING (macOS Slider Widget)
+                  ========================================================= */}
+              <div className="control-center-card p-2.5 space-y-1.5">
+                <div className="flex items-center justify-between text-[11px] font-semibold text-white/90">
+                  <span className="flex items-center gap-1.5">
+                    <Type size={12} className="text-[#007AFF]" />
+                    Text Size
+                  </span>
+                  <span className="text-[10px] font-mono text-white/50 tabular-nums">
+                    {Math.round(prefs.textScaling)}%
+                  </span>
+                </div>
+                <div className="pt-0.5">
+                  <ElasticSlider
+                    value={prefs.textScaling}
+                    startingValue={90}
+                    maxValue={120}
+                    isStepped={true}
+                    stepSize={5}
+                    onChange={(val) => updatePreference("textScaling", Math.round(val))}
+                    leftIcon={null}
+                    rightIcon={null}
+                    activeThickness={10}
+                    maxStretch={8}
+                    formatValue={(value) => `${Math.round(value)}%`}
+                    ariaLabel="Text scaling"
+                  />
+                </div>
+              </div>
+
+              {/* =========================================================
+                  ACCESSIBILITY & DISPLAY TOGGLES
+                  ========================================================= */}
+              <div className="control-center-card p-2.5 space-y-2">
+                <div className="text-[9.5px] font-semibold uppercase tracking-wider text-white/40 pb-0.5">
+                  Accessibility
                 </div>
 
-                {/* Text Scaling ElasticSlider */}
-                <div className="space-y-1.5 pt-1 border-t border-white/[0.06]">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="flex items-center gap-1.5 font-medium text-white/80">
-                      <Type size={12} className="text-[#0A84FF]" />
-                      Text Scaling
-                    </span>
-                    <span className="text-[10.5px] font-mono text-white/60 tabular-nums">
-                      {Math.round(prefs.textScaling)}%
-                    </span>
-                  </div>
-                  <div className="pt-0.5">
-                    <ElasticSlider
-                      value={prefs.textScaling}
-                      startingValue={90}
-                      maxValue={120}
-                      isStepped={true}
-                      stepSize={5}
-                      onChange={(val) =>
-                        updatePreference("textScaling", Math.round(val))
-                      }
-                      leftIcon={null}
-                      rightIcon={null}
-                      activeThickness={9}
-                      maxStretch={11}
-                      formatValue={(value) => `${Math.round(value)}%`}
-                      ariaLabel="Text scaling"
-                    />
-                  </div>
-                </div>
-
-                {/* Display Toggles: Reduce Transparency & High Contrast */}
-                <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/[0.06]">
+                <div className="grid grid-cols-2 gap-1.5">
+                  {/* Solid Glass / Reduce Transparency */}
                   <button
                     type="button"
-                    onClick={() =>
-                      updatePreference(
-                        "reduceTransparency",
-                        !prefs.reduceTransparency
-                      )
-                    }
-                    className={`flex items-center gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
+                    onClick={() => updatePreference("reduceTransparency", !prefs.reduceTransparency)}
+                    className={`flex items-center gap-2 p-1.5 rounded-xl text-left transition-all cursor-pointer ${
                       prefs.reduceTransparency
                         ? "control-center-pill-active"
                         : "bg-white/[0.04] hover:bg-white/[0.08] text-white/80"
                     }`}
                   >
-                    <Layers size={13} className="shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-semibold leading-tight">
-                        Solid Glass
-                      </div>
-                      <div className="text-[8.5px] opacity-70 truncate">
-                        {prefs.reduceTransparency ? "Opaque" : "Translucent"}
-                      </div>
-                    </div>
+                    <Layers size={12} className="shrink-0" />
+                    <span className="text-[10px] font-medium truncate">Solid Glass</span>
                   </button>
 
+                  {/* High Contrast */}
                   <button
                     type="button"
-                    onClick={() =>
-                      updatePreference("highContrast", !prefs.highContrast)
-                    }
-                    className={`flex items-center gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
+                    onClick={() => updatePreference("highContrast", !prefs.highContrast)}
+                    className={`flex items-center gap-2 p-1.5 rounded-xl text-left transition-all cursor-pointer ${
                       prefs.highContrast
                         ? "control-center-pill-active"
                         : "bg-white/[0.04] hover:bg-white/[0.08] text-white/80"
                     }`}
                   >
-                    <Contrast size={13} className="shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-semibold leading-tight">
-                        High Contrast
-                      </div>
-                      <div className="text-[8.5px] opacity-70 truncate">
-                        {prefs.highContrast ? "Enhanced" : "Standard"}
-                      </div>
-                    </div>
+                    <Contrast size={12} className="shrink-0" />
+                    <span className="text-[10px] font-medium truncate">Contrast</span>
                   </button>
-                </div>
-              </div>
 
-              {/* =========================================================
-                  GROUP 3: ACCESSIBILITY (Motion, Links & Keyboard)
-                  ========================================================= */}
-              <div className="control-center-card p-2.5 space-y-2">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40 pb-0.5">
-                  Accessibility
-                </div>
-
-                {/* Reduce Motion */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Activity size={13} className="text-[#0A84FF] shrink-0" />
-                    <span className="text-[11px] font-medium text-white/85">
-                      Reduce Motion
-                    </span>
-                  </div>
+                  {/* Reduce Motion */}
                   <button
                     type="button"
-                    role="switch"
-                    aria-checked={prefs.reduceMotion}
-                    aria-label="Toggle Reduce Motion"
-                    onClick={() =>
-                      updatePreference("reduceMotion", !prefs.reduceMotion)
-                    }
-                    data-checked={prefs.reduceMotion}
-                    className="macos-switch"
-                  >
-                    <span className="macos-switch-thumb" />
-                  </button>
-                </div>
-
-                {/* Underline Links */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Underline size={13} className="text-[#0A84FF] shrink-0" />
-                    <span className="text-[11px] font-medium text-white/85">
-                      Underline Links
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={prefs.underlineLinks}
-                    aria-label="Toggle Underline Links"
-                    onClick={() =>
-                      updatePreference("underlineLinks", !prefs.underlineLinks)
-                    }
-                    data-checked={prefs.underlineLinks}
-                    className="macos-switch"
-                  >
-                    <span className="macos-switch-thumb" />
-                  </button>
-                </div>
-
-                {/* Keyboard Navigation Focus Rings */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Keyboard size={13} className="text-[#0A84FF] shrink-0" />
-                    <span className="text-[11px] font-medium text-white/85">
-                      Focus Indicator
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={prefs.keyboardNav}
-                    aria-label="Toggle Better Keyboard Navigation"
-                    onClick={() =>
-                      updatePreference("keyboardNav", !prefs.keyboardNav)
-                    }
-                    data-checked={prefs.keyboardNav}
-                    className="macos-switch"
-                  >
-                    <span className="macos-switch-thumb" />
-                  </button>
-                </div>
-              </div>
-
-              {/* =========================================================
-                  GROUP 4: PREFERENCES & UTILITIES
-                  ========================================================= */}
-              <div className="control-center-card p-2.5 space-y-2">
-                <div className="grid grid-cols-2 gap-1.5">
-                  {/* Sound Effects Toggle */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      updatePreference("soundEffects", !prefs.soundEffects)
-                    }
-                    className={`flex items-center gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
-                      prefs.soundEffects
+                    onClick={() => updatePreference("reduceMotion", !prefs.reduceMotion)}
+                    className={`flex items-center gap-2 p-1.5 rounded-xl text-left transition-all cursor-pointer ${
+                      prefs.reduceMotion
                         ? "control-center-pill-active"
                         : "bg-white/[0.04] hover:bg-white/[0.08] text-white/80"
                     }`}
                   >
-                    {prefs.soundEffects ? (
-                      <Volume2 size={13} className="shrink-0" />
-                    ) : (
-                      <VolumeX size={13} className="shrink-0" />
-                    )}
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-semibold leading-tight">
-                        Sound FX
-                      </div>
-                      <div className="text-[8.5px] opacity-70 truncate">
-                        {prefs.soundEffects ? "Enabled" : "Muted"}
-                      </div>
-                    </div>
+                    <Activity size={12} className="shrink-0" />
+                    <span className="text-[10px] font-medium truncate">Less Motion</span>
                   </button>
 
-                  {/* Language Toggle */}
+                  {/* Focus Ring Indicator */}
                   <button
                     type="button"
-                    onClick={() =>
-                      updatePreference(
-                        "language",
-                        prefs.language === "en" ? "hi" : "en"
-                      )
-                    }
-                    className="flex items-center gap-2 p-2 rounded-xl text-left bg-white/[0.04] hover:bg-white/[0.08] text-white/80 transition-all cursor-pointer"
-                  >
-                    <Languages size={13} className="text-[#0A84FF] shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-semibold leading-tight">
-                        Language
-                      </div>
-                      <div className="text-[8.5px] opacity-70 truncate">
-                        {prefs.language === "en" ? "English" : "हिंदी"}
-                      </div>
-                    </div>
-                  </button>
-                </div>
-
-                {/* Bottom Actions Row */}
-                <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/[0.06]">
-                  {/* Keyboard Shortcuts Trigger */}
-                  <button
-                    type="button"
-                    onClick={() => setIsShortcutsOpen(true)}
-                    className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white transition-all text-[10px] font-medium cursor-pointer"
-                  >
-                    <Command size={11} className="text-[#0A84FF]" />
-                    <span>Shortcuts</span>
-                  </button>
-
-                  {/* Reset Preferences */}
-                  <button
-                    type="button"
-                    onClick={handleResetClick}
-                    className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl transition-all text-[10px] font-medium cursor-pointer ${
-                      resetConfirm
-                        ? "bg-rose-500/80 hover:bg-rose-500 text-white shadow-[0_0_8px_rgba(244,63,94,0.4)]"
-                        : "bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white"
+                    onClick={() => updatePreference("keyboardNav", !prefs.keyboardNav)}
+                    className={`flex items-center gap-2 p-1.5 rounded-xl text-left transition-all cursor-pointer ${
+                      prefs.keyboardNav
+                        ? "control-center-pill-active"
+                        : "bg-white/[0.04] hover:bg-white/[0.08] text-white/80"
                     }`}
                   >
-                    <RotateCcw size={11} />
-                    <span>{resetConfirm ? "Confirm Reset?" : "Reset All"}</span>
+                    <Keyboard size={12} className="shrink-0" />
+                    <span className="text-[10px] font-medium truncate">Focus Rings</span>
                   </button>
                 </div>
+              </div>
+
+              {/* =========================================================
+                  BOTTOM UTILITIES
+                  ========================================================= */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsShortcutsOpen(true)}
+                  className="control-center-card py-2 px-2.5 flex items-center justify-center gap-1.5 text-white/75 hover:text-white transition-all text-[10.5px] font-medium cursor-pointer"
+                >
+                  <Command size={11} className="text-[#007AFF]" />
+                  <span>Shortcuts</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResetClick}
+                  className={`control-center-card py-2 px-2.5 flex items-center justify-center gap-1.5 transition-all text-[10.5px] font-medium cursor-pointer ${
+                    resetConfirm
+                      ? "!bg-rose-500/80 text-white shadow-sm"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  <RotateCcw size={11} />
+                  <span>{resetConfirm ? "Confirm?" : "Reset"}</span>
+                </button>
               </div>
 
             </div>

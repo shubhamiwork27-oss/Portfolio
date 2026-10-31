@@ -11,6 +11,8 @@ const STORAGE_KEY = "portfolio_control_center_prefs";
 
 // Default settings as specified in requirements
 const DEFAULT_PREFERENCES = {
+  theme: "dark",
+  ambientMode: false,
   performanceMode: false,
   lowDataMode: false,
   glassIntensity: 70, // 0 to 100
@@ -21,7 +23,6 @@ const DEFAULT_PREFERENCES = {
   reduceMotion: false,
   keyboardNav: false,
   soundEffects: true,
-  language: "en", // "en" | "hi"
 };
 
 const ControlCenterContext = createContext(null);
@@ -167,6 +168,9 @@ export function ControlCenterProvider({ children }) {
     root.style.fontSize = `${prefs.textScaling}%`;
 
     // 3. Class toggles on root for instantaneous styling
+    root.classList.toggle("light", prefs?.theme === "light");
+    root.classList.toggle("dark", prefs?.theme !== "light");
+    root.classList.toggle("ambient-mode", Boolean(prefs.ambientMode));
     root.classList.toggle("perf-mode", Boolean(prefs.performanceMode));
     root.classList.toggle("low-data-mode", Boolean(prefs.lowDataMode));
     root.classList.toggle("reduce-transparency", Boolean(prefs.reduceTransparency));

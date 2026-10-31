@@ -84,6 +84,84 @@ const LIGHT_MUSIC_GRADIENT_PALETTES = [
   { colors: ["#ffffff", "#f8fafc", "#d1fae5", "#a7f3d0", "#34d399"], angle: 180 },
 ];
 
+const AMBIENT_GRADIENT_PALETTES = [
+  // 1. Arctic Aurora: Ice blue + Cyan + Deep Navy (Clean, futuristic, premium atmosphere)
+  {
+    name: "Arctic Aurora",
+    colors: ["#020b1a", "#04162e", "#033b5c", "#0077b6", "#00d2ff", "#70e1ff"],
+    angle: 155,
+  },
+  // 2. Violet Nebula: Purple + Magenta + Midnight (Creative, dreamy and futuristic)
+  {
+    name: "Violet Nebula",
+    colors: ["#050212", "#0f051d", "#2e1065", "#701a75", "#c026d3", "#ec4899"],
+    angle: 140,
+  },
+  // 3. Emerald Forest: Emerald + Teal + Forest Black (Calm, natural and sophisticated)
+  {
+    name: "Emerald Forest",
+    colors: ["#020b06", "#04140d", "#064e3b", "#0d9488", "#10b981", "#6ee7b7"],
+    angle: 165,
+  },
+  // 4. Sunset Ember: Orange + Coral + Dark Burgundy (Warm, cinematic and bold)
+  {
+    name: "Sunset Ember",
+    colors: ["#160308", "#2e0812", "#4c0519", "#9f1239", "#f43f5e", "#f97316"],
+    angle: 150,
+  },
+  // 5. Rose Dusk: Soft Pink + Lavender + Charcoal (Elegant, soft and artistic)
+  {
+    name: "Rose Dusk",
+    colors: ["#0e0e12", "#1a1921", "#373042", "#635870", "#b5838d", "#ffcdb2"],
+    angle: 160,
+  },
+  // 6. Lunar Silver: Silver + Slate + Midnight Black (Minimal, monochromatic and premium)
+  {
+    name: "Lunar Silver",
+    colors: ["#050608", "#0b0d11", "#1e242e", "#334155", "#64748b", "#cbd5e1"],
+    angle: 170,
+  },
+];
+
+const LIGHT_AMBIENT_GRADIENT_PALETTES = [
+  // 1. Arctic Aurora (Light)
+  {
+    name: "Arctic Aurora Light",
+    colors: ["#ffffff", "#f0f9ff", "#e0f2fe", "#7dd3fc", "#0ea5e9", "#0284c7"],
+    angle: 155,
+  },
+  // 2. Violet Nebula (Light)
+  {
+    name: "Violet Nebula Light",
+    colors: ["#ffffff", "#faf5ff", "#f3e8ff", "#c084fc", "#e879f9", "#7c3aed"],
+    angle: 140,
+  },
+  // 3. Emerald Forest (Light)
+  {
+    name: "Emerald Forest Light",
+    colors: ["#ffffff", "#f0fdf4", "#dcfce7", "#6ee7b7", "#14b8a6", "#047857"],
+    angle: 165,
+  },
+  // 4. Sunset Ember (Light)
+  {
+    name: "Sunset Ember Light",
+    colors: ["#ffffff", "#fff7ed", "#ffedd5", "#fed7aa", "#fb7185", "#ea580c"],
+    angle: 150,
+  },
+  // 5. Rose Dusk (Light)
+  {
+    name: "Rose Dusk Light",
+    colors: ["#ffffff", "#fff1f2", "#ffe4e6", "#fbcfe8", "#e9d5ff", "#94a3b8"],
+    angle: 160,
+  },
+  // 6. Lunar Silver (Light)
+  {
+    name: "Lunar Silver Light",
+    colors: ["#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#cbd5e1", "#64748b"],
+    angle: 170,
+  },
+];
+
 const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact", "Gallery", "Interests"];
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -143,6 +221,7 @@ function HomeContent() {
   const { prefs } = useControlCenter();
   const [activeTab, setActiveTab] = useState("Profile");
   const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
+  const [ambientPaletteIndex, setAmbientPaletteIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [dockIconSize, setDockIconSize] = useState(48);
 
@@ -172,7 +251,9 @@ function HomeContent() {
   const isLight = prefs?.theme === "light";
   const activePalettes = isLight ? LIGHT_GRADIENTS : GRADIENTS;
   const musicPalettes = isLight ? LIGHT_MUSIC_GRADIENT_PALETTES : MUSIC_GRADIENT_PALETTES;
+  const ambientPalettes = isLight ? LIGHT_AMBIENT_GRADIENT_PALETTES : AMBIENT_GRADIENT_PALETTES;
 
+  // Music Palette Cycling
   useEffect(() => {
     if (!isMusicOpen || prefs?.lowDataMode) return;
     const id = setInterval(() => {
@@ -181,8 +262,19 @@ function HomeContent() {
     return () => clearInterval(id);
   }, [isMusicOpen, musicPaletteIndex, prefs?.lowDataMode, musicPalettes.length]);
 
+  // Ambience Mode Colorful Palette Cycling
+  useEffect(() => {
+    if (!prefs?.ambientMode || isMusicOpen || prefs?.lowDataMode) return;
+    const id = setInterval(() => {
+      setAmbientPaletteIndex((prev) => (prev + 1) % ambientPalettes.length);
+    }, 4800);
+    return () => clearInterval(id);
+  }, [prefs?.ambientMode, isMusicOpen, ambientPaletteIndex, prefs?.lowDataMode, ambientPalettes.length]);
+
   const currentGradient = isMusicOpen
     ? musicPalettes[musicPaletteIndex % musicPalettes.length]
+    : prefs?.ambientMode
+    ? ambientPalettes[ambientPaletteIndex % ambientPalettes.length]
     : activePalettes[activeTab] || activePalettes.Profile;
 
   const toggleTab = useCallback((tab) => {
@@ -312,18 +404,18 @@ function HomeContent() {
             type="linear"
             angle={currentGradient.angle}
             bands={1}
-            softness={prefs.performanceMode ? 4 : 8}
-            flow={prefs.performanceMode ? 0.1 : 0.5}
+            softness={prefs.performanceMode ? 4 : prefs.ambientMode ? 10 : 8}
+            flow={prefs.performanceMode ? 0.1 : prefs.ambientMode ? 0.65 : 0.5}
             scale={1}
-            speed={prefs.performanceMode ? 0.3 : 2}
-            paletteFollow={isMusicOpen ? 2.0 : 1.3}
-            silk={prefs.performanceMode ? 0.2 : 0.63}
+            speed={prefs.performanceMode ? 0.3 : prefs.ambientMode ? 2.2 : 2}
+            paletteFollow={isMusicOpen ? 2.0 : prefs.ambientMode ? 2.2 : 1.3}
+            silk={prefs.performanceMode ? 0.2 : prefs.ambientMode ? 0.75 : 0.63}
             grainAmount={prefs.performanceMode ? 0.02 : 0.08}
             grainSize={0.5}
-            contrast={1}
-            saturation={1.03}
+            contrast={prefs.ambientMode ? 1.15 : 1}
+            saturation={prefs.ambientMode ? 1.45 : 1.03}
             variation={0}
-            stir={prefs.performanceMode ? 0.4 : 1.6}
+            stir={prefs.performanceMode ? 0.4 : prefs.ambientMode ? 2.0 : 1.6}
             grainAnimated={!prefs.performanceMode}
             interactive={!prefs.performanceMode}
             clickSwirl={!prefs.performanceMode}

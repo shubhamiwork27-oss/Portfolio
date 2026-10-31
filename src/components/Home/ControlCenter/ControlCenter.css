@@ -1,100 +1,125 @@
 /* ==========================================================================
-   macOS-Inspired Control Center Styles
+   macOS Sequoia / Sonoma Control Center Authentic Theme
    ========================================================================== */
 
 .control-center-panel {
   position: absolute;
   top: 36px;
   right: 14px;
-  width: 335px;
+  width: 326px;
   max-width: calc(100vw - 28px);
   z-index: 50;
-  border-radius: 22px;
-  background: rgba(18, 20, 26, 0.38);
-  backdrop-filter: blur(48px) saturate(190%) brightness(1.1);
-  -webkit-backdrop-filter: blur(48px) saturate(190%) brightness(1.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(32, 34, 42, 0.44);
+  backdrop-filter: blur(50px) saturate(220%) contrast(1.05) brightness(1.08);
+  -webkit-backdrop-filter: blur(50px) saturate(220%) contrast(1.05) brightness(1.08);
+  border: 0.5px solid rgba(255, 255, 255, 0.22);
   box-shadow: 
-    0 24px 60px -10px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    0 24px 50px -8px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 0.5px rgba(255, 255, 255, 0.12),
+    inset 0 0.5px 0 0.5px rgba(255, 255, 255, 0.28);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", system-ui, sans-serif;
   user-select: none;
   -webkit-user-select: none;
 }
-
-
-
 
 /* Subtle Specular Sheen on the panel */
 .control-center-sheen {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.04) 28%,
-    transparent 55%
+    rgba(255, 255, 255, 0.20) 0%,
+    rgba(255, 255, 255, 0.05) 25%,
+    transparent 50%
   );
+  border-radius: 18px;
 }
 
 /* Individual Module / Tile Card */
 .control-center-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 14px rgba(0, 0, 0, 0.12);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 0.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.12),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.18);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .control-center-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* macOS Circular Icon Badge */
+.macos-icon-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.macos-icon-circle-active {
+  background: #007AFF !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 122, 255, 0.45);
+}
+
+.macos-icon-circle-inactive {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
 }
 
 /* Active Highlight Card / Pill */
 .control-center-pill-active {
-  background: #0A84FF !important;
+  background: #007AFF !important;
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 0 14px rgba(10, 132, 255, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4) !important;
 }
 
 /* macOS Toggle Switch */
 .macos-switch {
   position: relative;
-  width: 36px;
-  height: 20px;
+  width: 32px;
+  height: 18px;
   border-radius: 9999px;
   background-color: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
   transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .macos-switch[data-checked="true"] {
-  background-color: #0A84FF;
-  border-color: #38bdf8;
-  box-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
+  background-color: #34C759;
+  border-color: #34C759;
+  box-shadow: 0 1px 3px rgba(52, 199, 89, 0.4);
 }
 
 .macos-switch-thumb {
   position: absolute;
   top: 1px;
   left: 1px;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 9999px;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .macos-switch[data-checked="true"] .macos-switch-thumb {
-  transform: translateX(16px);
+  transform: translateX(14px);
 }
 
-/* Custom ElasticSlider styling inside Control Center */
+/* Custom ElasticSlider styling inside Control Center to match macOS capsule sliders */
 .control-center-panel .elastic-slider {
   width: 100%;
 }
@@ -104,24 +129,27 @@
 }
 
 .control-center-panel .elastic-slider__hit {
-  height: 26px;
+  height: 24px;
   cursor: pointer;
 }
 
 .control-center-panel .elastic-slider__track {
   background: rgba(255, 255, 255, 0.14) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 0.5px solid rgba(255, 255, 255, 0.10);
+  border-radius: 9999px !important;
 }
 
 .control-center-panel .elastic-slider__range {
-  background: linear-gradient(90deg, #0A84FF 0%, #00C2FF 100%) !important;
-  box-shadow: 0 0 8px rgba(10, 132, 255, 0.45);
+  background: #ffffff !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 .control-center-panel .elastic-slider__value {
   font-family: inherit;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* Scroll area without visible ugly scrollbars */
