@@ -16,38 +16,6 @@ import './Carousel.css';
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
-const DEFAULT_ITEMS = [
-  {
-    id: 1,
-    title: 'Swipe with momentum',
-    description: 'Fling the cards and they glide into place.',
-    icon: <HugeiconsIcon icon={Drag04Icon} size={16} strokeWidth={1.8} />
-  },
-  {
-    id: 2,
-    title: 'Autoplay with a timer',
-    description: 'The indicator fills up so people know what comes next.',
-    icon: <HugeiconsIcon icon={Timer02Icon} size={16} strokeWidth={1.8} />
-  },
-  {
-    id: 3,
-    title: 'Five transitions',
-    description: 'Tilt, slide, scale, fade or turn the cards like a cube.',
-    icon: <HugeiconsIcon icon={Layers01Icon} size={16} strokeWidth={1.8} />
-  },
-  {
-    id: 4,
-    title: 'Keyboard friendly',
-    description: 'Arrow keys, Home and End move between the cards.',
-    icon: <HugeiconsIcon icon={CommandIcon} size={16} strokeWidth={1.8} />
-  },
-  {
-    id: 5,
-    title: 'Bring any content',
-    description: 'Pass text, images or your own components as cards.',
-    icon: <HugeiconsIcon icon={Image01Icon} size={16} strokeWidth={1.8} />
-  }
-];
 
 const THEMES = {
   dark: {

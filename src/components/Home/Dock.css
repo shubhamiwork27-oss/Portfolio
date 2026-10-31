@@ -55,13 +55,28 @@
 }
 
 .dock--bottom {
-  bottom: max(14px, env(safe-area-inset-bottom, 14px));
+  bottom: max(12px, env(safe-area-inset-bottom, 12px));
   align-items: flex-end;
 }
 
 @media (max-width: 640px) {
   .dock--bottom {
-    bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  }
+
+  .dock {
+    max-width: calc(100% - 8px);
+  }
+
+  .dock-label {
+    display: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .dock {
+    gap: max(2px, var(--dock-gap));
+    max-width: calc(100% - 4px);
   }
 }
 
@@ -409,18 +424,6 @@
   opacity: 0;
 }
 
-@media (max-width: 640px) {
-  .dock-label {
-    font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-
-  .dock--bottom .dock-label {
-    bottom: calc(100% + 8px);
-  }
-}
-
 .dock-menu {
   position: fixed;
   top: 0;
@@ -622,3 +625,4 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.12),
     0 10px 28px -6px rgba(0, 0, 0, 0.55);
 }
+

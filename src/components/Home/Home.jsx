@@ -13,6 +13,7 @@ import Interests from "../Interest/Interests";
 import { MusicProvider } from "../../context/MusicContext";
 import { ControlCenterProvider, useControlCenter } from "../../context/ControlCenterContext";
 import ControlCenter from "./ControlCenter/ControlCenter";
+import ReactBitsLoader from "./ReactBitsLoader";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AtSignIcon,
@@ -48,13 +49,39 @@ const GRADIENTS = {
   },
 };
 
+const LIGHT_GRADIENTS = {
+  Profile: {
+    colors: ["#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#bfdbfe", "#3b82f6"],
+    angle: 180,
+  },
+  Gallery: {
+    colors: ["#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#cbd5e1", "#64748b"],
+    angle: 180,
+  },
+  Projects: {
+    colors: ["#ffffff", "#fffbeb", "#fef3c7", "#fed7aa", "#fbcfe8", "#818cf8"],
+    angle: 180,
+  },
+  Contact: {
+    colors: ["#ffffff", "#f0f9ff", "#e0f2fe", "#bae6fd", "#7dd3fc", "#0284c7"],
+    angle: 180,
+  },
+};
+
 const MUSIC_GRADIENT_PALETTES = [
   {colors: ["black", "black", "black", "black ","#d2d2d2","#0446b0"], angle: 180 },
   {colors:  ["black", "black", "black","black ", "#d2d2d2","#315f73"],angle: 180 },
   {colors: ["black", "black", "black", "black ","#d2d2d2","#011e4d"], angle: 180 },
   {colors:  ["black", "black", "black","black ", "#d2d2d2","#0b5ee3"],angle: 180 },
   {colors:  ["black", "black", "black","black ", "#d2d2d2","#4dc1ff"],angle: 180 },
+];
 
+const LIGHT_MUSIC_GRADIENT_PALETTES = [
+  { colors: ["#ffffff", "#f8fafc", "#e0f2fe", "#bae6fd", "#38bdf8"], angle: 180 },
+  { colors: ["#ffffff", "#f8fafc", "#e0e7ff", "#c7d2fe", "#818cf8"], angle: 180 },
+  { colors: ["#ffffff", "#f8fafc", "#fce7f3", "#fbcfe8", "#f472b6"], angle: 180 },
+  { colors: ["#ffffff", "#f8fafc", "#fef3c7", "#fde68a", "#fbbf24"], angle: 180 },
+  { colors: ["#ffffff", "#f8fafc", "#d1fae5", "#a7f3d0", "#34d399"], angle: 180 },
 ];
 
 const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact", "Gallery", "Interests"];
@@ -125,8 +152,9 @@ function HomeContent() {
   // Responsive mobile and dock icon sizing: clamp(44px, 5.6vh, 58px)
   useEffect(() => {
     const handleResize = () => {
+      const vw = window.innerWidth;
       const vh = window.innerHeight;
-      setIsMobile(window.innerWidth < 640);
+      setIsMobile(vw < 640);
       const size = Math.round(Math.min(58, Math.max(44, vh * 0.056)));
       setDockIconSize(size);
     };
@@ -141,17 +169,21 @@ function HomeContent() {
     }
   }, [activeTab, mounted]);
 
+  const isLight = prefs?.theme === "light";
+  const activePalettes = isLight ? LIGHT_GRADIENTS : GRADIENTS;
+  const musicPalettes = isLight ? LIGHT_MUSIC_GRADIENT_PALETTES : MUSIC_GRADIENT_PALETTES;
+
   useEffect(() => {
     if (!isMusicOpen || prefs?.lowDataMode) return;
     const id = setInterval(() => {
-      setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
+      setMusicPaletteIndex((prev) => (prev + 1) % musicPalettes.length);
     }, 4500);
     return () => clearInterval(id);
-  }, [isMusicOpen, musicPaletteIndex, prefs?.lowDataMode]);
+  }, [isMusicOpen, musicPaletteIndex, prefs?.lowDataMode, musicPalettes.length]);
 
   const currentGradient = isMusicOpen
-    ? MUSIC_GRADIENT_PALETTES[musicPaletteIndex]
-    : GRADIENTS[activeTab] || GRADIENTS.Profile;
+    ? musicPalettes[musicPaletteIndex % musicPalettes.length]
+    : activePalettes[activeTab] || activePalettes.Profile;
 
   const toggleTab = useCallback((tab) => {
     setActiveTab((prev) => (prev === tab ? "Profile" : tab));
@@ -227,37 +259,41 @@ function HomeContent() {
   );
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100dvh",
-        position: "relative",
-        overflow: "hidden",
-        backgroundColor: "#000000",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2vh 1.2vw",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* ===================================================================
-          Inner Desktop Viewport: Exactly 5% gap from the physical screen edges,
-          centered, with rounded border radius, 1px border & deep shadow
-          =================================================================== */}
+    <>
+      {/* React Bits Initial Website Loader */}
+      <ReactBitsLoader minDuration={1800} />
+
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          width: "100vw",
+          height: "100dvh",
           position: "relative",
-          borderRadius: "clamp(20px, 2.5vw, 26px)",
           overflow: "hidden",
-          isolation: "isolate",
+          backgroundColor: "#000000",
           display: "flex",
-          flexDirection: "column",
-          border: "2px solid rgba(255, 255, 255, 0.20)",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: isMobile ? "0" : "2vh 1.2vw",
+          boxSizing: "border-box",
         }}
       >
+        {/* ===================================================================
+            Inner Desktop Viewport: Exactly 5% gap from the physical screen edges,
+            centered, with rounded border radius, 1px border & deep shadow
+            =================================================================== */}
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            borderRadius: isMobile ? "0" : "clamp(20px, 2.5vw, 26px)",
+            overflow: "hidden",
+            isolation: "isolate",
+            display: "flex",
+            flexDirection: "column",
+            border: isMobile ? "none" : "2px solid rgba(255, 255, 255, 0.20)",
+          }}
+        >
         {/* Full-screen background grain/gradient layer covering entire container including dock */}
         <div
           style={{
@@ -399,31 +435,32 @@ function HomeContent() {
           )}
         </main>
 
-        {/* c) Dock Zone: height clamp(80px, 11vh, 100px) */}
-        <footer className="h-[clamp(80px,11vh,100px)] shrink-0 w-full relative z-30 flex items-center justify-center">
+        {/* c) Dock Zone */}
+        <footer className="h-[clamp(64px,9vh,90px)] shrink-0 w-full relative z-30 flex items-center justify-center">
           <Dock
             className="z-30"
             items={items}
             theme="light"
-            baseItemSize={isMobile ? 38 : dockIconSize}
-            magnification={isMobile ? 50 : 80}
-            panelHeight={isMobile ? 56 : Math.round(dockIconSize * 1.35)}
+            baseItemSize={isMobile ? 28 : dockIconSize}
+            magnification={isMobile ? 32 : 80}
+            panelHeight={isMobile ? 42 : Math.round(dockIconSize * 1.35)}
             accentColor="#fff"
             badgeColor="#fff"
             position="bottom"
-            distance={isMobile ? 110 : 160}
-            gap={isMobile ? 6 : 10}
+            distance={isMobile ? 60 : 160}
+            gap={isMobile ? 3 : 10}
             roundness={0.7}
-            bounce
+            bounce={!isMobile}
             autoHide={false}
             tiles
-            showLabels
+            showLabels={!isMobile}
             showIndicators
             showBadges
           />
         </footer>
       </div>
     </div>
+    </>
   );
 }
 

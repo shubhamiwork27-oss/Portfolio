@@ -59,15 +59,6 @@ function Interests({ isOpen = true, images = DEFAULT_IMAGES }) {
 
   if (!isOpen) return null;
 
-
-  const radiusX = isMobile ? 240 : 360;
-  const radiusY = isMobile ? 80 : 85;
-  const itemSize = isMobile ? 68 : 88;
-  const itemRadius = isMobile ? 65 : 80;
-  const hoverRadius = isMobile ? 16 : 20;
-  const hoverScale = isMobile ? 1.2 : 1.25;
-  const rotation = isMobile ? -6 : -8;
-
   return (
     <section
       className="relative w-full h-full flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden select-none"
@@ -102,7 +93,7 @@ function Interests({ isOpen = true, images = DEFAULT_IMAGES }) {
               <Compass size={12} className="sm:w-[13px] sm:h-[13px]" />
             </div>
             <span className="text-[11px] sm:text-[13px] font-semibold tracking-wide text-white/90 truncate">
-              Things That Keep Me Curious
+              {isMobile ? "Moments In Orbit" : "Things That Keep Me Curious"}
             </span>
           </div>
 
@@ -114,29 +105,54 @@ function Interests({ isOpen = true, images = DEFAULT_IMAGES }) {
 
         {/* ORBIT CANVAS */}
         <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden px-2 sm:px-6 py-2 sm:py-3 z-10 touch-pan-y">
-          <OrbitImages
-            images={images}
-            shape="ellipse"
-            radiusX={radiusX}
-            radiusY={radiusY}
-            rotation={rotation}
-            duration={30}
-            itemSize={itemSize}
-            depth={0.5}
-            showPath
-            width="100%"
-            height="100%"
-            centerContent={
-              <h2 className="text-xl sm:text-3xl md:text-4xl font-mono font-bold tracking-tight text-white drop-shadow-md select-none">
-                Interests
-              </h2>
-            }
-            itemRadius={itemRadius}
-            hoverRadius={hoverRadius}
-            hoverScale={hoverScale}
-            hoverSpeed={0.8}
-            clickToFront={false}
-          />
+          {isMobile ? (
+            <OrbitImages
+              images={images}
+              shape="circle"
+              radiusX={340}
+              radiusY={80}
+              rotation={0}
+              duration={30}
+              itemSize={126}
+              depth={0}
+              showPath
+              centerContent={
+                <h2 className="text-2xl font-mono font-bold tracking-tight text-white drop-shadow-md select-none">
+                  Moments
+                </h2>
+              }
+              radius={190}
+              itemRadius={80}
+              shadow={0}
+              hoverScale={1.39}
+              width="100%"
+              height="100%"
+            />
+          ) : (
+            <OrbitImages
+              images={images}
+              shape="ellipse"
+              radiusX={360}
+              radiusY={85}
+              rotation={-8}
+              duration={30}
+              itemSize={88}
+              depth={0.5}
+              showPath
+              width="100%"
+              height="100%"
+              centerContent={
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-mono font-bold tracking-tight text-white drop-shadow-md select-none">
+                  Interests
+                </h2>
+              }
+              itemRadius={80}
+              hoverRadius={20}
+              hoverScale={1.25}
+              hoverSpeed={0.8}
+              clickToFront={false}
+            />
+          )}
         </div>
       </div>
     </section>
