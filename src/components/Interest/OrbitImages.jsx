@@ -201,7 +201,7 @@ const createEngine = (root, config, setAspect) => {
     st.yMid = (y0 + y1) / 2;
     st.yHalf = Math.max(1e-3, (y1 - y0) / 2);
     const depth = clamp(cfg.depth, 0, 1);
-    const margin = (cfg.itemSize / 2) * (1 + depth * FRONT_GROW) * Math.max(1, cfg.hoverScale) + 2;
+    const margin = (cfg.itemSize / 2) * (1 + depth * FRONT_GROW) * Math.max(1, cfg.hoverScale) + 12;
     st.bbox = [x0 - margin, y0 - margin, x1 + margin, y1 + margin];
     setAspect((x1 - x0 + margin * 2) / (y1 - y0 + margin * 2));
   };
@@ -639,6 +639,7 @@ export default function OrbitImages({
   paused = false,
   depth = 0.5,
   itemRadius = 12,
+  hoverRadius = 22,
   shadow = 0.3,
   hoverScale = 1.08,
   hoverSpeed = 0.3,
@@ -763,6 +764,8 @@ export default function OrbitImages({
         aspectRatio: autoHeight ? String(aspect) : undefined,
         '--orbit-radius':
           typeof itemRadius === 'number' ? `${(itemRadius / Math.max(1, itemSize)) * 100}%` : itemRadius,
+        '--orbit-hover-radius':
+          typeof hoverRadius === 'number' ? `${(hoverRadius / Math.max(1, itemSize)) * 100}%` : (hoverRadius ?? '24%'),
         '--orbit-shadow': String(clamp(shadow, 0, 1)),
         '--orbit-hover-scale': String(hoverScale)
       }}

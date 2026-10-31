@@ -50,10 +50,10 @@ function GlassWidgetCard({
         motion-reduce:hover:translate-y-0
         ${className}`}
       style={{
-        backgroundColor: "rgba(255, 255, 255, 0.05)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
+        backgroundColor: "rgba(255, 255, 255, var(--glass-bg-opacity, 0.05))",
+        backdropFilter: "blur(var(--glass-blur, 20px))",
+        WebkitBackdropFilter: "blur(var(--glass-blur, 20px))",
+        border: "1px solid rgba(255, 255, 255, var(--glass-border-opacity, 0.1))",
         boxShadow:
           "inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 24px -6px rgba(0, 0, 0, 0.4)",
         ...style,

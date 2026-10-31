@@ -1,35 +1,134 @@
+/* ==========================================================================
+   macOS-Inspired Control Center Styles
+   ========================================================================== */
+
 .control-center-panel {
   position: absolute;
   top: 36px;
   right: 14px;
-  width: 320px;
+  width: 335px;
   max-width: calc(100vw - 28px);
   z-index: 50;
-  border-radius: 20px;
-  background: rgba(30, 30, 35, 0.72);
-  backdrop-filter: blur(40px) saturate(190%);
-  -webkit-backdrop-filter: blur(40px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-radius: 22px;
+  background: rgba(18, 20, 26, 0.38);
+  backdrop-filter: blur(48px) saturate(190%) brightness(1.1);
+  -webkit-backdrop-filter: blur(48px) saturate(190%) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 24px 60px -10px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
   user-select: none;
   -webkit-user-select: none;
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.control-tile {
+
+
+
+/* Subtle Specular Sheen on the panel */
+.control-center-sheen {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.04) 28%,
+    transparent 55%
+  );
+}
+
+/* Individual Module / Tile Card */
+.control-center-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.control-center-card:hover {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  transition: all 0.18s ease;
+  border-color: rgba(255, 255, 255, 0.20);
 }
 
-.control-tile:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.2);
+/* Active Highlight Card / Pill */
+.control-center-pill-active {
+  background: #0A84FF !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 14px rgba(10, 132, 255, 0.45) !important;
 }
 
-.control-tile.active {
-  background: rgba(255, 255, 255, 0.95);
-  color: #121214;
-  border-color: rgba(255, 255, 255, 0.95);
+/* macOS Toggle Switch */
+.macos-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.macos-switch[data-checked="true"] {
+  background-color: #0A84FF;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
+}
+
+.macos-switch-thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.macos-switch[data-checked="true"] .macos-switch-thumb {
+  transform: translateX(16px);
+}
+
+/* Custom ElasticSlider styling inside Control Center */
+.control-center-panel .elastic-slider {
+  width: 100%;
+}
+
+.control-center-panel .elastic-slider__body {
+  width: 100%;
+}
+
+.control-center-panel .elastic-slider__hit {
+  height: 26px;
+  cursor: pointer;
+}
+
+.control-center-panel .elastic-slider__track {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.control-center-panel .elastic-slider__range {
+  background: linear-gradient(90deg, #0A84FF 0%, #00C2FF 100%) !important;
+  box-shadow: 0 0 8px rgba(10, 132, 255, 0.45);
+}
+
+.control-center-panel .elastic-slider__value {
+  font-family: inherit;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Scroll area without visible ugly scrollbars */
+.control-center-scroll::-webkit-scrollbar {
+  display: none;
+}
+.control-center-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

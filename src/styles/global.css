@@ -126,7 +126,90 @@
     }
   html {
     @apply font-sans;
+    font-size: var(--font-scale, 100%);
     }
+}
+
+/* ==========================================================================
+   Global Website Preferences & Control Center Utilities
+   ========================================================================== */
+:root {
+  --glass-blur: 24px;
+  --glass-intensity: 70%;
+  --glass-bg-opacity: 0.06;
+  --glass-border-opacity: 0.14;
+  --font-scale: 100%;
+}
+
+/* Performance Mode: Reduce expensive blur, pause non-essential loops */
+.perf-mode .ambient-orb-1,
+.perf-mode .ambient-orb-2,
+.perf-mode .ambient-orb-3 {
+  animation: none !important;
+  opacity: 0.12 !important;
+}
+
+.perf-mode [class*="spotlight"],
+.perf-mode .pointer-events-none.absolute.inset-0[style*="radial-gradient"] {
+  display: none !important;
+}
+
+.perf-mode * {
+  box-shadow: none !important;
+}
+
+/* Reduce Transparency: Opaque comfortable solid backgrounds */
+.reduce-transparency .profile-portrait-glass,
+.reduce-transparency [style*="backdropFilter"],
+.reduce-transparency [style*="backdrop-filter"],
+.reduce-transparency .dock-glass,
+.reduce-transparency div[class*="backdrop-blur"],
+.reduce-transparency header[class*="backdrop-blur"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: rgba(18, 20, 27, 0.95) !important;
+}
+
+/* High Contrast: Brightened borders and stark readable text */
+.high-contrast {
+  filter: contrast(110%);
+}
+
+.high-contrast * {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.high-contrast span,
+.high-contrast p,
+.high-contrast a,
+.high-contrast button {
+  color: #ffffff !important;
+}
+
+/* Underline Links: Accessibility underline on interactive text */
+.underline-links a,
+.underline-links button:not([role="switch"]):not([role="slider"]),
+.underline-links [role="button"] {
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+}
+
+/* Reduce Motion */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Better Keyboard Navigation */
+.keyboard-nav *:focus,
+.keyboard-nav *:focus-visible {
+  outline: 2px solid #0A84FF !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.4) !important;
 }
 
 @keyframes bounceWave {

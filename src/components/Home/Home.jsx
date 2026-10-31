@@ -34,12 +34,8 @@ const GRADIENTS = {
     colors: ["black", "black", "black", "#00054A", "#091540","#0b5ee3"],
     angle: 180,
   },
-  Interests: {
-    colors: ["#00054A", "#3D137D", "#6A27D6", "#BB6DF2", "#EBD9FF"],
-    angle: 180,
-  },
   Gallery: {
-    colors: ["#00054A", "#3D137D", "#6A27D6", "#BB6DF2", "#EBD9FF"],
+    colors: ["black", "black", "black", "white","#091540","#00054A"],
     angle: 180,
   },
   Projects: {
@@ -53,12 +49,12 @@ const GRADIENTS = {
 };
 
 const MUSIC_GRADIENT_PALETTES = [
-  { colors: ["#0a0a0a", "#1c1c1c", "#4a4a4a", "#9a9a9a", "#e5e5e5"], angle: 180 },
-  { colors: ["#111111", "#262626", "#525252", "#a3a3a3", "#f5f5f5"], angle: 180 },
-  { colors: ["#050505", "#171717", "#3f3f3f", "#8c8c8c", "#fafafa"], angle: 180 },
-  { colors: ["#0f0f0f", "#222222", "#5c5c5c", "#b0b0b0", "#ededed"], angle: 180 },
-  { colors: ["black", "black", "black", "#292929", "#424242"], angle: 180 },
-  { colors: ["#0c0c0c", "#1f1f1f", "#454545", "#999999", "#ffffff"], angle: 180 },
+  {colors: ["black", "black", "black", "black ","white","#0446b0"], angle: 180 },
+  {colors:  ["black", "black", "black","black ", "white","#315f73"],angle: 180 },
+  {colors: ["black", "black", "black", "black ","white","#011e4d"], angle: 180 },
+  {colors:  ["black", "black", "black","black ", "white","#0b5ee3"],angle: 180 },
+  {colors:  ["black", "black", "black","black ", "white","#4dc1ff"],angle: 180 },
+
 ];
 
 const WINDOW_TABS = ["Profile", "Music", "Projects", "Contact", "Gallery", "Interests"];
@@ -146,12 +142,12 @@ function HomeContent() {
   }, [activeTab, mounted]);
 
   useEffect(() => {
-    if (!isMusicOpen || prefs.lowDataMode) return;
+    if (!isMusicOpen || prefs?.lowDataMode) return;
     const id = setInterval(() => {
       setMusicPaletteIndex((prev) => (prev + 1) % MUSIC_GRADIENT_PALETTES.length);
     }, 4500);
     return () => clearInterval(id);
-  }, [isMusicOpen, musicPaletteIndex, prefs.lowDataMode]);
+  }, [isMusicOpen, musicPaletteIndex, prefs?.lowDataMode]);
 
   const currentGradient = isMusicOpen
     ? MUSIC_GRADIENT_PALETTES[musicPaletteIndex]
@@ -431,12 +427,48 @@ function HomeContent() {
   );
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Home caught an unhandled error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full h-full min-h-screen flex flex-col items-center justify-center p-6 text-center text-white bg-[#00012a]">
+          <div className="p-6 max-w-md rounded-2xl bg-white/[0.08] border border-white/[0.15] backdrop-blur-xl">
+            <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
+            <p className="text-sm text-white/70 mb-4">
+              {this.state.error?.message || "An unexpected error occurred."}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm transition-colors cursor-pointer"
+            >
+              Reload Portfolio
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function Home() {
   return (
-    <ControlCenterProvider>
-      <MusicProvider>
-        <HomeContent />
-      </MusicProvider>
-    </ControlCenterProvider>
+    <ErrorBoundary>
+      <ControlCenterProvider>
+        <MusicProvider>
+          <HomeContent />
+        </MusicProvider>
+      </ControlCenterProvider>
+    </ErrorBoundary>
   );
 }

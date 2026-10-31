@@ -14,6 +14,16 @@ const ProfilePanel = ({ isOpen = true, onNavigateTab }) => {
   const [stageScale, setStageScale] = useState(1);
   const [leftWidth, setLeftWidth] = useState(920);
   const [stageWidth, setStageWidth] = useState(1320);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 860);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Global Cmd+K / Ctrl+K listener for macOS Spotlight
   useEffect(() => {
@@ -69,6 +79,52 @@ const ProfilePanel = ({ isOpen = true, onNavigateTab }) => {
       ro.disconnect();
     };
   }, []);
+
+  if (isMobile) {
+    return (
+      <div
+        ref={containerRef}
+        className="w-full h-full overflow-y-auto overflow-x-hidden p-2.5 pt-2 pb-28 select-none touch-pan-y [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        <div className="w-full max-w-lg mx-auto flex flex-col gap-3">
+          {/* Mobile Portrait Hero Card with glass styling */}
+          <div className="w-full h-[220px] xs:h-[250px] relative rounded-[24px] overflow-hidden border border-white/[0.14] shadow-xl shrink-0">
+            <img
+              src="/profilephoto.png"
+              alt="Shubham Idnani - Black & White Portrait"
+              className="w-full h-full object-cover grayscale contrast-110 select-none pointer-events-none"
+              draggable={false}
+            />
+            {/* Subtle Gradient & Badge Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-4 pointer-events-none">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-white/60 mb-0.5">
+                Full-Stack Developer
+              </span>
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                Shubham Idnani
+              </h2>
+            </div>
+          </div>
+
+          {/* Profile Window with Bento Widgets */}
+          <div className="w-full">
+            <ProfileWindow
+              onNavigateTab={onNavigateTab}
+              onOpenSpotlight={() => setIsSpotlightOpen(true)}
+              isMobile={true}
+            />
+          </div>
+        </div>
+
+        {/* Spotlight Search Modal (⌘K) */}
+        <SpotlightModal
+          isOpen={isSpotlightOpen}
+          onClose={() => setIsSpotlightOpen(false)}
+          onNavigateTab={onNavigateTab}
+        />
+      </div>
+    );
+  }
 
   return (
     <div

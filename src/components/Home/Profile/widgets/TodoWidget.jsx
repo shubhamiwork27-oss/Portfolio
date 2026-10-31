@@ -118,7 +118,7 @@ function TodoWidget() {
                 type="button"
                 onClick={(e) => removeTask(task.id, e)}
                 title="Remove task"
-                className="w-4 h-4 rounded flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover/item:opacity-100 shrink-0 cursor-pointer"
+                className="w-4 h-4 rounded flex items-center justify-center text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-70 sm:opacity-0 sm:group-hover/item:opacity-100 shrink-0 cursor-pointer"
               >
                 <X size={10} />
               </button>

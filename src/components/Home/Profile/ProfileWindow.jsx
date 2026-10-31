@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, memo } from "react";
+import React, { useRef, useState, useEffect, useCallback, memo } from "react";
 import { motion } from "motion/react";
 import { Search, User } from "lucide-react";
 
@@ -12,9 +12,19 @@ import TechStackWidget from "./widgets/TechStackWidget";
 import GithubWidget from "./widgets/GithubWidget";
 import TodoWidget from "./widgets/TodoWidget";
 
-function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
+function ProfileWindow({ onNavigateTab, onOpenSpotlight, isMobile: isMobileProp }) {
   const panelRef = useRef(null);
   const [reflectionOffset, setReflectionOffset] = useState({ x: 0, y: 0 });
+  const [isMobileLocal, setIsMobileLocal] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobileLocal(window.innerWidth < 860);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = isMobileProp ?? isMobileLocal;
 
   // Parallax sheen shift with mouse movement (max 12px)
   const handleMouseMove = useCallback((e) => {
@@ -64,13 +74,13 @@ function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative flex flex-col w-full h-full overflow-hidden select-none"
+      className={`relative flex flex-col w-full ${isMobile ? "h-auto overflow-visible" : "h-full overflow-hidden"} select-none`}
       style={{
-        backgroundColor: "rgba(255, 255, 255, 0.06)",
-        backdropFilter: "blur(40px) saturate(200%) brightness(1.1)",
-        WebkitBackdropFilter: "blur(40px) saturate(200%) brightness(1.1)",
-        border: "1px solid rgba(255, 255, 255, 0.16)",
-        borderRadius: "28px",
+        backgroundColor: "rgba(255, 255, 255, var(--glass-bg-opacity, 0.06))",
+        backdropFilter: "blur(var(--glass-blur, 40px)) saturate(200%) brightness(1.1)",
+        WebkitBackdropFilter: "blur(var(--glass-blur, 40px)) saturate(200%) brightness(1.1)",
+        border: "1px solid rgba(255, 255, 255, var(--glass-border-opacity, 0.16))",
+        borderRadius: isMobile ? "22px" : "28px",
         boxShadow: "none",
       }}
     >
@@ -144,41 +154,49 @@ function ProfileWindow({ onNavigateTab, onOpenSpotlight }) {
 
       </div>
 
-      {/* 4. Bento Grid: 12 Columns, 10px Gap, fixed row fractions (1.15fr 1.25fr 1.2fr) without scrolling */}
-      <div className="relative z-10 flex-1 p-3 min-h-0 overflow-hidden">
+      {/* 4. Bento Grid: 12 Columns on desktop, responsive single/double column on mobile */}
+      <div className={`relative z-10 flex-1 p-2.5 sm:p-3 ${isMobile ? "overflow-visible" : "min-h-0 overflow-hidden"}`}>
         <div
-          className="grid grid-cols-12 gap-2.5 w-full h-full min-h-0"
-          style={{
-            gridTemplateRows: "1.15fr 1.25fr 1.2fr",
-          }}
+          className={
+            isMobile
+              ? "grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full"
+              : "grid grid-cols-12 gap-2.5 w-full h-full min-h-0"
+          }
+          style={
+            isMobile
+              ? undefined
+              : {
+                  gridTemplateRows: "1.15fr 1.25fr 1.2fr",
+                }
+          }
         >
-          {/* Row 1: Hero (8 cols) + Availability (4 cols) */}
-          <motion.div variants={widgetVariants} className="col-span-8 h-full min-h-0">
+          {/* Row 1: Hero + Availability */}
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 sm:col-span-2 min-h-[160px]" : "col-span-8 h-full min-h-0"}>
             <HeroWidget onNavigateTab={onNavigateTab} />
           </motion.div>
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 min-h-[140px]" : "col-span-4 h-full min-h-0"}>
             <AvailabilityWidget />
           </motion.div>
 
-          {/* Row 2: Notes (4 cols) + Stats (4 cols) + Now Playing (4 cols) */}
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          {/* Row 2: Notes + Stats + Now Playing */}
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 min-h-[150px]" : "col-span-4 h-full min-h-0"}>
             <NotesWidget />
           </motion.div>
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 min-h-[150px]" : "col-span-4 h-full min-h-0"}>
             <StatsWidget />
           </motion.div>
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 sm:col-span-2 min-h-[150px]" : "col-span-4 h-full min-h-0"}>
             <NowPlayingWidget onNavigateTab={onNavigateTab} />
           </motion.div>
 
-          {/* Row 3: Tech Stack (4 cols) + GitHub (4 cols) + Currently Building (4 cols) */}
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          {/* Row 3: Tech Stack + GitHub + Todo List */}
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 min-h-[150px]" : "col-span-4 h-full min-h-0"}>
             <TechStackWidget />
           </motion.div>
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 min-h-[150px]" : "col-span-4 h-full min-h-0"}>
             <GithubWidget />
           </motion.div>
-          <motion.div variants={widgetVariants} className="col-span-4 h-full min-h-0">
+          <motion.div variants={widgetVariants} className={isMobile ? "col-span-1 sm:col-span-2 min-h-[170px]" : "col-span-4 h-full min-h-0"}>
             <TodoWidget />
           </motion.div>
         </div>

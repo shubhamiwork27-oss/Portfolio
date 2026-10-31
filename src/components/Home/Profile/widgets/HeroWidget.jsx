@@ -37,7 +37,7 @@ function HeroWidget({ onNavigateTab }) {
       </div>
 
       {/* Bottom controls & status */}
-      <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between gap-2 mt-auto shrink-0">
+      <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between gap-2 mt-auto shrink-0 flex-wrap sm:flex-nowrap">
         {/* Location & Status pills */}
         <div className="flex items-center gap-1.5">
           <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.1] text-[10px] text-white/70 whitespace-nowrap">

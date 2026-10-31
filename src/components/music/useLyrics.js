@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { fetchLyricsFromLrclib } from "../../lib/lyrics";
 
 // Per-track in-memory cache so switching back between tracks is instant
 const lyricsMemoryCache = new Map();
@@ -58,18 +59,34 @@ export function useLyrics(track) {
           params.set("duration", Math.round(track.duration).toString());
         }
 
-        const res = await fetch(`/api/lyrics?${params.toString()}`, {
-          signal,
-          headers: {
-            Accept: "application/json",
-          },
-        });
+        let data = null;
+        try {
+          const res = await fetch(`/api/lyrics?${params.toString()}`, {
+            signal,
+            headers: {
+              Accept: "application/json",
+            },
+          });
 
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+          if (res.ok) {
+            data = await res.json();
+          }
+        } catch {
+          // Internal endpoint unavailable, fallback directly to LRCLIB client-side
         }
 
-        const data = await res.json();
+        if (!data) {
+          data = await fetchLyricsFromLrclib({
+            title: track.title,
+            artist: track.artist || "",
+            album: albumName,
+            duration: track.duration,
+          });
+        }
+
+        if (!data || (!data.plain && (!data.synced || data.synced.length === 0) && !data.instrumental)) {
+          throw new Error("Lyrics not found");
+        }
 
         // Store in per-track in-memory cache
         lyricsMemoryCache.set(trackKey, data);
