@@ -101,7 +101,7 @@ function ControlCenter() {
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             role="dialog"
             aria-label="Control Center"
-            className="control-center-panel absolute top-9 right-3 sm:right-5 w-[326px] max-w-[calc(100vw-24px)] z-50 text-white select-none overflow-hidden flex flex-col p-2.5 gap-2 max-h-[calc(100vh-80px)]"
+            className="control-center control-center-panel absolute top-9 right-3 sm:right-5 w-[326px] max-w-[calc(100vw-24px)] z-50 text-white select-none overflow-hidden flex flex-col p-2.5 gap-2 max-h-[calc(100vh-80px)]"
           >
             {/* Top Specular Gradient */}
             <div className="control-center-sheen pointer-events-none absolute inset-0 z-0" />
