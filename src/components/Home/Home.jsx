@@ -486,11 +486,11 @@ function HomeContent() {
           {mounted.Contact && (
             <PopWindow
               open={activeTab === "Contact"}
-              className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-4 sm:p-8 md:p-12 pt-6 sm:pt-10 pb-28 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
+              className="absolute inset-0 z-20 flex items-start md:items-center justify-center p-3 sm:p-8 md:p-12 pt-4 sm:pt-10 pb-24 sm:pb-32 pointer-events-none overflow-y-auto contact-scroll-area"
               scale={0.97}
               exitY={-12}
             >
-              <div className="pointer-events-auto w-full flex justify-center my-auto">
+              <div className="pointer-events-auto w-full flex justify-center my-0 md:my-auto">
                 <Contact />
               </div>
             </PopWindow>

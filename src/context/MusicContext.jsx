@@ -146,9 +146,14 @@ export function MusicProvider({ children }) {
 
   const seek = useCallback((newTime) => {
     const audio = audioRef.current;
-    if (audio) {
-      audio.currentTime = newTime;
-      setCurrentTime(newTime);
+    if (audio && typeof newTime === "number" && !isNaN(newTime) && isFinite(newTime)) {
+      const validTime = Math.max(0, Math.min(audio.duration || newTime, newTime));
+      try {
+        audio.currentTime = validTime;
+        setCurrentTime(validTime);
+      } catch (err) {
+        console.error("Audio seek error:", err);
+      }
     }
   }, []);
 

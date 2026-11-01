@@ -65,6 +65,11 @@
 
 
 /* Subtle clean scrollbar for contact container */
+.contact-scroll-area {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
 .contact-scroll-area::-webkit-scrollbar {
   width: 5px;
 }

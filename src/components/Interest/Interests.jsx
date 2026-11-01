@@ -93,7 +93,7 @@ function Interests({ isOpen = true, images = DEFAULT_IMAGES }) {
               <Compass size={12} className="sm:w-[13px] sm:h-[13px]" />
             </div>
             <span className="text-[11px] sm:text-[13px] font-semibold tracking-wide text-white/90 truncate">
-              {isMobile ? "Moments In Orbit" : "Things That Keep Me Curious"}
+              {isMobile ? "Interests In Orbit" : "Things That Keep Me Curious"}
             </span>
           </div>
 
@@ -118,7 +118,7 @@ function Interests({ isOpen = true, images = DEFAULT_IMAGES }) {
               showPath
               centerContent={
                 <h2 className="text-2xl font-mono font-bold tracking-tight text-white drop-shadow-md select-none">
-                  Moments
+                  Interests
                 </h2>
               }
               radius={190}

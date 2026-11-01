@@ -23,40 +23,49 @@ export default function ProgressBar({
     ? (currentTime / duration) * 100
     : 0;
 
-  const calculateProgressFromEvent = useCallback((e) => {
+  const calculateProgressFromX = useCallback((clientX) => {
     if (!barRef.current) return 0;
     const rect = barRef.current.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    if (rect.width <= 0) return 0;
     const offsetX = Math.max(0, Math.min(rect.width, clientX - rect.left));
     return (offsetX / rect.width) * 100;
   }, []);
 
   const handlePointerDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
     setIsDragging(true);
-    const newProgress = calculateProgressFromEvent(e);
+    const newProgress = calculateProgressFromX(e.clientX);
     setDragProgress(newProgress);
+  };
 
-    const handlePointerMove = (moveEvent) => {
-      const p = calculateProgressFromEvent(moveEvent);
-      setDragProgress(p);
-    };
+  const handlePointerMove = (e) => {
+    if (!isDragging) return;
+    const p = calculateProgressFromX(e.clientX);
+    setDragProgress(p);
+  };
 
-    const handlePointerUp = (upEvent) => {
-      setIsDragging(false);
-      const finalProgress = calculateProgressFromEvent(upEvent);
-      if (duration > 0 && onSeek) {
-        onSeek((finalProgress / 100) * duration);
-      }
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
-      window.removeEventListener("touchmove", handlePointerMove);
-      window.removeEventListener("touchend", handlePointerUp);
-    };
+  const handlePointerUp = (e) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+    const finalProgress = calculateProgressFromX(e.clientX);
+    if (duration > 0 && onSeek && !isNaN(finalProgress)) {
+      onSeek((finalProgress / 100) * duration);
+    }
+  };
 
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
-    window.addEventListener("touchmove", handlePointerMove);
-    window.addEventListener("touchend", handlePointerUp);
+  const handlePointerCancel = (e) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
   };
 
   const handleKeyDown = (e) => {
@@ -82,7 +91,7 @@ export default function ProgressBar({
         {formatTime(displayedCurrentTime)}
       </span>
 
-      {/* Track bar container */}
+      {/* Track bar container with expanded touch hit target & touch-none for mobile */}
       <div
         ref={barRef}
         role="slider"
@@ -93,8 +102,11 @@ export default function ProgressBar({
         aria-valuenow={Math.round(displayedCurrentTime)}
         aria-valuetext={`${formatTime(displayedCurrentTime)} of ${formatTime(duration)}`}
         onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
         onKeyDown={handleKeyDown}
-        className="group relative flex-1 h-3 flex items-center cursor-pointer focus:outline-none"
+        className="group relative flex-1 h-8 sm:h-6 flex items-center cursor-pointer focus:outline-none touch-none"
       >
         {/* Track groove */}
         <div
@@ -111,10 +123,10 @@ export default function ProgressBar({
           />
         </div>
 
-        {/* Draggable thumb */}
+        {/* Draggable thumb - visible on mobile, hover-reveal on desktop */}
         <div
           style={{ left: `${Math.min(100, Math.max(0, effectiveProgress))}%` }}
-          className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.35)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-150 pointer-events-none"
+          className="absolute -translate-x-1/2 w-3.5 h-3.5 sm:w-3 sm:h-3 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.4)] opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 transition-opacity duration-150 pointer-events-none"
         />
       </div>
 

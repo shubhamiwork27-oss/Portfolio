@@ -245,16 +245,6 @@ function SpotlightModal({ isOpen, onClose, onNavigateTab }) {
                 </div>
               )}
             </div>
-
-            {/* Footer with Keyboard Hints */}
-            <div className="px-4 py-2 border-t border-white/[0.08] flex items-center justify-between text-[10px] text-white/40 bg-white/[0.02]">
-              <div className="flex items-center gap-3">
-                <span>↑↓ Navigate</span>
-                <span>↵ Open</span>
-                <span>esc Close</span>
-              </div>
-              <span className="text-white/70">macOS Spotlight</span>
-            </div>
           </motion.div>
         </div>
       )}

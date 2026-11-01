@@ -303,7 +303,7 @@ function ContactComponent() {
           </div>
 
           {/* Introduction */}
-          <p className="text-2xl sm:text-base text-white/75 leading-relaxed max-w-xl">
+          <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-xl">
             Have a project in mind, an opportunity, or an idea
             worth exploring? I enjoy building thoughtful digital
             experiences, experimenting with creative frontend
@@ -314,8 +314,8 @@ function ContactComponent() {
           {/* Availability */}
           <div className="flex items-center gap-2.5 px-1">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-60 animate-ping" />
-              <span className="relative inline-flex rounded-full h-.5 w-3.5 bg-white" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
             </span>
 
             <span className="text-xs sm:text-sm font-medium tracking-wide text-white/85">
@@ -413,7 +413,7 @@ function ContactComponent() {
               />
               <div>
                 <p className="text-xs uppercase tracking-wider text-white/50">
-                  `Current focus
+                  Current focus
                 </p>
                 <p className="mt-1 text-sm text-white/85">
                   Creative interfaces and useful web applications
