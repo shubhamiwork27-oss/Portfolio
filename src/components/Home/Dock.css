@@ -275,8 +275,8 @@
 
 .dock-dot {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 3.5px;
+  height: 3.5px;
   border-radius: 50%;
   background: var(--dock-dot);
   pointer-events: none;
@@ -297,29 +297,29 @@
 .dock--bottom .dock-dot,
 .dock--top .dock-dot {
   left: 50%;
-  margin-left: -2px;
+  margin-left: -1.75px;
 }
 
 .dock--left .dock-dot,
 .dock--right .dock-dot {
   top: 50%;
-  margin-top: -2px;
+  margin-top: -1.75px;
 }
 
 .dock--bottom .dock-dot {
-  top: calc(100% + max(var(--dock-pad) / 2, 5px) - 2px);
+  top: calc(100% + (var(--dock-pad) - 3.5px) / 2);
 }
 
 .dock--top .dock-dot {
-  bottom: calc(100% + max(var(--dock-pad) / 2, 5px) - 2px);
+  bottom: calc(100% + (var(--dock-pad) - 3.5px) / 2);
 }
 
 .dock--left .dock-dot {
-  right: calc(100% + max(var(--dock-pad) / 2, 5px) - 2px);
+  right: calc(100% + (var(--dock-pad) - 3.5px) / 2);
 }
 
 .dock--right .dock-dot {
-  left: calc(100% + max(var(--dock-pad) / 2, 5px) - 2px);
+  left: calc(100% + (var(--dock-pad) - 3.5px) / 2);
 }
 
 .dock-separator {
@@ -603,7 +603,7 @@
 .dock-item[data-active="true"] .dock-dot,
 .dock-item[aria-current="page"] .dock-dot {
   background: var(--dock-accent, #0a84ff) !important;
-  box-shadow: 0 0 8px var(--dock-accent, #0a84ff);
+  box-shadow: 0 0 4px var(--dock-accent, #0a84ff);
 }
 
 /* Translucent dark glass styling for bottom navigation dock */

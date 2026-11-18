@@ -20,7 +20,7 @@ import SplitFlapText from "./SplitFlapText";
 // Keep these two addresses intentional.
 // PUBLIC_EMAIL appears on the contact card.
 // FORM_RECIPIENT_EMAIL receives the contact form submissions.
-const PUBLIC_EMAIL = "Shubhamiwork27@gmail.com";
+const PUBLIC_EMAIL = "shubhamidnani.career@gmail.com";
 const FORM_RECIPIENT_EMAIL = "shubhamiwork27@gmail.com";
 
 const MAX_MESSAGE_LENGTH = 500;
@@ -279,7 +279,7 @@ function ContactComponent() {
           {/* Animated headline */}
           <div className="w-full min-w-0 overflow-hidden">
             <div
-              className="origin-left scale-[0.78] sm:scale-90 md:scale-100"
+              className="origin-left scale-[0.72] sm:scale-[0.85] md:scale-100"
               role="heading"
               aria-level={1}
               aria-label="Get in touch"
@@ -291,9 +291,9 @@ function ContactComponent() {
                   "START IDEAS",
                   "LET'S CONNECT",
                 ]}
-                fontSize={35}
-                tileRadius={5}
-                gap={4}
+                fontSize={24}
+                tileRadius={4}
+                gap={3}
                 padTo={12}
                 tileColor="#4a4a4a"
                 textColor="white"

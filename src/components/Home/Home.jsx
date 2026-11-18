@@ -224,18 +224,18 @@ function HomeContent() {
   const [musicPaletteIndex, setMusicPaletteIndex] = useState(0);
   const [ambientPaletteIndex, setAmbientPaletteIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [dockIconSize, setDockIconSize] = useState(48);
+  const [dockIconSize, setDockIconSize] = useState(42);
 
   const [mounted, setMounted] = useState({ Profile: true });
   const isMusicOpen = activeTab === "Music";
 
-  // Responsive mobile and dock icon sizing: clamp(44px, 5.6vh, 58px)
+  // Responsive mobile and dock icon sizing: clamp(38px, 4.8vh, 50px)
   useEffect(() => {
     const handleResize = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       setIsMobile(vw < 640);
-      const size = Math.round(Math.min(58, Math.max(44, vh * 0.056)));
+      const size = Math.round(Math.min(50, Math.max(38, vh * 0.048)));
       setDockIconSize(size);
     };
     handleResize();
@@ -529,19 +529,19 @@ function HomeContent() {
         </main>
 
         {/* c) Dock Zone */}
-        <footer className="h-[clamp(64px,9vh,90px)] shrink-0 w-full relative z-30 flex items-center justify-center">
+        <footer className="h-[clamp(56px,7.8vh,78px)] shrink-0 w-full relative z-30 flex items-center justify-center">
           <Dock
             className="z-30"
             items={items}
             theme="light"
-            baseItemSize={isMobile ? 28 : dockIconSize}
-            magnification={isMobile ? 32 : 80}
-            panelHeight={isMobile ? 42 : Math.round(dockIconSize * 1.35)}
+            baseItemSize={isMobile ? 24 : dockIconSize}
+            magnification={isMobile ? 28 : 68}
+            panelHeight={isMobile ? 38 : Math.round(dockIconSize * 1.34)}
             accentColor="#fff"
             badgeColor="#fff"
             position="bottom"
-            distance={isMobile ? 60 : 160}
-            gap={isMobile ? 3 : 10}
+            distance={isMobile ? 50 : 140}
+            gap={isMobile ? 2.5 : 8}
             roundness={0.7}
             bounce={!isMobile}
             autoHide={false}
