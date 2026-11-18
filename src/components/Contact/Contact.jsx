@@ -279,7 +279,7 @@ function ContactComponent() {
           {/* Animated headline */}
           <div className="w-full min-w-0 overflow-hidden">
             <div
-              className="origin-left scale-[0.72] sm:scale-[0.85] md:scale-100"
+              className="origin-left"
               role="heading"
               aria-level={1}
               aria-label="Get in touch"
@@ -289,11 +289,11 @@ function ContactComponent() {
                   "GET IN TOUCH",
                   "LET'S BUILD",
                   "START IDEAS",
-                  "LET'S CONNECT",
+                  "TROUBLESHOOT",
                 ]}
-                fontSize={24}
-                tileRadius={4}
-                gap={3}
+                fontSize="clamp(20px, 2.2vw + 10px, 35px)"
+                tileRadius="clamp(4px, 0.35vw, 5px)"
+                gap="clamp(2.5px, 0.25vw, 4px)"
                 padTo={12}
                 tileColor="#4a4a4a"
                 textColor="white"
