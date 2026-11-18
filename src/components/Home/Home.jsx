@@ -69,11 +69,12 @@ const LIGHT_GRADIENTS = {
 };
 
 const MUSIC_GRADIENT_PALETTES = [
-  {colors: ["black", "black", "black", "black ","#d2d2d2","#0446b0"], angle: 180 },
-  {colors:  ["black", "black", "black","black ", "#d2d2d2","#315f73"],angle: 180 },
-  {colors: ["black", "black", "black", "black ","#d2d2d2","#011e4d"], angle: 180 },
-  {colors:  ["black", "black", "black","black ", "#d2d2d2","#0b5ee3"],angle: 180 },
-  {colors:  ["black", "black", "black","black ", "#d2d2d2","#4dc1ff"],angle: 180 },
+  {colors: ["black", "black", "black", "black ","#7c7c7c","#0446b0"], angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#7c7c7c","#315f73"],angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#7c7c7c","#733131"],angle: 180 },
+  {colors: ["black", "black", "black", "black ","#7c7c7c","#011e4d"], angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#7c7c7c","#0b5ee3"],angle: 180 },
+  {colors:  ["black", "black", "black","black ", "#7c7c7c","#4dc1ff"],angle: 180 },
 ];
 
 const LIGHT_MUSIC_GRADIENT_PALETTES = [
